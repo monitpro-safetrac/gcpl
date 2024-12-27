@@ -1,0 +1,142 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    ViewBag.Title = "NewPermitList";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <br />
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Approve/Recycle Permit_#@Html.DisplayFor(m => m.PermitNumber)</h1>
+        </div>
+        <br />
+        <div id="container">
+            <div id="fixTable" class="container-fluid table-responsive" width="100%">
+                @Html.Partial("PermitTemplate", Model)
+
+
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+    @Html.HiddenFor(m => m.Status);
+    @Html.HiddenFor(m => m.WorkPermitID);
+    @Html.HiddenFor(m => m.WorkTypeID);
+    @Html.HiddenFor(m => m.MechanicalIncharge)
+    @Html.HiddenFor(m => m.ElectricalIncharge)
+    @Html.HiddenFor(m => m.InstrumentalIncharge)
+    @Html.HiddenFor(m => m.SafetyOfficer)
+    @Html.HiddenFor(m => m.ProcessManager)
+    @Html.HiddenFor(m => m.GMOperations)
+
+}
+
+@section Scripts
+{
+
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "/Account/Login";
+        };
+
+    </script>
+}
+<script>
+
+    $(document).ready(function () {
+
+        $("#EquipmentList").select2();
+        $("#ProcessManager").select2();
+        $("#FireWatchList").select2();
+
+
+    });
+    $("#ApprovePermit").click(function (event) {
+
+        $('#ApproverComment').attr('required', true);
+        $("#Cancel").prop("disabled", true);
+        $("#PermitIssuerName").prop("disabled", false);
+        $('#Status').val('A');
+
+
+
+        //ppe validation
+        var checked_checkboxes = $("#PPETable input[type=checkbox]:checked");
+        if (checked_checkboxes.length == 0) {
+            $(".PPEerror").show();
+            return false;
+        }
+        else { $(".PPEerror").hide(); }
+
+
+
+        //general checklist validation
+        var checked_checkboxes = $("#Generaltbl input[type=checkbox]:checked");
+        if (checked_checkboxes.length == 0) {
+            $(".Generalerror").show();
+            return false;
+        }
+        else { $(".Generalerror").hide(); }
+
+        ////worktype checklist validation
+        //var checked_checkboxes = $("#AllWorkTypetbl input[type=checkbox]:checked");
+
+        // if (checked_checkboxes.length == 0 ) {
+        //    $(".AllWorkTypeerror").show();
+        //    return false;
+        //}
+        //else { $(".AllWorkTypeerror").hide(); }
+    });
+
+    $("#Cancel").click(function (event) {
+
+
+        document.getElementById("cancelhide").style.visibility = "hidden";
+        $('#ApproverComment').attr('required', false);
+        $("#ApprovePermit").prop("disabled", true);
+        $("#RejectPermit").prop("disabled", true);
+        $('#Status').val("T");
+
+    });
+
+    $("#RejectPermit").click(function (event) {
+        $('#ApproverComment').attr('required', true);
+        $('#ClosureComment').attr('required', false);
+        $("#PermitIssuerName").prop("disabled", false);
+        $('#Status').val('R');
+    }
+    );
+    $(document).ready(function () {
+        $("#ApproverID").prop("disabled", true);
+        $("#PermitIssuerName").prop("disabled", true);
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+
+    });
+
+    $("#Reset").click(function (event) {
+        $(".field-validation-error").empty();
+        $(':text').val(""); // Clear values from all the text boxes
+    }
+    );
+
+</script>

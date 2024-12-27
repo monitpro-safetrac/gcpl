@@ -1,0 +1,146 @@
+﻿
+@model IncidentReportSystem.Models.SavedCompliance
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+
+    input[readonly] {
+        background-color: white !important;
+        cursor: text !important;
+    }
+</style>
+<script>
+    function FileChange(id) {
+        $("#Remove" + id).show();
+    }
+
+    function RemoveAttachment(id) {
+        document.getElementById("Attachment" + id).value = "";
+        document.getElementById("Remove" + id).style.display = 'none';
+        return false;
+    }
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm("SavedComplianceForm", "Compliance", FormMethod.Post, new { enctype = "multipart/form-data" }))
+//@using (Html.BeginForm("NewPermitList", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">ComplianceForm Saved List</h1>
+        </div>
+        <div id="container" class="table-responsive pre-scrollable" style="max-height:600px">
+            <table id="SavedCompliance " class="table-bordered table-responsive " width="100%">
+                <thead>
+                    <tr>
+                        <th>SNo</th>
+                        <th>Date</th>
+                        <th>Manif Doc Num</th>
+                        <th>Receiver Name</th>
+                        <th>Waste Name</th>
+                        <th>Total Quantity</th>
+                        <th>Sender's Name</th>
+                        <th>Action</th>
+                        <th>Form 10 PDF Download</th>
+                        <th>Attach Final Doc</th>
+                        <th>Close</th>
+
+                    </tr>
+                </thead>
+                @for (var i = 0; i < Model.createcompliance.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.createcompliance[i].SNO@Html.HiddenFor(x => x.createcompliance[i].SNO) </td>
+                        <td>@Model.createcompliance[i].CreatedOn@Html.HiddenFor(x => x.createcompliance[i].CreatedOn)</td>
+                        <td>@Model.createcompliance[i].ComplianceFormID@Html.HiddenFor(x => x.createcompliance[i].ComplianceFormID)</td>
+                        <td>@Model.createcompliance[i].ReceiverName@Html.HiddenFor(x => x.createcompliance[i].ReceiverName)</td>
+                        <td>@Model.createcompliance[i].WasteName@Html.HiddenFor(x => x.createcompliance[i].WasteName)</td>
+                        <td>@Model.createcompliance[i].Quantity@Html.HiddenFor(x => x.createcompliance[i].Quantity)</td>
+                        <td>@Model.createcompliance[i].SenderName@Html.HiddenFor(x => x.createcompliance[i].SenderName)</td>
+
+                        <td>@Html.ActionLink("Edit", "UpdateComplianceForm", new { id = Model.createcompliance[i].ComplianceFormID })</td>
+                        <td>@Html.ActionLink("  Pdf", "PrintCompliance", new { id = Model.createcompliance[i].ComplianceFormID })</td>
+                        <td>
+                            @if (Model.createcompliance[i].Attachment != "")
+                            {
+
+                            }
+                            <span class="file-input btn btn-primary btn-file">
+                                Attach&hellip; <input type="file" onchange="return FileChange(@(i));" name="Attachment" id=@("Attachment" + i)>
+                            </span>
+                            <a href="#" style="display:none" id="@("Remove" + i)" onclick="return RemoveAttachment(@(i));"><img src="~/Images/remove.png" /></a>
+                        </td>
+
+                        <td align="center"><input type="submit" class="btn btn-primary" name="submitbutton1" value="Close" id="SubmitForClose" onclick="CloseForm(@Model.createcompliance[i].SNO)" />
+
+                    </tr>
+                }
+            </table>
+            @if (ViewBag.comments == "N")
+            {
+                <br />
+                <div class="alert alert-danger text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Please Attach Documents</strong>
+
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+    <input type="hidden" id="row" name="Sno" />
+}
+<script>
+    function CloseForm(id) {
+        document.getElementById("row").value = id;
+        document.forms[0].submit();
+    }
+    $("#SubmitForClose").click(function (event) {
+        $('#Status').val("S");
+    }
+    );
+</script>
+
+
+
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+}
+
+
+<script>
+    $(document).ready(function () {
+        $("#SavedCompliance ").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>

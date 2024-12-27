@@ -1,0 +1,122 @@
+﻿@model IncidentReportSystem.Models.NewIncidentViewModel
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@{
+    ViewBag.Title = "RootCauseCategories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #fixTable thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    .footer td {
+        position: fixed;
+        left: 0px;
+        border: none;
+        bottom: 0px;
+        height: 30px;
+        width: 100%;
+        background: white;
+        padding-left: 45%;
+    }
+   
+
+  
+</style>
+
+
+@using (Html.BeginForm("RootCauseCategories", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Root Cause Categories  (Select Atleast One RootCause)</h1>
+        </div>
+
+        @Html.HiddenFor(m => m.IncidentID)
+
+        <div id="container" class="table-responsive">
+            <table id="fixTable" style="width:95%" align="center"  class="table table-bordered table-responsive"   >
+
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Root Cause Categories</th>
+                        <th>Select Categories</th>
+                    </tr>
+                </thead>
+
+
+                    @for (var i = 0; i < Model.RootCauseMasterList.Count; i++)
+                    {
+                        <tr>
+                            <td align="center">@(i + 1)</td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.RootCauseMasterList[i].maincheck, htmlAttributes: new { @class = "big-checkbox" })
+                                @Html.HiddenFor(m => m.RootCauseMasterList[i].RootCauseID)
+                                @Html.DisplayFor(m => m.RootCauseMasterList[i].Name)
+                            </td>
+                            <td>
+                                @for (int j = 0; j < Model.RootCauseMasterList[i].SubList.Count; j++)
+                                {
+
+                                    @Html.CheckBoxFor(m => m.RootCauseMasterList[i].SubList[j].subcheck, htmlAttributes: new { @class = "big-checkbox" })
+                                    @Html.HiddenFor(m => m.RootCauseMasterList[i].SubList[j].SubsectionID)
+                                    @Html.HiddenFor(m => m.RootCauseMasterList[i].SubList[j].RootCauseID)
+                                    @Model.RootCauseMasterList[i].SubList[j].Name<br />
+
+                                }
+                            </td>
+
+                        </tr>
+                    }
+            <table class="table-borderedless">
+                <tr class="footer table-borderedless">
+                    <td colspan="4">
+                        <button class="btn btn-primary" type="submit" id="btnsubmit" title="Submit">Save</button>&nbsp;&nbsp;
+                        <input type="button" class="btn btn-primary" value="Edit Incident" onclick="EditIncident(@Model.IncidentID);" />
+                    </td>
+                </tr>
+            </table>
+            </table>
+
+
+        </div>
+    </div>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+@if (TempData["Message"] != null)
+{
+    <script type="text/javascript">
+         {
+           alert("@TempData["Message"]");
+           @TempData.Remove("Message");
+
+       };
+
+    </script>
+}
+
+<script type="text/javascript">
+
+    function EditIncident(IncID) {
+
+        window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+    } $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 130 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>

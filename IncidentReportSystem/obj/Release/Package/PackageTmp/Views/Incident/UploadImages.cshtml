@@ -1,0 +1,159 @@
+﻿@model IncidentReportSystem.Models.IncidentImageViewModel
+@{
+    ViewBag.Title = "UploadImages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("UploadImages", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+
+    <div class="div-border" style="width:50%; align-content:center; ">
+        <h1 class="div-h1"><span class="div-h1-span">&nbsp;Upload Supporting Images&nbsp;</span></h1>
+        <table cellpadding="4" cellspacing="4" align="center">
+            <tr>
+                <td style="width:30%">Incident Number</td>
+                <td>@Html.DisplayFor(model => model.IncidentNO)</td>
+            </tr>
+            <tr>
+                <td>Incident Description</td>
+                <td>@Html.DisplayFor(model => model.IncidentTitle)</td>
+            </tr>
+            <tr>
+                <td>Plant/Area</td>
+                <td>@Html.DisplayFor(model => model.PlantArea)</td>
+            </tr>
+            <tr>
+                <td>Image Name (MAX 100)</td>
+                <td>
+                    @Html.TextAreaFor(model => model.IncidentImage.ImageName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 400px;   max-width: 100%;" })
+                    @Html.ValidationMessageFor(model => model.IncidentImage.ImageName, "", new { @class = "label label-danger" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>Image Upload</td>
+                <td>
+                    @Html.TextBoxFor(m => m.IncidentImage.ImageFile, new { id = "ImageFile", type = "file", accept = "image/*", onchange = "chng()" })
+                    <span class="label-warning">Please select JPEG file</span>
+                    @Html.ValidationMessageFor(m => m.IncidentImage.ImageFile, "", new { @class = "label label-danger" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    @Html.HiddenFor(model => model.IncidentImage.IncidentId)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center">
+                    <button type="submit" class="btn btn-primary" id="Save" style="width:100px">Save</button>&nbsp; &nbsp;
+
+                    <input type="button" class="btn btn-primary" value="Edit Incident" onclick="EditIncident(@Model.IncidentImage.IncidentId);" />
+                </td>
+            </tr>
+            <tr><td colspan="2"> </td></tr>
+        </table>
+    </div>
+
+    <br />
+    <div class="div-border" style="align-content:center; width:60%;">
+        <h1 class="div-h1"><span class="div-h1-span">Supporting docs list</span></h1>
+
+        @if (Model.IncidentImages.Count > 0)
+                {
+            <table class="table" id="SearchResults">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Image Name</th>
+                        <th>Download</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.IncidentImages)
+                    {
+                        <tr>
+                            <td>@item.SNo</td>
+                            <td>  @item.ImageName </td>
+                            <td>
+                                @if (item.FileName != "")
+                                {
+
+                                    <a href="~/UploadImages/@item.FileName" download>
+                                        <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                    </a>
+                                }
+                            </td>
+
+                            <td>
+                                <a href="javascript:DeleteImage(@item.IncidentImageId);" title="Delete Image"><img src="~/Images/remove.png" alt="Delete" style="height:25px;width:25px;" /></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Image(s) Found</p>
+        }
+    </div>
+}
+<br />
+<br />
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script>
+
+        function chng() {
+            var typ = document.getElementById("ImageFile").value;
+            var res = typ.match(".jp");
+
+            if (res) {
+
+            }
+            else {
+                alert("Only JPEG images are accepted");
+                document.getElementById("ImageFile").value = "";
+            }
+        }
+        function DeleteImage(IncImageID) {
+            var i;
+            if (confirm("Are you sure you want to delete ?") == true) {
+                i = "OK";
+                var options = { "backdrop": "static", keyboard: true };
+
+                $.ajax({
+                    method: "POST",
+                    url: "../Incident/DeleteImage",
+                    data: { IncidentImageID: IncImageID },
+                    success: function (response) {
+                        //$('#contentdiv').html(response);
+                        alert('Image Deleted Successfully');
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert(JSON.stringify(data));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            } else {
+                i = "Cancel";
+            }
+           
+        }
+
+        function EditIncident(IncID) {
+
+            window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+        }
+</script>

@@ -1,0 +1,429 @@
+﻿
+
+@model MonitPro.Models.MOC.TemporaryMOCModel
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    html {
+        overflow: scroll
+    }
+
+    #SearchResults thead th {
+        position: sticky;
+        top: 0;
+    }
+
+
+
+    .pad {
+        padding-left: 30px;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .padr {
+        padding-left: 50px;
+        padding-right: 30px;
+    }
+
+    .col1 {
+        padding-left: 30px;
+    }
+
+    .col2 {
+        padding-left: 80px;
+    }
+
+    .col3 {
+        padding-left: 50px;
+    }
+</style>
+<div id="contentdiv">
+    <div class="div-border" width="100%">
+        <h1 class="div-h1"><span class="div-h1-span">&nbsp;Temporary MOC&nbsp;</span></h1>
+
+
+        <div class="container-lg container-sm container-md padr">
+            <div class="row">
+                <label for="MOC From Date" class="col-lg-2 col-sm-2 control-label col1">MOC From Date</label>
+                <div class="form-group col-lg-2 col-sm-2">
+
+                    @Html.EditorFor(model => model.MOCSearchVM.MOCFromDate, "--Select--", new { htmlAttributes = new { @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                </div>
+                <label for="MOC To Date" class="col-lg-2 col-sm-2 control-label col2">MOC To Date</label>
+                <div class="form-group col-lg-2 col-sm-2">
+                    @Html.EditorFor(model => model.MOCSearchVM.MOCToDate, new { htmlAttributes = new { @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                </div>
+
+                <label for="MOC Number" class="col-lg-2 col-sm-2 control-label col1">MOC Number</label>
+                <div class="col-lg-2 col-sm-2">
+                    @Html.EditorFor(model => model.MOCSearchVM.MOCNumber, new { htmlAttributes = new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-1 col-sm-1">
+                    <label>Plant</label>
+                </div>
+
+                <div class="form-group col-lg-2 col-sm-2">
+                    @Html.DropDownListFor(Model => Model.MOCSearchVM.Plant, ViewBag.PlantsList as SelectList, new { @class = "form-control", @style = "width: 200px;height:30px" })
+
+                </div>
+
+                <div class="col-lg-1 col-sm-1">
+                    <label>MOC Owner</label>
+                </div>
+                <div class="col-lg-2 col-sm-2">
+                    @Html.DropDownListFor(model => model.MOCSearchVM.MOCcoordinator, new SelectList(Model.MocCoordinateUserList, "UserID", "DisplayUserName"),  new { @class = "form-control", @style = "width: 200px;height:30px" })
+                </div>
+
+                <div class="col-lg-2 col-sm-2">
+                    <label>Temporary Status</label>
+                </div>
+                <div class="col-lg-2 col-sm-2">
+                    @Html.DropDownListFor(Model => Model.MOCSearchVM.MOCTempStatus, new SelectList(Model.TempStatusList, "TempID", "TempName"), new { @class = "form-control", @style = "width: 200px;height:30px" })
+                </div>
+
+                <div class="form-group col-lg-1 col-sm-2">
+                    <img src="~/Images/searchIcon.png" onclick="SearchTemporaryMOC()" name="btnSearch" id="btnSearch" alt="Search Button" style="cursor: pointer;height:30px;width:30px" title="Search" />
+                </div>
+            </div>
+                <br />
+            </div>
+
+        @*<div class=" text-center">
+            <input type="button" class="btn btn-primary" onclick="SearchTemporaryMOC()" name="btnSearch" id="btnSearch" value="Search" />
+            <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+        </div>*@
+
+        <br />
+    </div>
+</div>
+
+<br />
+
+
+<div >
+    
+    <div class="table-responsive pre-scrollable">
+        <table class="table fixedheader table-striped table-hover" id="SearchResults">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>MOC Number</th>
+                    <th>Plant/Area</th>
+                    <th>Change Title</th>
+                    <th>MOC Owner</th>
+                    <th>Start date</th>
+                    <th>First Target Date</th>
+                    <th width="50">Revised Target Date</th>
+                    <th width="75">Reason For Extension</th>
+                    <th>Approver Name</th>
+                    <th>Approver Comments</th>
+                    <th>Normalization Comments</th>
+                    <th>Action </th>
+                    <th>Status</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.TemporaryMOC.Count > 0)
+                {
+
+                    for (var i = 0; i < Model.TemporaryMOC.Count; i++)
+                    {
+                        <tr id="temp">
+                            <td style="width:auto">
+                                @(i + 1) @Html.HiddenFor(m => m.TemporaryMOC[i].MOCID) @Html.HiddenFor(m => m.TemporaryMOC[i].InitiationDate) @Html.HiddenFor(m => m.TemporaryMOC[i].FirstTargetDate)@Html.HiddenFor(m => m.TemporaryMOC[i].TempStatus)
+                            </td>
+
+                            <td>@Model.TemporaryMOC[i].MOCNumber</td>
+                            <td>@Model.TemporaryMOC[i].plant</td>
+                            <td style="word-break:break-all; width:500px">@Model.TemporaryMOC[i].MOCTitle</td>
+                            <td>@Model.TemporaryMOC[i].MOCCoordinate</td>
+                            <td>@Model.TemporaryMOC[i].InitiationDate</td>
+                            <td>@Model.TemporaryMOC[i].FirstTargetDate</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.TemporaryMOC[i].RevisedTargetDate, new { htmlAttributes = new { @class = "dt", @id = ("RevisedTargetDate" + i), style = "width: 100px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.TemporaryMOC[i].ReasonExtension, new { style = "width: 300px", @id = ("ReasonExtension" + i), @disabled = "disabled" })
+                                @Html.ValidationMessageFor(model => model.TemporaryMOC[i].ReasonExtension, "", new { @class = "label label-danger" })
+
+                            </td>
+                            <td>@Model.TemporaryMOC[i].ApproverName</td>
+                            <td>@Model.TemporaryMOC[i].ApproverComments</td>
+                            <td>@Model.TemporaryMOC[i].CloseComments</td>
+                            <td>
+                                @*<input type="button" class="btn btn-primary" value="Edit" id="@("Edit" + i)" onclick="EditMOCCoordinator(@i)">*@
+                                @if ((Model.TemporaryMOC[i].MOCCoordinate == Model.UserFullName) && (Model.TemporaryMOC[i].ReasonExtension == null) && (Model.TemporaryMOC[i].TempStatus != "Normalized"))
+                                {
+
+                                    <input type="button" class="btn btn-primary" value="Submit" id="btnSave" onclick="AddMOCCoordinator(@i);">
+                                    <br /><br />
+                                    <input type="button" class="btn btn-primary" value="Normalize" id="btnClose" onclick="javascript:UpdateStatus(@Model.TemporaryMOC[i].MOCID);">
+
+                                }
+                                @if ((Model.TemporaryMOC[i].FactoryManagerID == Model.CurrentUser) && (Model.TemporaryMOC[i].ApproverComments == null) && (Model.TemporaryMOC[i].TempStatus == "Submittted"))
+                                {
+
+                                    <input type="button" class="btn btn-primary" value="Approve" id="btnApprove" onclick="javascript:UpdateStatus(@Model.TemporaryMOC[i].MOCID);">
+                                }
+                                @if ((Model.TemporaryMOC[i].MOCCoordinate == Model.UserFullName) && ((Model.TemporaryMOC[i].CloseComments == "") && (Model.TemporaryMOC[i].TempStatus == "Approved")))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Normalize" id="btnClose" onclick="javascript:UpdateStatus(@Model.TemporaryMOC[i].MOCID);">
+                                }
+                            </td>
+                            <td>@Model.TemporaryMOC[i].TempStatus</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td align="center" style="font-weight:bold" colspan="7">No Data Found </td></tr>
+
+                }
+
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+        <input type="hidden" id="RowCount" value="@Model.TemporaryMOC.Count" />
+    </div>
+</div>
+
+@foreach (var i in Model.TemporaryMOC)
+{
+    if ((i.TempStatus == "Closed") || (i.TempStatus == "Approved"))
+    {
+        <script type="text/javascript">
+            {
+                for (var i = 0; i < $("#RowCount").val(); i++) {
+                    vtemp = $("#TemporaryMOC_" + i + "__TempStatus").val();
+                    if ((vtemp == "Closed") || (vtemp == "Approved")) {
+                        $("#RevisedTargetDate" + i).attr('disabled', 'disabled');
+                        $("#ReasonExtension" + i).attr('disabled', 'disabled');
+                    }
+                }
+            };
+        </script>
+    }
+}
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+
+        function UpdateStatus(MOCID) {
+
+            var CurrentURL = '../MOC/UpdateTemporaryStatus';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+
+                type: "POST",
+                url: CurrentURL,
+                data: '{MOCID: ' + MOCID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        function TemporaryRA(MOCID) {
+
+            var CurrentURL = '../MOC/UpdateTemporaryRAStatus';
+            var options = { "backdrop": "static", keyboard: true };
+
+
+            $.ajax({
+
+                type: "POST",
+                url: CurrentURL,
+                data: '{MOCID: ' + MOCID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+    </script>
+    <script type="text/javascript">
+
+        var date = new Date();
+        var year = date.getFullYear(); //get year
+        var month = date.getMonth(); //get month
+
+
+                jQuery('.dt').datetimepicker({
+                    format: 'd/m/Y',
+                    lang: 'ru',
+                    step: 30,
+                    maxDate: new Date(year, month + 12, '01'),
+                    minViewMode: 1,
+                    autoclose: true,
+                    minDate: new Date(),
+                });
+
+                //function EditMOCCoordinator(RowID) {
+
+                //    $("#RevisedTargetDate" + RowID).removeAttr("disabled")
+                //    $("#ReasonExtension" + RowID).removeAttr("disabled")
+
+                //}
+
+        jQuery("#MOCSearchVM_MOCFromDate").datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery("#MOCSearchVM_MOCToDate").datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        })
+        function AddMOCCoordinator(RowID) {
+
+            $("#ReasonExtension" + RowID).removeAttr('disabled');
+            $("#ReasonExtension" + RowID).attr('required', true);
+            $("#RevisedTargetDate" + RowID).removeAttr('disabled');
+            $("#RevisedTargetDate" + RowID).attr('required', true);
+            vMOCID = $("#TemporaryMOC_" + RowID + "__MOCID").val();
+            vInitationDate = $("#TemporaryMOC_" + RowID + "__InitiationDate").val();
+            vFirstTargetDate = $("#TemporaryMOC_" + RowID + "__FirstTargetDate").val();
+            vRevisedTargetDate = $("#RevisedTargetDate" + RowID).val();
+            vReasonExtension = $("#ReasonExtension" + RowID).val();
+            if (vReasonExtension != "")
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/TemporaryMOCApprove",
+                    data: {
+                        MOCID: vMOCID, InitiationDate: vInitationDate, FirstTargetDate: vFirstTargetDate, RevisedTargetDate: vRevisedTargetDate, ReasonExtension: vReasonExtension, TempStatus: parseInt(1)
+                    },
+                    success: function (data) {
+                        alert(JSON.stringify('Extention Request has been submitted for approval'));
+                        location.reload(true);
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+             }
+
+        }
+
+
+
+        function SearchTemporaryMOC(){
+        var response = null;
+        var CurrentURL = '../MOC/TemporaryMOC';
+        var options = { "backdrop": "static", keyboard: true };
+
+        var MOCMod = @Html.Raw(Json.Encode(Model.MOCSearchVM));
+
+            MOCMod.MOCFromDate = $("#MOCSearchVM_MOCFromDate").val();
+            MOCMod.MOCToDate = $("#MOCSearchVM_MOCToDate").val();
+            MOCMod.MOCNumber = $("#MOCSearchVM_MOCNumber").val();
+            MOCMod.Plant = $("#MOCSearchVM_Plant").val();
+            MOCMod.MOCcoordinator = $("#MOCSearchVM_MOCcoordinator").val();
+            MOCMod.MOCTempStatus = $("#MOCSearchVM_MOCTempStatus").val();
+
+        $.ajax({
+            method: "POST",
+            url: "../MOC/TemporaryMOC",
+            data: MOCMod,
+            success: function (response) {
+                document.open();
+                document.write(response);
+                //assign the values back to control
+
+                $("#MOCSearchVM_MOCFromDate").val(MOCMod.MOCFromDate);
+                $("#MOCSearchVM_MOCToDate").val(MOCMod.MOCToDate);
+                $("#MOCSearchVM_MOCNumber").val(MOCMod.MOCNumber);
+                $("#MOCSearchVM_Plant").val(MOCMod.Plant);
+                $("#MOCSearchVM_MOCcoordinator").val(MOCMod.MOCcoordinator);
+                $("#MOCSearchVM_MOCTempStatus").val(MOCMod.MOCTempStatus);
+                document.close();
+
+            },
+
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+
+            });
+
+    }
+
+
+
+    function ClearSearch() {
+
+        $("#MOCSearchVM_MOCFromDate").val('');
+        $("#MOCSearchVM_MOCToDate").val('');
+        $("#MOCSearchVM_MOCNumber").val('');
+        $("#MOCSearchVM_Plant").val(0);
+        $("#MOCSearchVM_MOCcoordinator").val(0);
+        $("#MOCSearchVM_MOCTempStatus").val(0);
+    }
+
+    </script>
+
+
+}

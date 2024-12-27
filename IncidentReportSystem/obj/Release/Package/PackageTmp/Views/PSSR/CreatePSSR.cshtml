@@ -1,0 +1,266 @@
+﻿
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+@model MonitPro.Models.PSSR.CreatePSSRModel
+
+<style>
+
+    html {
+        overflow: scroll;
+    }
+
+    #fixTable h1 {
+        position: fixed;
+        top: 0;
+    }
+</style>
+@{
+    ViewBag.Title = "CreatePSSR";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+@using (Html.BeginForm("CreatePSSR", "PSSR", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            @if (Model.PSSRID > 0)
+            {
+                <h1 class="panel-title">Create PSSR - ID @Model.PSSRID</h1>
+            }
+            else
+            {
+                <h1 class="panel-title">Create PSSR</h1>
+            }
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(Model => Model.PSSRID)
+        @Html.HiddenFor(Model => Model.PSSRStatus)
+        @Html.HiddenFor(Model => Model.SaveButton)
+        @Html.HiddenFor(Model => Model.FileName)
+
+        <div class="container-lg" id="pssrtable">
+            <table style="width:95%" align="center" class=" table-borderless">
+                @Html.Partial("CreatePSSRPage", Model)
+                <tfoot>
+                    <tr>
+                        <td align="center" colspan="4">
+                            <br />
+                            <button class="btn btn-primary" type="submit" id="save1" title="Submit"
+                                    style=" width: 80px;height:30px;">
+                                Save
+                            </button>
+                            <input type="button" class="btn btn-primary" style=" width: 100px;height:30px;" value="PSSR List"
+                                   onclick="location.href='@Url.Action("PSSRList", "PSSR")'" />
+
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+
+    </div>
+
+
+
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+    </script>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+                    alert('@ViewBag.Message');
+                    location.reload = false;
+
+
+    </script>
+}
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+
+
+    @if (@ViewBag.savemessege != null)
+    {
+        <script type="text/javascript">
+        {
+                alert("@ViewBag.savemessege");
+                window.location.href = '../PSSR/CreatePSSR?PSSRID=' +@Model.PSSRID;
+        };
+
+        </script>
+    }
+
+    <script type="text/javascript">
+        $("#save1").click(function (event) {
+            if (@Model.PSSRStatus == 0) {
+                $('#PSSRStatus').val(1);
+            }
+            $('#PlantID').attr('required', true);
+            $('#CategoryID').attr('required', true);
+            $('#PSSRID').val(@Model.PSSRID);
+            $("#MOCNo").attr("required", false);
+            $("#SystemDesc").attr("required", true);
+            $("#AssessmentDatetime").attr("required", true);
+                if (@Model.PSSRID > 0) {
+                    var type = $("#checklistitem input[type=checkbox]:checked");
+
+                    if (type.length == 0) {
+                    $(".PSSRChecklisterror").show();
+
+                        return false;
+                    }
+
+                    else {
+                    $(".PSSRChecklisterror").hide();
+                    }
+                }
+
+        })
+        $("#pssrtable *").attr("disabled", false);
+    </script>
+    <script>
+        jQuery('#AssessmentDatetime').datetimepicker({
+            format: 'd/m/Y H:i',
+            lang: 'ru',
+            step: 30
+        });
+
+        $(function () {
+            $("#PlantID").select2();
+        });
+    </script>
+    <script type="text/javascript">
+        function FileChange() {
+            $("#Remove").show();
+            $("#save").show();
+        }
+        function RemoveAttachment() {
+            document.getElementById("Attachment").value = "";
+            document.getElementById("Remove").style.display = 'none';
+            document.getElementById("save").style.display = 'none';
+            return false;
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#CreatedBy").val("@Model.UserFullName");
+
+            $("#CreatedDateTime").val("@DateTime.Now.ToString("dd/MM/yyyy HH:mm")");
+
+            $("#CreatedBy").attr('disabled', true);
+            $("#CreatedDateTime").attr('disabled', true);
+        });
+      
+    </script>
+    <script type="text/javascript">
+        function AssignObservers(pssid) {
+            var x;
+            if (confirm("Have you saved the form ?") == true) {
+                x = "OK";
+                window.location.href = '../PSSR/AssignTeam?PSSRID=' + pssid;
+            } else {
+                x = "Cancel";
+            }
+
+        }
+    </script>
+    <script type="text/javascript">
+        function category() {
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+        }
+
+        $(document).ready(function () {
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+        })
+    </script>
+    <script type="text/javascript">
+           $(document).ready(function () {
+               $("#PlantID").change(function () {
+                   var select = $("#MOCNo");
+           select.empty();
+           select.append($('<option/>', {
+               value: "",
+               text: "-- Select --"
+           }));
+
+           var selectedPlantID = $(this).val();
+                   if (selectedPlantID != "") {
+                       $.getJSON("../PSSR/GetPlantMOCNumber", { PlantID: selectedPlantID }, function (data) {
+                   $.each(data, function (index, itemData) {
+                       select.append($('<option/>', {
+                           value: itemData.Value,
+                           text: itemData.Text
+                       }));
+
+                   });
+               });
+           }
+       });
+   });
+
+   $(document).ready(function () {
+   var MocIndex = 0;
+       var select = $("#MOCNo");
+       select.empty();
+       select.append($('<option/>', {
+           value: "",
+           text: "-- Select --"
+       }));
+       var selectedPlantID= $("#PlantID").val();
+       if (selectedPlantID != "") {
+           $.getJSON("../PSSR/GetPlantMOCNumber", { PlantID: selectedPlantID }, function (data) {
+               $.each(data, function (index, itemData) {
+                   if (itemData.Value=='@Model.MOCNo')
+                   {
+                       MocIndex = index + 1;
+                   }
+                   select.append($('<option/>', {
+                       value: itemData.Value,
+                       text: itemData.Text
+
+                   }));
+               });
+
+               document.getElementById('MOCNo').selectedIndex = MocIndex;
+           });
+       }
+});
+
+    </script>
+}

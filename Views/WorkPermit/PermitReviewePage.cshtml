@@ -1,0 +1,139 @@
+﻿@*<h1>success</h1>*@
+@model ValsparApp.Models.WorkPermit
+   
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+
+    input[readonly] {
+        background-color: white !important;
+        cursor: text !important;
+    }
+</style>
+<script>
+    function FileChange() {
+        $("#Remove" ).show();
+    }
+
+    function RemoveAttachment() {
+        document.getElementById("Attachment" ).value = "";
+        document.getElementById("Remove").style.display = 'none';
+        return false;
+    }
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+
+    @using (Html.BeginForm("PermitReviewePage", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))  
+
+    {
+                @Html.AntiForgeryToken()
+                <!DOCTYPE html>
+
+                <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Permit Review Page</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            @if (Model.GetIsRecord == 0)
+            {
+            <table id="fixTable" class="table-bordered table-responsive" width="100%">
+                <thead>
+                    <tr>
+                        <th align="center"><b>SNo.</b></th>
+                        <th align="center">Status</th>
+                        <th align="center">Due Date</th>
+                        <th align="center"><b>Frequency</b></th>
+                        <th align="center"><b>Description</b></th>
+                        <th align="center"><b>Action Comments</b></th>
+                        <th align="center"><b>Attachement</b></th>
+                        <th align="center"><b>Complete</b></th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+
+                  
+                    <tr>
+                        <td >1</td>
+                        @if (Model.GetStatus == "R         ")
+                        {
+                            <td><img src="~/Images/red.png" /></td>
+                        }
+                        @if (Model.GetStatus == "G         ")
+                        {
+                            <td><img src="~/Images/green.png" /></td>
+                        }
+                        <td >@ViewBag.DueDate</td>
+                        <td >@ViewBag.frequency </td>
+                        <td >@ViewBag.description </td>
+                        @*<td>@Html.TextAreaFor(m => m.ActionComments)</td>
+                       @Html.ValidationMessageFor(m => m.ActionComments)*@
+                        <td>@Html.TextAreaFor(m => m.GetComments)</td>
+                        <td nowrap>
+                          
+                            <span class="file-input btn btn-primary btn-file">
+                                Attach&hellip; <input type="file" onchange="return FileChange();" name="Attachment" id="Attachment" >
+                            </span>
+                            <a href="#" style="display:none" id="Remove"  onclick="return RemoveAttachment()"><img src="~/Images/remove.png" /></a>
+                        </td>
+                        <td align="center"><input type="submit" class="btn btn-primary" name="submitbutton1" value="complete" onclick="SubmitForm()" /></td>
+                  
+
+                       
+
+                    </tr>
+                </tbody>
+            </table>
+            }
+            @if (Model.GetIsRecord == 1)
+            {
+                <center><span class="label label-danger">Please Wait Next Quarter</span></center>
+            }
+        </div>
+    </div>
+    <input type="hidden" id="row" name="Sno" />
+    }
+    <script>
+        function SubmitForm() {
+            document.getElementById("row").value = id;
+            document.forms[0].submit();
+        }
+        $("#SubmitForApproval").click(function (event) {
+            $('#Status').val("S");
+        }
+        );
+    </script>
+    @section Scripts
+{
+        @Styles.Render("~/Content/themes/base/css")
+        @Scripts.Render("~/bundles/jqueryui")
+    }
+
+
+    <script>
+        $(document).ready(function () {
+            $("#WorkPermitList").tableHeadFixer({ "left": 0 });
+            document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+    </script>

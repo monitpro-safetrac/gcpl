@@ -1,0 +1,182 @@
+﻿
+@model IncidentReportSystem.Models.NewIncidentViewModel
+
+
+@using (Html.BeginForm("InjuredPeoples", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Injured Peoples</h1>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.IncidentID) 
+        
+            <table id="fixTable" style="width:90%" align="center" class="table-bordered table-responsive">
+                <tbody>
+
+                    <tr>
+                        <td>Incident Number</td>
+                        <td>@Html.DisplayFor(model => model.IncidentID)</td>
+                        <td>Incident Title</td>
+                        <td style="word-break:break-all;">@Html.DisplayFor(model => model.Title)</td>
+                    </tr>
+                    <tr>
+                        
+                        <td>Name</td>
+                        <td>
+                            @Html.TextAreaFor(model => model.Injuredpeoples.Name, new { @style = "width: 300px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.Name, "", new { @class = "label label-danger" })
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Gender</td>
+                        <td>
+                            @foreach (var a in Model.Gender)
+                            {
+
+                                @Html.RadioButtonFor(b => b.Injuredpeoples.GenderID, a.GenderID)  @a.Name
+
+                            }
+
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.GenderID, "", new { @class = "label label-danger" })
+
+                        </td>  
+                        <td>Age</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.Injuredpeoples.Age, new { @class = "form-control input-sm", @style = "width: 300px;   max-width: 100%;", @type = "number" })
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.Age, "", new { @class = "label label-danger" })
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td>Contractor/Employee</td>
+                        <td>
+                            @Html.DropDownListFor(model => model.Injuredpeoples.ContractorEmpID,
+                                                     new SelectList(Model.contractorEmp, "ID", "Name"), new { @class = "form-control input-sm", @style = "width: 300px;   max-width: 100%;" , @id = "ConEmp", onclick = "Menu()" })
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.ContractorEmpID, "", new { @class = "label label-danger" })
+                        </td>
+                        <td>Contractor</td>
+                        <td>
+                            @Html.DropDownListFor(model => model.Injuredpeoples.CompanyName,
+                                                     new SelectList(Model.Contractor, "ContractorID", "CompanyName"), new { @class = "form-control input-sm", @style = "width: 300px;   max-width: 100%;" , @id = "Emp" })
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.CompanyName, "", new { @class = "label label-danger" })
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>First Aid Given</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Injuredpeoples.FirstAid, "Yes") Yes&nbsp; @Html.RadioButtonFor(model => model.Injuredpeoples.FirstAid, "No")No
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.FirstAid, "", new { @class = "label label-danger" })
+                        </td>
+                        <td>Hospitalized Details</td>
+                        <td>
+                            @Html.TextAreaFor(model => model.Injuredpeoples.Hospitalized, new {  @style = "width: 300px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Injuredpeoples.Hospitalized, "", new { @class = "label label-danger" })
+                        </td>
+                    </tr>                  
+               
+                    <tr>
+                        <td colspan="4" align="center">
+                            <button class="btn btn-primary" type="submit" id="btnsubmit" title="Submit">Save</button>&nbsp;&nbsp;
+                            <button class="btn btn-primary" type="reset" id="btnClear" onclick="javascript:ClearRecord();" title="Clear">Clear</button>&nbsp;&nbsp;
+                       <input type="button" class="btn btn-primary" value="Edit Incident" onclick="EditIncident(@Model.IncidentID);" />
+
+
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+      
+}
+
+    <div class="div-border">
+        <h1 class="div-h1"><span class="div-h1-span">Injured People List</span></h1>
+
+        <table class="table" id="SearchResults">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>IncidentID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Contractor/Employee Name</th>
+                    <th>Contractor Company Name</th>
+                    <th>First Aid Given</th>
+                    <th>Hospitalized Details</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InjureList)
+            {
+                    <tr>
+                        <td>@item.SNo</td>
+                        <td>@item.IncidentID</td>
+                        <td>@item.Name</td>
+                        <td>@item.Age</td>
+                        <td>@item.GenderName</td>
+                        <td>@item.ContractorEmp</td>
+                        <td>@item.CompanyName</td>
+                        <td>@item.FirstAid</td>
+                        <td>@item.Hospitalized</td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+
+        @Scripts.Render("~/bundles/jqueryval")
+
+
+
+        <script type="text/javascript">
+
+            function ClearRecord() {
+                $("#Injuredpeoples_Name").val('');
+                $("#Injuredpeoples_Gender").val('');
+                $("#Injuredpeoples_Age").val('');
+                $("#Injuredpeoples.ContractorID").val('');
+
+            }
+
+            function Menu() {
+
+                if (document.getElementById("ConEmp").value == "1") {
+                    $("#Emp").prop("disabled", false);
+
+                }
+
+                else {
+                    $("#Emp").prop("disabled", true);
+
+                }
+            }
+
+            function EditIncident(IncID) {
+
+                window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+            }
+
+        </script>
+
+    }
+
+

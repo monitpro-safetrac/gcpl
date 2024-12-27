@@ -1,0 +1,14 @@
+﻿@model IncidentReportSystem.Models.ObservationStatusChart
+@{
+
+    var myChart1 = new Chart(width:380, height: 330, themePath: "Custom6.xml")
+
+        .AddTitle("Incident Recommendation Status", "main")
+        .AddSeries(name: "serie", chartType: "Pie",
+
+            xValue: Model.ActionCounts, xField: "ActionName",
+            yValues: Model.ActionCounts, yFields: "TotalCount")
+                .AddLegend()
+        .Write();
+
+}

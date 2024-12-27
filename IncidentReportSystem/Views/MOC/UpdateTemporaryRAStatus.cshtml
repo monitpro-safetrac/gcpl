@@ -1,0 +1,93 @@
+﻿
+@model MonitPro.Models.MOC.TemporaryMOCModel
+@{
+    Layout = null;
+}
+
+
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel"><b>Approve Temporary MOC</b></h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                        <tr>
+                            <td colspan="2">@Html.HiddenFor(model => model.moca.MOCID)</td>
+                        </tr>
+
+                        <tr>
+                            <td>MOC Number</td>
+                            <td>@Html.DisplayFor(model => model.moca.MOCNumber)</td>
+                        </tr>
+                        <tr>
+                            <td>Comment</td>
+                            <td>@Html.TextAreaFor(model => model.moca.CloseComments)</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="2">&nbsp;</td></tr>
+            <tr>
+                @foreach (var i in Model.TemporaryMOC)
+                {
+                    if (i.MOCNumber == Model.moca.MOCNumber)
+                    {
+                        if ((i.TempStatus == "Submittted") && (i.FactoryManagerID == Model.CurrentUser))
+                        {
+                         
+                                <td align="center" colspan="2">
+                                    <input type="button" class="btn btn-primary" id="btnUpdate" onclick="javascript:RAComplete();" value="RA Complete" />
+                                </td>
+                            
+                            break;
+                        }
+
+                       
+                    }
+                }
+            </tr>
+
+        </table>
+
+
+        <br />
+    </div>
+    <br /><br />`
+</div>
+
+
+<script type="text/javascript">
+
+
+    function RAComplete() {
+        var CurrentURL = '../MOC/UpdateTemporaryRAStatus';
+        var MOCID = $("#moca_MOCID").val();
+        var StatusID = "";
+        var Comments = $("#moca_CloseComments").val();
+
+        $.ajax({
+            type: "POST",
+            url: CurrentURL,
+            data: { MOCID: parseInt(MOCID), StatusID: parseInt(2), CloseComments: Comments },
+            success: function (response) {
+                //alert(JSON.stringify(response));
+                alert('Temporary Risk Assessment Completed');
+                $('#myModal').modal('hide');
+                location.reload(true);
+            },
+            error: function (errmessage) {
+                alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    }
+
+</script>

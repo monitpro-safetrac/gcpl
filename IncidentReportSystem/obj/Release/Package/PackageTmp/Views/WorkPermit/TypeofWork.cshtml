@@ -1,0 +1,43 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    Layout = null;
+}
+
+
+<style>
+    .table tbody>tr>td, .table tfoot>tr>td {
+    padding: 0px;
+    line-height: 1.5;
+    vertical-align: top;
+    border-top: 1px;
+}
+</style>
+<table id="WorkTypetbl" class="table table-responsive">
+    <tr>
+        <td>
+
+           
+            @foreach (var item in Model.WorkType)
+            {
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <input type="checkbox" class="big-checkbox" name="work" id="check1" Value="@item.WorkTypeID" checked="@item.Ischecked" onclick="IsUserSelected(this);" /> @item.WorkTypeName
+
+
+                </div>
+
+            }
+          <span class="WorkTypeerror label label-danger" style="display:none;">Please select at-least one WorkType.</span>
+
+        </td>
+
+    </tr>
+   
+
+</table>
+
+
+
+
+
+
+

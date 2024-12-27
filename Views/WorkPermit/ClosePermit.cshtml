@@ -1,0 +1,162 @@
+﻿@model ValsparApp.Models.WorkPermit
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm("ClosePermit", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Print/Close</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="fixTable" class="table-bordered table-responsive" width="98%">
+                @Html.Partial("PermitTemplateReadOnly", Model)
+                @*@if (Model.WorkTypeID == 1)
+                {
+                    <tr id="ElectricalInstallation">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("ElectricalInstallationReadOnly", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                @if (Model.WorkTypeID == 5)
+                {
+                    <tr id="HotWork">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HotWorkReadOnly", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.WorkTypeID == 8)
+                {
+                    <tr id="HeightFragileRoof">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HeightFragileRoofReadOnly", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.WorkTypeID == 10)
+                {
+                    <tr id="HazardInformation">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HazardInformationReadOnly", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }*@
+
+                <tr>
+                    <td align="right" valign="top">Approver Comment :</td>
+                    <td colspan="4">
+                        @Html.TextAreaFor(m => m.ApproverComment, new { @rows = "5", @cols = "500", @style = "width:500px", @class = "form-control input-sm", @disabled = "true" })
+                    </td>
+                </tr>
+                <tr><td colspan="5"><h4>Extension of Work Permit</h4></td></tr>
+                <tr>
+                    <td class="text-right">Extension From : </td>
+                    <td>@Html.TextBoxFor(m => m.ExtentionFrom, new { @class = "form-control input-sm", @style = "width:300px" })</td>
+                    <td class="text-right">Extension To : </td>
+                    <td>@Html.TextBoxFor(m => m.ExtentionTo, new { @class = "form-control input-sm", @style = "width:300px" })</td>
+                </tr>
+                <tr>
+                    <td class="text-right">Permit Issuer : </td>
+                    <td>@Html.TextBoxFor(m => m.ExtensionPermitIssuer, new { @class = "form-control input-sm", @style = "width:300px" })</td>
+                    <td class="text-right">Area Owner : </td>
+                    <td>@Html.DropDownListFor(m => m.ExtensionAreaOwnerID, new SelectList(Model.ExtensionAreaOwnerList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })</td>
+                </tr>
+                <tr>
+                    <td class="text-right">Approver : </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.ExtensionApproverID, new SelectList(Model.ExtensionPermitApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })
+                    </td>
+                </tr>
+                <tr><td colspan="5"><h4>Work Permit Closure</h4></td></tr>
+                <tr>
+                    <td class="text-right">Permit Holder : </td>
+                    <td nowrap>
+                        @Html.TextAreaFor(m => m.PermitHolderName, new { @class = "form-control input-sm", @style = "width:300px" })
+                        @Html.TextBoxFor(m => m.ClosurePermitHolderSignedOn, new { @class = "form-control input-sm", @style = "width:150px" })  @Html.ValidationMessageFor(m => m.ClosurePermitHolderSignedOn, null, new { @class = "label label-danger" })
+                    </td>
+                    <td class="text-right">Area Owner : </td>
+                    <td nowrap>
+                        @Html.DropDownListFor(m => m.ClosureAreaOwnerID, new SelectList(Model.UserList, "UserID", "DisplayUserName",Model.ClosureAreaOwnerID), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.ClosureAreaOwnerID, null, new { @class = "label label-danger" })
+                        @Html.TextBoxFor(m => m.ClosureAreaOwnerSignedOn, new { @class = "form-control input-sm", @style = "width:150px" })  @Html.ValidationMessageFor(m => m.ClosureAreaOwnerSignedOn, null, new { @class = "label label-danger" })
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Contractor Rating</td>
+                    <td>
+                        @Html.RadioButtonFor(m => m.ContractorRating, "R") Red
+                        @Html.RadioButtonFor(m => m.ContractorRating, "Y") Yellow
+                        @Html.RadioButtonFor(m => m.ContractorRating, "G") Green
+                        @Html.ValidationMessageFor(m => m.ContractorRating, null, new { @class = "label label-danger" })
+                    </td>
+                </tr>
+                <tr>
+                   <td>Attachment</td>
+                    <td>@Html.TextBoxFor(m => m.Acknowledgement32, new { type = "file", onchange = "loadFile(event)", @class = "form-control input-sm" })<span class="label-warning">Please select a file within 100MB</span></td>
+                   
+                </tr>
+                <tr>
+                    <td align="right">Comment</td>
+                    <td>
+                        @Html.TextAreaFor(m => m.ClosureComment, new { @rows = "5", @cols = "500", @style = "width:500px", @class = "form-control input-sm" }) @Html.ValidationMessageFor(m => m.ClosureComment, null, new { @class = "label label-danger" })
+                    </td>
+                </tr>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" align="center">
+                            <input type="submit" class="btn btn-primary" value="Close Permit" id="ClosePermit" style="width:200px" />&nbsp;&nbsp;
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        @Html.HiddenFor(m => m.Status);
+        @Html.HiddenFor(m => m.WorkPermitID);
+        @Html.HiddenFor(m => m.ContractorID);
+        @Html.HiddenFor(m => m.PermitIssuerID);
+        @Html.HiddenFor(m => m.WorkTypeID);
+      
+
+    </div>
+}
+
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+
+    $("#ClosePermit").click(function (event) {
+        $('#Status').val("C");
+    }
+     );
+
+    $("#PrintPermit").click(function (event) {
+        $('#Status').val("P");
+    }
+   );
+    $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+
+    $("#Reset").click(function (event) {
+        $(".field-validation-error").empty();
+        $(':text').val(""); // Clear values from all the text boxes
+    }
+  );
+</script>

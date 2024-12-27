@@ -1,0 +1,44 @@
+﻿
+
+@model MonitPro.Models.WorkPermit
+
+@{
+    Layout = null;
+}
+
+
+<table id="fixTable" class="table table-responsive">
+    <tr>
+        <td>
+
+            @*<h5><b> WorkType Check List</b></h5>*@
+
+            <div id="checklist">
+
+                @foreach (var item in Model.ChecklistMaster)
+                {
+                    <div class="col-md-3 col-sm-3 col-xs-3">
+                        <input type="checkbox" class="big-checkbox" name="AllCheckList" Value="@item.CheckListID" checked="@item.ISChecked" disabled = "true" /> @item.CheckListName
+                    </div>
+                }
+
+            </div>
+
+
+        </td>
+    </tr>
+    <tr>
+
+        @if (ViewBag.IsValidationFailed == true)
+        {
+            <td colspan="3" class="text-danger text-center">
+                <strong>@Html.ValidationMessage("PPEValidation")</strong>
+            </td>
+
+        }
+
+    </tr>
+
+
+
+</table>

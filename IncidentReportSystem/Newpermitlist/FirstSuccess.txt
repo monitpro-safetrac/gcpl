@@ -1,0 +1,111 @@
+CONTROLLER
+        public JsonResult GetData()
+        {
+
+
+            using (SqlConnection objCon = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ConnectionString))
+            {
+                var obj1 = new SqlCommand();
+                //var obj2= new SqlCommand();
+                //var obj3= new SqlCommand();
+                obj1.CommandText = "SELECT COUNT(Status) FROM [WorkPermit] WHERE Status = 'E'";
+                //obj2.CommandText= "Selectpno2";
+                //obj3.CommandText= "Selectpno3";
+               
+                //obj2.CommandType = CommandType.StoredProcedure;
+                //obj3.CommandType = CommandType.StoredProcedure;
+                objCon.Open();
+                obj1.Connection = objCon;
+                //obj2.Connection = objCon;
+                //obj3.Connection = objCon;
+                int[] arr = new int[3];
+                int c1 = (int)obj1.ExecuteScalar();
+                // obj2.Parameters.Add(new SqlParameter("@pno2", SqlDbType.Int));
+                //obj2.Parameters["@pno2"].Direction = ParameterDirection.Output;
+                //obj3.Parameters.Add(new SqlParameter("@pno3", SqlDbType.Int));
+                //obj3.Parameters["@pno3"].Direction = ParameterDirection.Output;
+                arr[0] = c1;
+
+                // Int32 c2 = Convert.ToInt32(obj2.Parameters["@pno2"].Value);
+                //Int32  c3= Convert.ToInt32(obj3.Parameters["@pno3"].Value);
+               
+                // plist.Add(c2);
+                //plist.Add(c3);
+                objCon.Close();
+
+                return Json(arr, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+
+
+
+
+VIEW
+@model ValsparApp.Models.WorkPermit
+
+@{
+    Layout = null;
+}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['table'] });
+        var chartData = new Array;
+        $(document).ready(function () {
+
+            $.ajax({
+
+                url: "../Chart/GetData",
+
+                dataType: "json",
+
+                contentType: "application/json; chartset=utf-8",
+                success: function (data) {
+                        
+                        chartData.push(Number(data[0]));
+                },
+                error: function () {
+                    alert("Error loading Post and Comment data! Please try again.");
+                }
+            }).done(function () {
+                google.charts.setOnLoadCallback(drawChart);
+                 
+                    });
+      });
+      function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Permit Status');
+        data.addColumn('number', 'Number');
+       
+        data.addRow(["No. of permits extended",chartData[0]]);
+        data.addRow(["No. of permits pending for approval",chartData[1]]);
+        data.addRow(["No. of permits neither closed nor extended",chartData[2]]);
+          var toptions= {title:'PERMIT STATUS',
+                                width:400,
+                                height:250,
+                                is3D: true};
+
+        var tabchart = new google.visualization.Table(document.getElementById('tabchart_div'));
+            tabchart.draw(data,toptions);
+
+
+
+       }
+    </script>
+    <body>
+        <table class="columns">
+            <tr>
+                <td><div id="tabchart_div" style="border: 5px solid #ccc"></div></td>
+        </table>
+        <style>
+            body {
+                background-color: #E8F332;
+        
+            }
+        </style>
+    </body>
+

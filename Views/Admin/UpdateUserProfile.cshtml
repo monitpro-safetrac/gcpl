@@ -1,0 +1,93 @@
+﻿@model MonitPro.Models.UserProfile
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">Edit Profile</h1>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-responsive" border="5">
+                        <tr>
+                            <td rowspan="10" width="30%" class="text-center" style="vertical-align:middle">
+                            
+                                @if (Model.UserImage != "")
+                                {
+                                    <img class="img-rounded" src="../../Users/@Model.UserImage" title="@Model.UserFullName" height="200" width="200">
+                                }
+                                else
+                                {
+                                    <img class="img-rounded" src="../../Users/notfound.jpg" title="Profile image not found" height="200" width="200">
+                                }
+                                
+                            
+                            </td>
+                            <td class="text-right" width="20%">First Name :</td>
+                            <td>@Html.HiddenFor(m => m.UserID)@Html.TextBoxFor(m => m.FirstName, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Last Name :</td>
+                            <td>@Html.TextBoxFor(m => m.LastName, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Email Address :</td>
+                            <td>@Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.EmailAddress, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Mobile Number :</td>
+                            <td>@Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.MobileNo, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">User Name :</td>
+                            <td>@Html.TextBoxFor(m => m.UserName, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.UserName, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">PassWord :</td>
+                            <td>@Html.EditorFor(m => m.Password, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.Password, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Designation :</td>
+                            <td>@Html.TextBoxFor(m => m.Designation, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.Designation, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr><td class="text-right">Role : </td><td>
+                             @Html.DropDownListFor(m => m.Role, new SelectList(Model.RoleList, "RoleID", "RoleName"), "-- Select Role --", new { @class = "form-control input-sm", @style = "width:300px" }) @Html.ValidationMessageFor(m => m.Role, null, new { @class = "label label-danger" })</td></tr>
+                        <tr>
+                            <td class="text-right">Active :</td>
+                            <td>@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-control input-sm" })</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" align="center">
+                                <input type="submit" class="btn btn-primary" value="Update" style="width:100px" />&nbsp;&nbsp;
+                                <input type="button" class="btn btn-primary" value="Cancel" style="width:100px" id="Cancel" />
+                            </td>
+                        </tr>
+                        <tfoot>
+                            @if (ViewBag.IsValidationFailed==true)
+                            {
+                                <tr>
+                                    <td colspan=2 class="text-danger text-center">
+                                        <strong>@Html.ValidationMessage("ValidationError")</strong>
+                                        </td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#Cancel").click(function (event) {
+            window.location.replace("../UserList");
+        });
+    </script>
+}

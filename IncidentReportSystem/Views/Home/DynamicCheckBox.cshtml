@@ -1,0 +1,19 @@
+﻿@model List<MonitPro.Models.CheckBoxEntity>
+<br />
+
+@using (Html.BeginForm("DynamicCheckBox", "Home", new { id = "form" }))
+{
+  @Html.TextBox("txtTagID") <input type="submit" value="Add" id="submit1" />
+    for (var i = 0; i < Model.Count; i++)
+    {
+       @Html.HiddenFor(chkBox => chkBox[i].ID)
+       @Html.HiddenFor(chkBox => chkBox[i].TagID)
+       @Html.CheckBoxFor(chkBox => chkBox[i].Checked, new { onclick = "SubmitForm()" })  @Html.DisplayFor(chkBox => chkBox[i].TagID)
+    }
+}  
+<script>
+    function SubmitForm()
+    {
+        document.forms[0].submit();
+    }
+</script>

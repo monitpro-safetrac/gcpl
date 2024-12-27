@@ -1,0 +1,167 @@
+﻿
+@model MonitPro.Models.AssignTypeofWorkForApproverModel
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+    <script type="text/javascript">
+        $("#SelectedUserID").select2();
+
+        $(document).ready(function () {
+            $("#Assignapprover").tableHeadFixer({ "left": 0 });
+            document.getElementById('container').style.height = window.innerHeight - 280 + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+    </script>
+}
+
+<style>
+    html {
+        overflow: scroll;
+    }
+
+    #Assignapprover thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    pre-scrollable {
+        overflow-y: scroll;
+    }
+
+    .padr {
+        padding-right: 60px;
+        padding-left: 30px;
+    }
+
+    .col1 {
+        padding-left: 30px;
+    }
+
+    .col2 {
+        padding-left: 50px;
+    }
+
+    .col3 {
+        padding-left: 100px;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+
+    .row {
+        padding-bottom: 10px;
+    }
+</style>
+<br />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="container-fluid">
+            <div class="div-border">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Assign Type of Work&nbsp;</span></h1>
+
+
+                @Html.HiddenFor(m => m.GetApproverList)
+                @Html.HiddenFor(m => m.SaveUserEquipments)
+
+
+                <div class="container-lg container-sm  pre-scrollable"
+                     style="max-height: 74vh; max-width:100vw">
+                    <table class="table header-fixed table-hover pre-scrollable"
+                           id="Assignapprover" width="100%">
+
+                        <thead>
+                            <tr>
+                                <th class="text-center"><b>S.NO</b></th>
+                                <th class="text-center"><b>Approver Name</b></th>
+                                <th class="text-center"><b>Cold Work</b></th>
+                                <th class="text-center"><b>Height Work</b></th>
+                                <th class="text-center"><b>Hot Work</b></th>
+                                <th class="text-center"><b>Vessel Entry</b></th>
+                                <th class="text-center"><b>Lockout and Tagout</b></th>
+                                <th class="text-center"><b>Excavation</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (var i = 0; i < Model.WorkType.Count; i++)
+                            {
+                                @Html.HiddenFor(m => m.WorkType[i].UserID)
+                                <tr>
+                                    <td class="text-center">@(i + 1)</td>
+                                    <td class="text-center">@Model.WorkType[i].UserName</td>
+
+                                    @for (var j = 0; j < Model.WorkType[i].NewWorkTypes.Count; j++)
+                                    {
+                                        @Html.HiddenFor(m => m.WorkType[i].NewWorkTypes[j].WorkTypeID)
+                                        <td class="text-center">
+                                            @Html.HiddenFor(m => m.WorkType[i].NewWorkTypes[j].WorkTypeID)
+                                            @Html.CheckBoxFor(m => m.WorkType[i].NewWorkTypes[j].Ischecked, htmlAttributes: new { @class = "big-checkbox" })
+                                        </td>
+                                    }
+                                </tr>
+                            }
+
+
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <br>
+
+                @if (ViewBag.issave == "Y")
+                {
+                    <br />
+                    <div class="alert alert-success alert-dismissible text-center" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Record has been updated successfully.</strong>
+                    </div>
+                }
+                <div class="text-center">
+                    <input type="submit" style="width:100px" class="btn btn-primary" value="Save" onclick="document.getElementById('SaveUserEquipments').value = '1';" />
+                </div>
+                @*}
+                        <br />
+                    </div>*@
+            </div>
+        </div>
+    </div>
+
+}
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+
+

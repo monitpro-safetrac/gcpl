@@ -1,0 +1,36 @@
+
+DECLARE @age INT = 12
+ 
+SELECT  
+	      IIF(convert(date, getdate(), 103) = convert(date, getdate(), 103) AND convert(date, getdate(), 103) = convert(date, getdate(), 103), 
+		  'You are eligible to Work', 
+		  'You are too Old to Work'
+		  
+	    ) AS Result;
+
+
+
+
+select FrequencyName from UserRoles join FrequencyMaster on UserRoles.FrequencyID=FrequencyMaster.FrequencyID
+ where  UserID=3
+
+   SELECT TOP 1 CompleteDate FROM [dbo].[PermitReview] WHERE UserID=3 ORDER BY CompleteDate desc
+  
+  SELECT LastUpdated  from UserRoles where  UserID=3 ORDER BY LastUpdated desc
+
+  SELECT  
+		FrequencyMaster.FrequencyName,
+	iif(CompleteDate is not null,dbo.GetDueDate(UserRoles.UserID),dbo.GetRecentDueDate(UserRoles.UserID)) as DueDate,
+	IIF(convert(date,dbo.GetDueDate(UserRoles.UserID),103) >= convert(date, getdate(), 103) 
+		  and convert(date,dbo.GetRecentDueDate(UserRoles.UserID),103) >= convert(date, getdate(), 103), 
+		  'G', 'R' ) AS GetStatus,
+ Description='Review the Closed Permit'
+ 
+ 		
+ 	  FROM  UserRoles
+	  
+	    Left Join  PermitReview on PermitReview.UserID=UserRoles.UserID And Cast(getdate() as date)=cast(CompleteDate as date)	
+
+	   Join [dbo].FrequencyMaster on FrequencyMaster.FrequencyID=UserRoles.FrequencyID And FrequencyMaster.FrequencyName='Daily'
+ 	   
+ 	  where UserRoles.UserID=3 AND  PermitReview.UserID NOT IN (SELECT  UserID FROM PermitReview  WHERE CAST(GETDATE() AS DATE)=CAST(CompleteDate AS DATE)) 

@@ -1,0 +1,202 @@
+﻿@model MonitPro.Models.EquipmentEntity
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            html {
+                overflow: scroll;
+            }
+
+            .col1 {
+                padding-left: 130px;
+            }
+
+            .row {
+                padding-bottom: 10px;
+            }
+
+            .padr {
+                padding-right: 40px;
+            }
+        </style>
+    </head>
+<body>
+    <br />
+    <div class="container-lg container-md container-sm container-xl">
+        <div class="div-border" style="width:50%">
+            <h1 class="div-h1"><span class="div-h1-span">&nbsp;Edit Equipment &nbsp;</span></h1>
+            <div class="container-fluid padr">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>Factory :</label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6">
+                        @Html.HiddenFor(m => Model.EquipmentID)
+                        @Html.DropDownListFor(m => m.FactoryID, Model.FactoryList, "-- Select Factory --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                        @Html.ValidationMessageFor(m => m.FactoryID, null, new { @class = "label label-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>Plant/Area :</label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6">
+                        @Html.DropDownListFor(m => m.DivisionID, Model.DivisionList, "-- Select Plant/Area --", new
+                        {
+                            @class = "form-control input-sm",
+                       @maxlength = "100",
+                       @style = "width: 300px;  max-width: 100%;"
+                   })
+                        @Html.ValidationMessageFor(m => m.DivisionID, null, new { @class = "label label-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>Equipment Type : </label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6">
+                        @Html.DropDownListFor(m => m.EqTypeID, new SelectList(Model.EquipemntTypeList, "EqTypeID", "EqTypeName"), "-- Select Equipment Type --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 400px;   max-width: 80%;" })
+                        @Html.ValidationMessageFor(m => m.DivisionID, null, new { @class = "label label-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>Equipment ID :</label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6">
+                        @Html.TextBoxFor(m => m.EquipmentTagID, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                        @Html.ValidationMessageFor(m => m.EquipmentTagID, null, new { @class = "label label-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>Equipment Name :</label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6">
+                        @Html.TextBoxFor(m => m.EquipmentName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                        @Html.ValidationMessageFor(m => m.EquipmentName, null, new { @class = "label label-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>Equipment Description: </label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6" width="30px">@Html.TextAreaFor(m => m.EquipmentDescription, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @rows = "3", @cols = "300px" })</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>IsEquipment :</label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6" width="30px">@Html.CheckBoxFor(m => m.IsEquipment, new { @class = "form-control input-sm" })</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col1">
+                        <label>IsActive :</label>
+                    </div>
+                    <div class="col-lg-offset-6 col-sm-offset-6" width="30px">@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-control input-sm" })</div>
+                </div>
+
+
+                <div class="row">
+                    <div class="text-center">
+                        <input type="submit" class="btn btn-primary" value="Update" style="width:100px" />&nbsp;&nbsp;
+                        <input type="button" class="btn btn-primary" value="Cancel" style="width:100px" id="Cancel" />
+
+                    </div>
+                </div>
+                @if (ViewBag.IsValidationFailed == true)
+                {
+                    <div class="row">
+                        <div class="text-danger text-center">
+                            <strong>@Html.ValidationMessage("ValidationError")</strong>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            </div>
+        </div>
+</body> 
+</html>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#Cancel").click(function (event) {
+            window.location.replace("../EquipmentList");
+        });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        $("#FactoryID").change(function () {
+            var select = $("#DivisionID");
+            select.empty();
+            select.append($('<option/>', {
+                value: "",
+                text: "-- Select Division --"
+            }));
+            var selectedFactoryID = $(this).val();
+            if (selectedFactoryID != "") {
+                $.getJSON("../../workPermit/GetDivisions", { factoryID: selectedFactoryID }, function (data) {
+                    $.each(data, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+                        }));
+                    });
+                });
+            }
+        });
+    });
+    $(document).ready(function () {
+        var DivisionIndex = 0;
+        var select = $("#DivisionID");
+        select.empty();
+        select.append($('<option/>', {
+            value: "",
+            text: "-- Select Division --"
+        }));
+        var selectedFactoryID = $("#FactoryID").val();
+        if (selectedFactoryID != "") {
+            $.getJSON("../../workPermit/GetDivisions", { factoryID: selectedFactoryID }, function (data) {
+                $.each(data, function (index, itemData) {
+                    if (itemData.Value == '@Model.DivisionID') {
+                        DivisionIndex = index + 1;
+                    }
+                    select.append($('<option/>', {
+                        value: itemData.Value,
+                        text: itemData.Text
+
+                    }));
+                });
+                document.getElementById('DivisionID').selectedIndex = DivisionIndex;
+            });
+        }
+    });
+    </script>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+
+
+
+

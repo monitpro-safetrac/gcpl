@@ -1,0 +1,140 @@
+﻿@model ValsparApp.Models.WorkPermit
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        @Html.HiddenFor(m => m.Status)
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - New</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="fixTable" class="table-bordered table-responsive" width="98%">
+                @Html.Partial("PermitTemplate", Model)
+                @*<tr id="HotWork" style="display:none">
+                    <td colspan="4">
+                        <div>
+                            @Html.Partial("HotWork", Model)
+                        </div>
+                    </td>
+                </tr>*@
+                @*<tr id="HazardInformation" style="display:none">
+                    <td colspan="4">
+                        <div>
+                            @Html.Partial("HazardInformation", Model)
+                        </div>
+                    </td>
+                </tr>
+                <tr id="ElectricalInstallation" style="display:none">
+                    <td colspan="4">
+                        <div>
+                            @Html.Partial("ElectricalInstallation", Model)
+                        </div>
+                    </td>
+                </tr>
+                <tr id="HeightFragileRoof" style="display:none">
+                    <td colspan="4">
+                        <div>
+                            @Html.Partial("HeightFragileRoof", Model)
+                        </div>
+                    </td>
+                </tr>*@
+                <tfoot>
+                    <tr>
+                        <td colspan="4" align="center">
+                            <input type="submit" class="btn btn-primary" value="Save" id="Save" style="width:125px" />&nbsp;&nbsp;
+                            @*<input type="submit" class="btn btn-primary" value="Submit for Approval" id="SubmitForApproval" style="width:200px" />&nbsp;&nbsp;*@
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+}
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $("#Save").click(function (event) {
+        $('#Status').val("D");
+    });
+
+    //$("#SubmitForApproval").click(function (event) {
+    //    $('#Status').val("S");
+    //});
+    $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+   
+    //$("#WorkType").change(function (event) {
+
+    //    var selectedWorkType = $("#WorkType").val();
+
+    //    if (selectedWorkType == 1) {
+    //        $("#ElectricalInstallation").show();
+    //    }
+    //    else {
+    //        $("#ElectricalInstallation").hide();
+    //    }
+
+
+    //    if (selectedWorkType == 5) {
+    //        $("#HotWork").show();
+    //    }
+    //    else {
+    //        $("#HotWork").hide();
+    //    }
+
+    //    if (selectedWorkType == 8) {
+    //        $("#HeightFragileRoof").show();
+    //    }
+    //    else {
+    //        $("#HeightFragileRoof").hide();
+    //    }
+
+    //    if (selectedWorkType == 10) {
+    //        $("#HazardInformation").show();
+    //    }
+    //    else {
+    //        $("#HazardInformation").hide();
+    //    }
+
+    //});
+    //$(document).ready(function () {
+    //    $("#WorkType").change(function () {
+    //                 var select = $("#Contractor");
+    //        select.empty();
+    //        select.append($('<option/>', {
+    //            value: "",
+    //            text: "-- Select Contractor --"
+    //        }));
+    //        var selectedWorkTypeID = $(this).val();
+    //        alert(selectedWorkTypeID);
+
+    //        if (selectedWorkTypeID != "") {
+    //            $.getJSON("../WorkPermit/GetContractors", { workTypeID: selectedWorkTypeID }, function (data) {
+    //                $.each(data, function (index, itemData) {
+    //                    select.append($('<option/>', {
+    //                        value: itemData.Value,
+    //                        text: itemData.Text
+    //                    }));
+    //                });
+    //            });
+    //        }
+    //    });
+    //});
+
+  
+
+
+
+
+
+
+</script>

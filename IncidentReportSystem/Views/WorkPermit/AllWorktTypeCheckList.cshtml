@@ -1,0 +1,32 @@
+﻿
+@model MonitPro.Models.WorkPermit
+
+@{
+    Layout = null;
+}
+
+
+<table id="AllWorkTypetbl" class="table table-responsive table-borderedless">
+    <tr>
+        <td>
+
+            @*<h5><b> WorkType Check List</b></h5>*@
+
+            <div id="checklist">
+
+                @foreach (var item in Model.ChecklistMaster)
+                {
+                    <div class="col-md-3 col-sm-3 col-xs-3">
+                        <input type="checkbox" class="big-checkbox" name="AllCheckList" Value="@item.CheckListID" checked="@item.ISChecked" /> @item.CheckListName
+                    </div>
+                }
+
+            </div>
+           
+            <span class="AllWorkTypeerror label label-danger" style="display:none;">Please select at-least one check list.</span>
+            
+        </td>
+    </tr>
+   
+
+</table>

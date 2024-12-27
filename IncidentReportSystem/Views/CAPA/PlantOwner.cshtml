@@ -1,0 +1,121 @@
+﻿@model IncidentReportSystem.Models.CAPAObservationViewModel
+
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+
+@{
+    ViewBag.Title = "PlantOwner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    tr:hover {
+        background-color: #caddff;
+    }
+
+    th {
+        background-color: #2e86c1;
+        color: azure;
+    }
+
+    th, td {
+        text-align: center;
+    }
+
+    table, td, th {
+        border: 1px solid;
+        border-color: black;
+    }
+</style>
+<div>
+    <br />
+    <div>
+        <center>
+            <form id="plantOwnerForm">
+                <!-- Scrollable Table Wrapper -->
+                <div style="max-height: 80vh; overflow-y: auto; width: 70vw; border: 1px solid black; position: relative;">
+                    <table class="table table-bordered" style="width:100%; border-collapse: separate; border-spacing: 0;">
+                        <thead style="position: sticky; top: 0; background-color: #2e86c1; z-index: 1;">
+                            <tr>
+                                <th colspan="3" style="font-size: 20px; color: azure;">
+                                    <b>Assign Plant/Area Owner</b>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="background-color: #2e86c1; color: azure;">S.No</th>
+                                <th style="background-color: #2e86c1; color: azure;">Plant/Area</th>
+                                <th style="background-color: #2e86c1; color: azure;">Owner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.plantlist != null && Model.plantlist.Any())
+                            {
+                                int serialNo = 0;
+                                foreach (var plantArea in Model.plantlist)
+                                {
+                                    <tr>
+                                        <!-- Serial Number -->
+                                        <td>@(serialNo + 1)</td>
+
+                                        <!-- Plant Name -->
+                                        <td>
+                                            <input type="hidden" name="PlantOwners[@serialNo].PlantID" value="@plantArea.ID" />
+                                            @plantArea.Name
+                                        </td>
+
+                                        <!-- DeptManager Dropdown -->
+                                        <td>
+                                            @Html.DropDownList(
+                                                     $"PlantOwners[{serialNo}].DeptManagerID",
+                                                     new SelectList(Model.DeptManagerList, "ID", "FullName", plantArea.AreaOwner), // Setting default selected value
+                                                     "--Select--",
+                                                     new { @class = "form-control input-sm", @style = "width: 400px; max-width: 80%;" }
+                                                 )
+                                        </td>
+                                    </tr>
+                                    serialNo++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">No data available</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Save Button -->
+                <div class="text-center" style="margin-top: 20px;height:200px;width:200px">
+                    <button type="button" id="savePlantOwners" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </center>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        $("#savePlantOwners").on("click", function () {
+            var formData = $("#plantOwnerForm").serialize(); // Serialize the form data
+
+            $.ajax({
+                url: "/CAPA/SavePlantOwner", // Controller action URL
+                type: "POST",
+                data: formData, // Serialized form data
+                success: function (response) {
+                    // Handle success (e.g., show a success message)
+                    alert("Data saved successfully!");
+                },
+                error: function (xhr, status, error) {
+                    // Handle error (e.g., show an error message)
+                    console.error("Error:", error);
+                    alert("An error occurred while saving data.");
+                }
+            });
+        });
+    });
+</script>
+

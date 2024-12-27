@@ -1,0 +1,100 @@
+﻿@model MonitPro.Models.Contract
+@{
+    Layout = null;
+}
+
+<style>
+
+    .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td, .table-bordered > tbody > tr > th {
+        border: 1px solid;
+    }
+    .padr {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+</style>
+<div class="padr">
+    <table class="table table-responsive" width="98%" align="center">
+        <tbody>
+            <tr>
+
+                <th class="text-left"> S.No</th>
+                <th class="text-left" width="50%">
+                    Occupational Health & Safety Requirement
+                </th>
+                <th class="text-center">
+                    Yes
+                </th>
+                <th class="text-center">
+                    No
+                </th>
+                <th class="text-center">
+                    NA
+                </th>
+                <th class="text-center">Remarks</th>
+
+            </tr>
+            @for (var i = 0; i < Model.OccupationalHealthSafety.Count; i++)
+            {
+
+                <tr>
+                    @Html.HiddenFor(m => m.OccupationalHealthSafety[i].HealthSafetyPolicy)
+
+                    <td class="text-center">
+                        @(i+1)
+                    </td>
+                    <td width="50%">&nbsp;&nbsp;@Model.OccupationalHealthSafety[i].CheckListName</td>
+
+                    <td> @Html.RadioButtonFor(m => m.OccupationalHealthSafety[i].Ischecked, "1")</td>
+                    <td> @Html.RadioButtonFor(m => m.OccupationalHealthSafety[i].Ischecked, "2")</td>
+
+                    <td> @Html.RadioButtonFor(m => m.OccupationalHealthSafety[i].Ischecked, "0") @Html.ValidationMessageFor(m => m.OccupationalHealthSafety[i].Ischecked, null, new { @class = "label label-danger" })</td>
+
+                    <td>@Html.TextAreaFor(m => m.OccupationalHealthSafety[i].Remarks, new { @class = "form-control input-sm", @id = "remarks", maxlength = "75", @style = "width: 500px;   max-width: 100%;" })</td>
+                </tr>
+                if (i == 14)
+                {
+                    break;
+                }
+            }
+
+            <tr>
+                <th class="text-left">S.No</th>
+                <th class="text-left" width="50%">
+                    Whether your employees are trained on below topics
+                </th>
+                <th class="text-center">
+                    Yes
+                </th>
+                <th class="text-center">
+                    No
+                </th>
+                <th class="text-center">
+                    NA
+                </th>
+                <th class="text-center">Remarks</th>
+
+
+            </tr>
+            @for (var i = 15; i < Model.OccupationalHealthSafety.Count; i++)
+            {
+
+                <tr>
+                    @Html.HiddenFor(m => m.OccupationalHealthSafety[i].HealthSafetyPolicy)
+                    <td class="text-center">
+                        @(i+1)
+                    </td>
+                    <td width="50%">&nbsp;&nbsp;@Model.OccupationalHealthSafety[i].CheckListName</td>
+
+                    <td> @Html.RadioButtonFor(m => m.OccupationalHealthSafety[i].Ischecked, "1")</td>
+                    <td> @Html.RadioButtonFor(m => m.OccupationalHealthSafety[i].Ischecked, "2")</td>
+
+                    <td> @Html.RadioButtonFor(m => m.OccupationalHealthSafety[i].Ischecked, "0") @Html.ValidationMessageFor(m => m.OccupationalHealthSafety[i].Ischecked, null, new { @class = "label label-danger" })</td>
+                    <td>@Html.TextAreaFor(m => m.OccupationalHealthSafety[i].Remarks, new { @class = "form-control input-sm", @style = "width: 500px;   max-width: 100%;" })</td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+</div>

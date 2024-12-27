@@ -1,0 +1,8 @@
+TemplateID,ParameterNo,ParameterName,ParameterDesc,UnitOfMeasure,ReasonForMonitoring,Priority,FrequencyID,Notes,LowTargetValue,HighTargetValue,ReasonForLow,ConsequenceForLow ,ActionForLow ,ReasonForHigh,ConsequenceForHigh,ActionForHigh ,IsActive,CreatedBy,CreatedOn
+18,1,Run status,Run status,On/Off,To calculate the number of hours of pump operation and plan for Preventive Maintenance (PM),H,3,This parameter while entered from web application is either 1 or 0; 1 indicates equipment/system running and 0 indicates equipment/system off,0,1,,,,,,,Y,1,04/28/2018
+18,2,Shift,Shift,NA,To know the shift status,M,3,,,,,,,,,,Y,1,04/28/2018
+18,3,% of Utilization,% of Utilization,%,To know the OEE,H,3,,,100,Equipment failure low demand rawmaterial supply issue downstream equipment problem,lower produciton and unit profitability,Find out the actual reason and rectify at the earliest,,,,Y,1,04/28/2018
+18,4,Quantity Manufactured,Quantity Manufactured,kg,To know the production value,H,3,,,,,,,,,,Y,1,04/28/2018
+18,5,Quantity Manufactured,Quantity Manufactured,Lakhs,To know the production value,H,3,,,,,,,,,,Y,1,04/28/2018
+18,6,Breakdown if any,Breakdown  if any,NA,To know the reason for breakdown and track,M,3,,,,,,,,,,Y,1,04/28/2018
+18,7,Remarks,Remarks,NA,To know any other issue which affects production,M,3,,,,,,,,,,Y,1,04/28/2018

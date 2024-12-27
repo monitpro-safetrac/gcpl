@@ -1,0 +1,797 @@
+﻿@model IncidentReportSystem.Models.CAPAObservationViewModel
+
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<style>
+    .tableFixHead {
+        overflow-y: auto;
+        height: 250px;
+    }
+
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
+
+    html {
+        overflow: auto;
+    }
+
+    .padr {
+        padding-left: 30px;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .row {
+        padding-bottom: 10px;
+    }
+</style>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+@*<script>
+    if(@Model.CAPAObservation.ObservationID ==0)
+        {
+        $(function () {
+
+            $("#DeptManager").select2();
+            $("#ActionBy").select2();
+        });
+        }
+       
+</script>*@
+    <script type="text/javascript">
+
+         function SaveCAPAObservations(status) {
+
+             var ValidationMessage = '';
+                var ControlToFocus = '';
+                formData = new FormData();
+                var fileUpload = $("#fileToUpload").get(0);
+                var files = fileUpload.files;
+                if (files[0] != null) {
+                    formData.append(files[0].name, files[0]);
+                }
+                else {
+                    formData.append('cpobservationattachement', $("#disvalue").html());
+
+                }
+
+                var SaveURL = '../CAPA/SaveCAPAObservations';
+                var options = { "backdrop": "static", keyboard: true }
+
+                var ObservationMod = @Html.Raw(Json.Encode(Model.CAPAObservation));
+
+                //Temp Code
+                var CompletedUser = $("#CAPAObservation_UserID").val();
+
+                if (isNaN(CompletedUser)) {
+                    CompletedUser = 0;
+                }
+
+                formData.append('CAPAID', $("#CAPAObservation_CAPAID").val());
+                formData.append('Title', $("#Title").val());
+                formData.append('Recommendation', $("#Recommendation").val());
+                formData.append('ActionTaken', $("#ActionTaken").val());
+                formData.append('OBPlantID', $("#ObPlantID").val());
+                formData.append('CategoryID', $("#Category").val());
+                formData.append('PriorityID', $("#CapaPriority").val());
+                formData.append('DeptManager', $("#DeptManager").val());
+                if (status == 1) {
+                    formData.append('CAPStatus', status);
+                    formData.append('CompletedDate', $("#CompletedDate").val());
+                }
+                else if ($("#CapStatus").val() == 4) {
+                    formData.append('CAPStatus', -1);
+                }
+                else if ($("#CapStatus").val() == 1) {
+                    formData.append('CAPStatus', 1);
+                    formData.append('CompletedDate', $("#CompletedDate").val());
+                }
+                else {
+                    formData.append('CAPStatus', $("#CapStatus").val());
+                }
+                formData.append('TargetDate', $("#TargetDate").val());
+                formData.append('ObservationID', $("#ObservationID").val());
+
+                formData.append('UserID', $("#ActionBy").val());
+                formData.append('Remarks', $("#Remarks").val());
+
+
+                ObservationMod.Title = $("#Title").val();
+                ObservationMod.Recommendation = $("#Recommendation").val();
+                ObservationMod.ActionTaken = $("#ActionTaken").val();
+                ObservationMod.OBPlantID = $("#ObPlantID").val();
+                ObservationMod.CategoryID = $("#Category").val();
+                ObservationMod.PriorityID = $("#CapaPriority").val();
+                ObservationMod.DeptManager = $("#DeptManager").val();
+                ObservationMod.CAPStatus = $("#CapStatus").val();
+                ObservationMod.TargetDate = $("#TargetDate").val();
+                ObservationMod.ObservationID = $("#ObservationID").val();
+
+                ObservationMod.CompletedDate = $("#CompletedDate").val();
+                ObservationMod.UserID = $("#ActionBy").val();
+                ObservationMod.Remarks = $("#Remarks").val();
+
+                //ObservationMod.IncidentClassficationID = $("#Observation_IncidentClassficationID").val();
+            if (status == 1) {
+                var x;
+                if (confirm("Has the task been completed ?") == true) {
+                    x = "Yes";
+                    if ($("#ActionTaken").val()=='') {
+                        ValidationMessage = ValidationMessage + '\n ActionTaken';
+
+                        if (ControlToFocus == '') {
+                            ControlToFocus = "#ActionTaken"
+                        }
+
+                        if (ValidationMessage != '') {
+                            alert('Please provide the following field(s) ' + ValidationMessage);
+                            $(ControlToFocus).focus();
+                        }
+                    }
+                    else {
+                        $.ajax({
+                            method: "POST",
+                            datatype: 'json',
+                            contentType: false,
+                            processData: false,
+                            cache: false,
+                            url: SaveURL,
+                            data: formData,
+
+                        })
+                            .done(function (msg) {
+                                alert("Data Saved Successfully " + msg);
+                            });
+
+                        alert('Data Saved Successfully');
+                        location.reload(true);
+
+                    }
+                } else {
+                    x = "Cancel";
+                }
+            }
+
+            else {
+
+                if ($("#Title").val() == '') {
+                    ValidationMessage = '\n Observation Title';
+                    ControlToFocus = "#Title";
+                }
+
+                if ($("#Recommendation").val() == '') {
+                    ValidationMessage = ValidationMessage + '\n Recommendation';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#Recommendation"
+                    }
+                }
+                if ($("#ObPlantID").val() == 0) {
+                    ValidationMessage = ValidationMessage + '\n Plant/Area';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#ObPlantID"
+                    }
+                }
+
+                if ((@Model.RoleId== 4) || (@Model.RoleId== 15)) {
+                    if ($("#Category").val() == 0) {
+                        ValidationMessage = ValidationMessage + '\n Category';
+
+                        if (ControlToFocus == '') {
+                            ControlToFocus = "#Category"
+                        }
+                    }
+                    if ($("#CapaPriority").val() == 0) {
+                        ValidationMessage = ValidationMessage + '\n Priority';
+
+                        if (ControlToFocus == '') {
+                            ControlToFocus = "#CapaPriority"
+                        }
+                    }
+                    if ($("#DeptManager").val() <= 0) {
+                        ValidationMessage = ValidationMessage + '\n Functional Manager';
+
+                        if (ControlToFocus == '') {
+                            ControlToFocus = "#DeptManager"
+                        }
+                    }
+                }
+
+
+                if (ValidationMessage != '') {
+                    alert('Please provide the following field(s) ' + ValidationMessage);
+                    $(ControlToFocus).focus();
+                }
+                else {
+                    $.ajax({
+                        method: "POST",
+                        datatype: 'json',
+                        contentType: false,
+                        processData: false,
+                        cache: false,
+                        url: SaveURL,
+                        data: formData,
+
+                    })
+                        .done(function (msg) {
+                            alert("Data Saved Successfully " + msg);
+                        });
+
+                    alert('Data Saved Successfully');
+                    location.reload(true);
+
+                }
+
+            }
+        }
+
+        function chng() {
+            var typ = document.getElementById("fileToUpload").value;
+            var res = typ.match(".JPG|.jpg|.jpeg|.JPEG");
+            var fileUpload = $("#fileToUpload").get(0);
+            var files = fileUpload.files;
+
+            if (res) {
+                if (files[0].size < 1050000) {
+
+                    alert("Attached Successfully");
+                }
+                else {
+                    alert("Only accept JPEG file less then 1MB!");
+                    document.getElementById("fileToUpload").value = "";
+                }
+            }
+            else {
+                alert("Only accept JPEG file less then 1MB!");
+                document.getElementById("fileToUpload").value = "";
+            }
+        }
+
+        function DeleteOBImage(ObservationID) {
+            var i;
+            if (confirm("Are you sure you want to delete ?") == true) {
+                i = "OK";
+                var options = { "backdrop": "static", keyboard: true };
+
+                $.ajax({
+                    method: "POST",
+                    url: "../CAPA/DeleteOBImage",
+                    data: { obid: ObservationID },
+                    success: function (response) {
+                        //$('#contentdiv').html(response);
+                        alert('Deleted Successfully');
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert(JSON.stringify(data));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            } else {
+                i = "Cancel";
+            }
+
+        }
+        function ClearRecord() {
+            $("#Title").val('');
+            $("#Recommendation").val('');
+            $("#ActionTaken").val('');
+            $("#ActionBy").val('');
+            $("#Category").val('');
+            $("#CapaPriority").val('');
+            $("#Remarks").val('');
+            $("#DeptManager").val('');
+            $("#CapStatus").val('');
+            $("#ObPlantID").val('');
+        }
+
+        function EnabledHSE(ObservationID) {
+
+            $("#Title").prop("disabled", false);
+            $("#Recommendation").prop("disabled", false);
+            $("#ActionTaken").prop("disabled", true);
+            $("#Category").prop("disabled", false);
+            $("#CapaPriority").prop("disabled", false);
+            $("#TargetDate").prop("disabled", false);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", true);
+            $("#DeptManager").prop("disabled", false);
+            $("#Remarks").prop("disabled", false);
+            $("#CapStatus").prop("disabled", true);
+            $("#ObPlantID").prop("disabled", false);
+        }
+
+        function Statuschange() {
+            $("#CompletedDate").val("");
+        }
+
+
+        function EditCAPAObservation(ObsID) {
+            var response;
+            var EditURL = '../CAPA/EditCAPAObservation';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var saveData = $.ajax({
+                type: "POST",
+                url: EditURL,
+                data: '{observationID: ' + ObsID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (resultdata) {
+
+                    $("#ObservationID").val(resultdata.cpobservation.capaobs.ObservationID);
+                    $("#Title").val(resultdata.cpobservation.capaobs.Title);
+                    $("#Recommendation").val(resultdata.cpobservation.capaobs.Recommendation);
+                    $("#ActionTaken").val(resultdata.cpobservation.capaobs.ActionTaken);
+                    $("#ObPlantID").val(resultdata.cpobservation.capaobs.OBPlantID);
+                    $("#Category").val(resultdata.cpobservation.capaobs.CategoryID);
+                    $("#CapaPriority").val(resultdata.cpobservation.capaobs.PriorityID);
+                    $("#DeptManager").val(resultdata.cpobservation.capaobs.DeptManager);
+                    $("#CapStatus").val(resultdata.cpobservation.capaobs.CAPStatus);
+                    $("#TargetDate").val(resultdata.cpobservation.capaobs.TargetDate);
+                    $("#CompletedDate").val(resultdata.cpobservation.capaobs.CompletedDate);
+                    $("#ActionBy").val(resultdata.cpobservation.capaobs.CompletedBy);
+                    $("#Remarks").val(resultdata.cpobservation.capaobs.Remarks);
+                    $("#disvalue").html(resultdata.cpobservation.capaobs.cpobservationattachement);
+                    console.log(resultdata.cpobservation.capaobs);
+                    var actionby = resultdata.cpobservation.capaobs.CompletedBy;
+                    var cruser = @Model.CurrentUser;
+                    var status = resultdata.cpobservation.capaobs.CAPStatus;
+                    if ((status == 1) && ((@Model.RoleId== 4) || (@Model.RoleId== 15))) {
+                        $("#CapStatus").attr("disabled", false);
+                    }
+
+                    if (actionby != cruser) {
+                        $("#btnSave").show();
+                        $("#btnCompleted").hide();
+                    }
+                    else {
+                        $("#btnSave").hide();
+                        $("#btnCompleted").show();
+                        $("#btnCompleted").attr("disabled", false);
+                    }
+                },
+
+                error: function (errdata) {
+                    //alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+
+        function DisabledActioner(ObsID) {
+
+            $("#Title").prop("disabled", true);
+            $("#Recommendation").prop("disabled", true);
+            $("#ActionTaken").prop("disabled", false);
+            $("#Category").prop("disabled", true);
+            $("#CapaPriority").prop("disabled", true);
+            $("#TargetDate").prop("disabled", true);
+            $("#ActionBy").prop("disabled", true);
+            $("#CompletedDate").prop("disabled", true);
+            $("#DeptManager").prop("disabled", true);
+            $("#Remarks").prop("disabled", false);
+            $("#CapStatus").prop("disabled", true);
+            $("#ObPlantID").prop("disabled", true);
+        }
+
+        //function Disabled(CAPAID) {
+
+        //    window.location.href = '../CAPA/CAPAObservation?capaID=' + CAPAID;
+        //}
+        function EnabledDpt(ObservationID,funid) {
+
+            $("#Title").prop("disabled", true);
+            $("#Recommendation").prop("disabled", true);
+            $("#ActionTaken").prop("disabled", true);
+            $("#Category").prop("disabled", true);
+            $("#CapaPriority").prop("disabled", true);
+            $("#TargetDate").prop("disabled", false);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", true);
+            $("#DeptManager").prop("disabled", false);
+            $("#Remarks").prop("disabled", false);
+            $("#CapStatus").prop("disabled", true);
+            $("#ObPlantID").prop("disabled", true);
+        }
+
+
+        function DeleteObservation(ObsID) {
+            var EditURL = '../CAPA/DeleteCAPAObservation';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var saveData = $.ajax({
+                type: "POST",
+                url: EditURL,
+                data: '{observationID: ' + ObsID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (resultdata) {
+                    alert(JSON.stringify(resultdata));
+                    window.location.reload(true);
+                },
+                error: function (errdata) {
+                    //alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        function EnabledCreatedUser(ObsID) {
+
+            $("#Title").prop("disabled", false);
+            $("#Recommendation").prop("disabled", false);
+            $("#ActionTaken").prop("disabled", true);
+            $("#Category").prop("disabled", false);
+            $("#CapaPriority").prop("disabled", false);
+            $("#TargetDate").prop("disabled", false);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", true);
+            $("#DeptManager").prop("disabled", false);
+            $("#Remarks").prop("disabled", false);
+            $("#CapStatus").prop("disabled", true);
+        }
+
+        function btnClear() {
+            $("#EmployeeName").val('');
+            $("#Dept").val('');
+        }
+
+
+
+        $(function () {
+            $("#TargetDate").datepicker({ dateFormat: 'dd/mm/yy', minDate: 0, autoclose: true });
+            $("#CompletedDate").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
+        if ((@Model.RoleId==4)||(@Model.RoleId==15)) {
+
+            $("#ActionTaken").prop("disabled",true);
+            $("#Category").prop("disabled", false);
+            $("#CapaPriority").prop("disabled", false);
+            $("#TargetDate").prop("disabled", false);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", true);
+            $("#DeptManager").prop("disabled", false);
+            $("#Remarks").prop("disabled", false);
+            $("#CapStatus").prop("disabled", true);
+            $("#ObPlantID").prop("disabled", false);
+        }
+
+
+         else
+
+       if (((@Model.RoleId== 5) ||(@Model.RoleId== 11)) && (@Model.createCapa.CreatedBy== @Model.CurrentUser)) {
+
+           $("#ActionTaken").prop("disabled", true);
+           $("#Category").prop("disabled", false);
+           $("#CapaPriority").prop("disabled", false);
+           $("#TargetDate").prop("disabled", false);
+           $("#ActionBy").prop("disabled", false);
+           $("#CompletedDate").prop("disabled", true);
+           $("#DeptManager").prop("disabled", false);
+           $("#Remarks").prop("disabled", false);
+           $("#CapStatus").prop("disabled", true);
+       }
+  else
+
+        if (@Model.CompletedBy==@Model.CurrentUser) {
+
+            $("#Title").prop("disabled", true);
+            $("#Recommendation").prop("disabled", true);
+            $("#Remarks").prop("disabled", true);
+        }
+        else
+        if (@Model.DeptID==@Model.CurrentUser) {
+            $("#Title").prop("disabled", true);
+            $("#Recommendation").prop("disabled", true);
+            $("#Remarks").prop("disabled", true);
+
+                }
+    </script>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script>
+    $("#Save").click(function (event) {
+        $('#Status').val("D");
+    });
+
+</script>
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h1 class="panel-title">CAPA Observation</h1>
+    </div>
+    <table id="fixTable" style="width:90%" align="center" class="table-responsive">
+        @Html.HiddenFor(model => model.CAPAObservation.ObservationID)
+        @Html.HiddenFor(model => model.CAPAObservation.CAPAID)
+        @Html.HiddenFor(model => model.CAPAObservation.UserID)
+        @Html.HiddenFor(Model => Model.CAPAObservation.CAPANumber)
+        <tr>
+            <td colspan="4">
+                <table style="width:95%" align="center" border="1">
+                    <tr>
+                        <td style="font-weight:bold;font-size: 15px;">CAPA Number</td>
+                        <td style="font-weight:bold;font-size: 15px;">CAPA Source</td>
+                        <td style="font-weight:bold;font-size: 15px;">Created By</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.CAPAObservation.CAPANumber)</td>
+                        <td>@Html.DisplayFor(model => model.CAPAObservation.CAPASourceName)</td>
+                        <td>@Html.DisplayFor(model => model.CAPAObservation.CompletedUser)</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br />
+
+    <div class="container-lg container-md container-sm padr">
+
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>ObservationID</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">@Html.TextBoxFor(model => model.CAPAObservation.ObservationID, new { @id = "ObservationID", @class = "form-control input-sm", @disabled = "disabled", @maxlength = "100", @style = "width: 400px;   max-width: 80%;" })</div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Plant/Area<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.CAPAObservation.OBPlantID,
+                                                 new SelectList(Model.plantlist, "ID", "Name"), "--Select--", new { @class = "form-control input-sm", @id = "ObPlantID", @maxlength = "100", @style = "width: 400px;   max-width: 80%;" })
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Observation/Description<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.CAPAObservation.Title, new { @id = "Title", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;" })
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Recommendation<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.CAPAObservation.Recommendation, new { @id = "Recommendation", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;" })
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Category<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.CAPAObservation.CategoryID,
+                                                 new SelectList(Model.capacategory, "ID", "Name"),"--Select--", new { @class = "form-control input-sm", @id = "Category", @disabled = "disabled", @maxlength = "100", @style = "width: 400px;   max-width: 80%;" })
+            </div>
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Priority<span style="color:red"> *</span></label>
+            </div>
+
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.CAPAObservation.PriorityID,
+                                                 new SelectList(Model.capapriority, "ID", "Name"), new { @class = "form-control input-sm", @id = "CapaPriority", @disabled = "disabled", @maxlength = "100", @style = "width: 400px;   max-width: 80%;" })
+            </div>
+
+
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Functional Manager<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.CAPAObservation.DeptManager,
+                                                                 new SelectList(Model.DeptManagerList, "ID", "FullName"), new { @class = "form-control input-sm", @id = "DeptManager", @disabled = "disabled", @maxlength = "100", @style = "width: 380px;   max-width: 80%;" })
+                @Html.ValidationMessageFor(model => model.CAPAObservation.DeptManager, "", new { @class = "label label-danger" })
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Target Date </label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.EditorFor(model => model.CAPAObservation.TargetDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "TargetDate", @disabled = "disabled", @maxlength = "100", @style = "width: 400px;   max-width: 80%;", @autocomplete = "off" } })
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Action By<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(m => m.CAPAObservation.UserID, new SelectList(Model.CAPAObservation.ActionList, "UserID", "DisplayUserName", Model.CAPAObservation.UserID), "--Select--",new { @id = "ActionBy", @disabled = "disabled", @class = "form-control input-sm", @maxlength = "100", @style = "width: 380px;   max-width: 80%;" })
+                @Html.ValidationMessageFor(m => m.UserID, null, new { @class = "label label-danger" })
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Completed Date</label>
+            </div>
+
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.EditorFor(model => model.CAPAObservation.CompletedDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "CompletedDate", @disabled = "disabled", @maxlength = "100", @style = "width: 400px;   max-width: 80%;", @autocomplete = "off" } })
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Action Taken</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.CAPAObservation.ActionTaken, new { @id = "ActionTaken", @disabled = "disabled", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;" })
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Remarks</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.CAPAObservation.Remarks, new { @class = "form-control input-sm", @id = "Remarks", style = "width: 500px; height: 60px;  max-width: 80%;" })
+                @Html.ValidationMessageFor(model => model.CAPAObservation.Remarks, "", new { @class = "label label-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Attachment</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                <input type="file" id="fileToUpload" class="form-control" onchange="chng()" /> (JPEG file less then 1MB )
+
+                <span id="disvalue">@Html.DisplayFor(Model => Model.CAPAObservation.cpobservationattachement)  </span>
+
+            </div>
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Status</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(Model => Model.CAPAObservation.CAPStatus,
+                            new SelectList(Model.observationstatuslist, "ID", "Name"), new { @class = "form-control", onclick = "Statuschange()", @id = "CapStatus", @disabled = "disabled", @maxlength = "100", @style = "width: 400px;   max-width: 80%;" })
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-center">
+                <input type="button" id="btnSave" class="btn btn-primary" onclick="javascript: SaveCAPAObservations();" value="Save" />
+                <input type="button" class="btn btn-primary" value="CAPA List" onclick="location.href='@Url.Action("CAPAIndex", "CAPA")'" />
+                @if (Model.CompletedBy == Model.CurrentUser)
+                {
+                    <input type="button" id="btnCompleted" class="btn btn-primary" disabled="disabled" onclick="javascript:SaveCAPAObservations(1);" value="Complete Task" />
+
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="container-fluid">
+    <div class="div-border">
+        <h1 class="div-h1"><span class="div-h1-span">Recommendations List</span></h1>
+        <div class="tableFixHead">
+            <table class="table table-hover pre-scrollable" id="SearchResults">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>CAPAID</th>
+                        <th>Recom ID</th>
+                        <th>Plant/Area</th>
+                        <th width="30%">Recommendations</th>
+                        <th>Actions</th>
+                        <th>Action By</th>
+                        <th>Functional Manager</th>
+                        <th>Target Date</th>
+                        <th>Completed Date</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.ObservationViewModelList1)
+                    {
+                        if (item.Observation != "")
+                        {
+                            <tr>
+                                <td>@item.SNo</td>
+                                <td>@item.CAPANumber</td>
+                                <td>@item.OBID</td>
+                                <td>@item.ObPlantName</td>
+                                <td style="word-break:break-all;">@item.Recommendation</td>
+                                <td style="word-break:break-all;">@item.ActionTaken</td>
+                                <td>@item.CompletedUser</td>
+                                <td>@item.FunctionalMgr</td>
+                                <td>@item.TargetDate</td>
+                                <td>@item.CompletedDate</td>
+                                <td>
+                                    @if (item.AtachmentName != "")
+                                    {
+                                        <a href="~/CAPAObservation/@item.AtachmentName" download>
+                                            <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                        </a>
+                                        <a href="javascript:DeleteOBImage(@item.OBID);" title="Delete Image"><img src="~/Images/remove.png" alt="Delete" style="height:25px;width:25px;" /></a>
+
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.CompletedBy == Model.CurrentUser)
+                                    {
+                                        <a href="javascript:EditCAPAObservation(@item.ObservationID);" onclick="DisabledActioner(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                    }
+
+                                    else
+                                    if ((Model.Roles.Find(a => a.RoleName == "HSE Manager") != null) || (Model.Roles.Find(a => a.RoleName == "CAPA Advisor") != null))
+                                    {
+                                        <a href="javascript:EditCAPAObservation(@item.ObservationID);" onclick="EnabledHSE(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                    }
+                                    else
+                                     if (item.DptID == Model.CurrentUser)
+                                    {
+                                        <a href="javascript:EditCAPAObservation(@item.ObservationID);" onclick="EnabledDpt(@item.ObservationID,@item.DptID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                    }
+                                    else
+                                     if (((Model.createCapa.CreatedBy == Model.CurrentUser) && (Model.RoleId == 5)) || ((Model.createCapa.CreatedBy == Model.CurrentUser) && (Model.RoleId == 11)))
+                                    {
+                                        <a href="javascript:EditCAPAObservation(@item.ObservationID);" onclick="EnabledCreatedUser(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                    }
+                                    else if ((Model.createCapa.CreatedBy == Model.CurrentUser) && ((item.FunctionalMgr != null) && (item.CompletedBy == 0)))
+                                    {
+                                        <a href="javascript:EditCAPAObservation(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>

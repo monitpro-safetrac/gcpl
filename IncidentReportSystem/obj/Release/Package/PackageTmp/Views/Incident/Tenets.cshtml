@@ -1,0 +1,110 @@
+﻿
+@model IncidentReportSystem.Models.NewIncidentViewModel
+
+@{
+    ViewBag.Title = "EditIncident";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #container {
+        height: 500px;
+        overflow: auto;
+    }
+</style>
+@using (Html.BeginForm("Tenets", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Tenets</h1>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.IncidentID)
+        <div id="container" class="table-responsive">
+            <table id="fixTable" style="width:95%" align="center" class="table-bordered table-responsive">
+                <tbody>
+                    <tr>
+                        <th>
+                            S.No
+                        </th>
+                        <th>
+                            Yes/No
+                        </th>
+                        <th>
+                            Tenets Name
+                        </th>
+                        <th>
+                            Details
+                        </th>
+
+
+                        @for (var i = 0; i < Model.Tenets.Count; i++)
+                        {
+                        <tr>
+                            <td>@(i + 1) @Html.HiddenFor(m => m.Tenets[i].ID) @Html.HiddenFor(m => m.Tenets[i].Name) </td>
+                            <td>@Html.CheckBoxFor(m => m.Tenets[i].YesNo, htmlAttributes: new { @class = "big-checkbox" })   </td>
+                            <td width="50%">@Model.Tenets[i].Name</td>
+                            <td>@Html.TextAreaFor(model => model.Tenets[i].Details, new { @style = "width: 400px; max-width: 100%;" })</td>
+                        </tr>
+                    }
+
+
+
+                    </tbody>
+                </table>
+
+
+
+                <table>
+                    <tbody>
+
+                        <tr>
+                            <td colspan="4">
+                                <div id="Tenets4">
+                                    <h5><b>If Tenet No. 4 is selected, please select the procedures SWPs that were violated (if applicable)</b></h5>
+                                    @for (var i = 0; i < Model.Tenets4.Count; i++)
+                                    {
+                                        <div class="col-md-3 col-sm-3 col-xs-3">
+
+                                            @(i + 1) @Html.HiddenFor(m => m.Tenets4[i].ID) @Html.HiddenFor(m => m.Tenets4[i].Name)@Html.HiddenFor(m => m.Tenets4[i].TemplateID)&nbsp;
+                                            @Html.CheckBoxFor(m => m.Tenets4[i].YesNo, htmlAttributes: new { @class = "big-checkbox" })
+                                            @Model.Tenets4[i].Name
+                                        </div>
+
+                                    }
+
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <button class="btn btn-primary" type="submit" id="btnsubmit" title="Submit">Save</button>&nbsp;&nbsp;
+                                <input type="button" class="btn btn-primary" value="Edit Incident" onclick="EditIncident(@Model.IncidentID);" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    }
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script type="text/javascript">
+   function EditIncident(IncID) {
+
+       window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+   }
+</script>
+
+

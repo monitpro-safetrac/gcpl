@@ -1,0 +1,17 @@
+ public class AssignApproverModel
+    {
+        public int UserId { get; set; }
+        public string  ApproverName { get; set; }
+        public List<SelectListItem> ApproverFullName { get; set; }
+       
+        public List<WorkTypes> WorkType { get; set; }
+        public int WorkTypeId { get; set; }
+        public string WorkTypeName { get; set; }
+    }
+    public class WorkTypes
+    {
+        public int WorkTypeId { get; set; }
+        public string WorkTypeName { get; set; }
+        public bool Assigned { get; set; }
+        public string DivisionID { get; set; }
+    }

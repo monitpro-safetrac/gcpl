@@ -1,0 +1,960 @@
+﻿<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Content/richtext.scss" rel="stylesheet" />
+<script src="~/Content/jquery.richtext.js"></script>
+<link href="~/Content/richtext.min.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<script src="~/Content/jquery.richtext.min.js"></script>
+<link rel="stylesheet" href="richtext.min.css">
+
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+@model IncidentReportSystem.Models.NewIncidentViewModel
+
+@{
+    ViewBag.Title = "EditIncident";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@using (Html.BeginForm("EditIncident", "Incident", FormMethod.Post, new { enctype = "multipart/form-data", id = "edit-incident-form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Incident.IncidentID)
+    
+
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html {
+                overflow: scroll;
+            }
+
+
+            a {
+                /* color: #428bca; */
+                text-decoration: none;
+            }
+
+            .col1 {
+                padding-left: 30px;
+            }
+
+            .col2 {
+                padding-left: 30px;
+            }
+
+            .padr {
+                padding-right: 20px;
+            }
+        </style>
+    </head>
+    <body>
+
+
+
+
+
+        <div class="container-lg container-sm container-md container-xl">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">EDIT INCIDENT ID: @Html.DisplayFor(Model => Model.Incident.IncidentNO)</h1>
+                </div>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(m => m.Incident.IncidentID)
+                @Html.HiddenFor(m => m.Incident.IncidentNO)
+                @Html.HiddenFor(m => m.Incident.StatusID)
+                @Html.HiddenFor(m => m.Incident.FileName)
+                @Html.HiddenFor(m => m.Incident.secondfile)
+                @Html.HiddenFor(m => m.Incident.ImageFile)
+                @Html.Hidden("injuid", Model.Incident.injuredOrNot)
+                @Html.Hidden("Lm", Model.Incident.LossOfMaterial)
+                @Html.Hidden("Deq", Model.Incident.DamageEquipment)
+                @Html.Hidden("invno", Model.Incident.Investigation)
+                @Html.HiddenFor(m => m.Incident.IncidentTypeID)
+
+                <div id="container" class="container-lg container-sm container-md container-xl">
+                    <table id="tbl1" style="width:95%" align="center">
+                        <tbody>
+                            @Html.Partial("CreatePage", Model)
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="container-lg container-sm container-md container-xl">
+            <div class="panel panel-primary">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Categorization&nbsp;</span></h1>
+                <div class="table-responsive" id="tbl">
+                    <div class="row" id="repno">
+                        <div class="col-lg-3 col1">
+                            <label>Is investigation required?<span style="color:red"> *</span></label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.RadioButtonFor(model => model.Incident.Investigation, "Yes", new { @onchange = "Modify(this)" })  Yes
+                            @Html.RadioButtonFor(model => model.Incident.Investigation, "No", new { @onchange = "Modify(this)" })  No
+                            @Html.ValidationMessageFor(model => model.Incident.Investigation, "", new { @class = "label label-danger" })
+                        </div>
+                        <div class="col-lg-3 col2">
+                            <label>Assign Investigation Team</label>
+                        </div>
+                        <div class="col-lg-3">
+                            <a id="hideAssign" href="javascript:AssignObservers(@Model.Incident.IncidentID);" title="Assign Observers"><img src="~/Images/Observers.png" alt="Assign Observers" style="height:25px;width:25px;" /></a>&nbsp;&nbsp;
+
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col1">
+                            <label>Incident Category</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @foreach (var a in Model.IncidentTypeList)
+                            {
+                                @Html.RadioButtonFor(b => b.Incident.IncidentTypeID, a.ID, new { @class = "TypeList", @onchange = "showDiv(this)", @style = "width:20px", @title = a.Description }) @a.Name
+
+                            }
+
+                            @Html.ValidationMessageFor(model => model.Incident.IncidentTypeID, "", new { @class = "label label-danger" })&nbsp;&nbsp;
+                            <a href="javascript:DecisionPage(@Model.Incident.IncidentID);" title="Assign Observers"><img src="~/Images/DecisionTree.png" alt="Decision" style="height:40px;width:40px;" /></a>&nbsp;&nbsp;
+
+                        </div>
+                        <div class="col-lg-3 col2">
+                            <label>Injury Category</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.DropDownListFor(model => model.Incident.InjuryTypeID,
+                                                                         new SelectList(Model.InjuryTypesList, "ID", "Name"), new { @class = "form-control input-sm", style = "width: 300px" })
+
+                            @Html.ValidationMessageFor(model => model.Incident.InjuryTypeID, "", new { @class = "label label-danger" })
+
+                        </div>
+                    </div>
+                    <br />
+
+                </div>s
+            </div>
+        </div>
+
+
+        <div class="container-lg container-sm container-md container-xl">
+            <div class="panel panel-primary">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Investigation&nbsp;</span></h1>
+                <div class="container-lg container-sm container-md container-xl">
+
+                    <div class="row" id="list">
+                        <div class="col-lg-3 col1">
+                            <label>Detailed Incident Summary (with time sequence)</label>
+                        </div>
+                        <div class="col-lg-8">
+                            <p style="color:red"><b> Before Saving Choose the 12px font size for PDF alignment.</b> </p>
+                            @Html.TextAreaFor(model => model.Incident.Incidentchronology, new { @style = "width: 1800px; height:300px;  max-width: 100%;", @onkeypress = "myFunction()", @id = "IncidentSummery" })
+                            @Html.ValidationMessageFor(model => model.Incident.Incidentchronology, "", new { @class = "label label-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3">
+                            <label>&nbsp;&nbsp;&nbsp;Methodology<span style="color:red"> *</span></label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.CheckBoxFor(Model => Model.Incident.WhyAnalysis, htmlAttributes: new { @class = "big-checkbox", @id = "Chk1" })  Five Why Analysis
+                            (Use for actual and potential Tier 3 & 4 Incident)
+                        </div>
+                        <div class="col-lg-6" style="text-align:left">
+                            @Html.CheckBoxFor(Model => Model.Incident.WhyTree, htmlAttributes: new { @id = "Chk2", @class = "big-checkbox" })  Why Tree
+                            (Use for actual and potential Tier 1 & 2 Incident)
+                        </div>
+                        <span class="InciMethodology label label-danger" style="display:none;">Please select any one Methodology.</span>
+                    </div>
+                    <br />
+                    <div class="row padr">
+                        <div class="col-lg-3 col1">
+                            <label>Five Why Analysis</label>
+                        </div>
+                        <div class="col-lg-3">
+
+
+                            <a href="javascript:WhyForm(@Model.Incident.IncidentID);" id="whyform" title="Five Why Analysis">
+                                <img src="~/Images/why5.png" alt="Decision" style="height:40px;width:40px;" />
+                            </a>
+
+
+
+
+                            <a href="javascript:FishbonePage(@Model.Incident.IncidentID);" title="Fish Bone Diagram"><img src="~/Images/FishBoneIcon.png" alt="Decision" style="height:40px;width:40px;" /></a>&nbsp;&nbsp;
+
+                        </div>
+                        <div class="col-lg-3 col2">
+                            <label>Why Tree Analysis</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => m.Incident.InvesAttachment, new { @id = "whytree", type = "file", accept = "image/*", value = "test", onchange = "chng()" })
+                            <span class="label-warning">Please select JPEG file</span>
+
+                            @if (@Model.Incident.secondfile != "")
+                            {
+                                <a href="~/InvestigationAttachments/@Model.Incident.secondfile" download>
+                                    <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                </a>
+                                <a href="javascript:DeleteWhyTreeImage(@Model.Incident.IncidentID);" title="Delete Image"><img src="~/Images/remove.png" alt="Delete" style="height:25px;width:25px;" /></a>
+                                @Model.Incident.secondfile
+                            }
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row padr">
+                        <div class="col-lg-3 col1">
+                            <label>Root Cause Categories<span style="color:red"> *</span></label>
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-primary btn-md" onclick="javascript:EditRootCause(@Model.Incident.IncidentID);">Edit Root Cause </button>&nbsp;&nbsp;<br />(Select Atleast One Root Cause)
+                        </div>
+                        <div class="col-lg-3 col2">
+                            <label>Reason for selecting Root cause </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextAreaFor(model => model.Incident.Precautionarymeasures, new { @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Incident.Precautionarymeasures, "", new { @class = "label label-danger" })
+                        </div>
+                    </div>
+                    <br />
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container-lg container-sm container-md container-xl ">
+            <div class="panel panel-primary" id="tbl2">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Conclusion&nbsp;</span></h1>
+                <div class="container-lg container-sm container-md container-xl padr">
+                    <div class="row">
+                        <div class="col-lg-3 col1">
+                            <label>What exists and work?</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextAreaFor(model => model.Incident.DidWork, new { @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Incident.DidWork, "", new { @class = "label label-danger" })
+                        </div>
+                        <div class="col-lg-3 col2">
+                            <label>What exists and didn’t work?</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextAreaFor(model => model.Incident.DidNotWork, new { @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Incident.DidNotWork, "", new { @class = "label label-danger" })
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col1">
+                            <label>What would have helped?</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextAreaFor(model => model.Incident.HaveHepled, new { @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Incident.HaveHepled, "", new { @class = "label label-danger" })
+                        </div>
+                        <div class="col-lg-3 col2">
+                            <label>Summary of Incident Investigation Findings</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextAreaFor(model => model.Incident.Findings, new { @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Incident.Findings, "", new { @class = "label label-danger" })
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col1">
+                            <label>Lesson(s) Learnt:</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextAreaFor(model => model.Incident.Lessons, new { @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.Incident.Lessons, "", new { @class = "label label-danger" })
+                        </div>
+                        <div class="col-lg-3">
+                            <label></label>
+                        </div>
+                        <div class="col-lg-3">
+
+                        </div>
+                        <br /><br />
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-3 col1">
+                            <label>Upload Supporting images</label>
+                        </div>
+                        <div class="col-lg-3">
+                            <a id="link" href="javascript:UploadImages(@Model.Incident.IncidentID);" title="Upload Images"><img src="~/Images/upload.jpeg" title="Upload Images" alt="Upload" style="height:25px;width:25px;" /></a>
+                        </div>
+                        <div class="col-lg-3 col1">
+                            <label>Recommendations<span style="color:red"> *</span></label>
+                        </div>
+                        <div class="col-lg-3">
+                            <a id="linkob" href="javascript:Observations(@Model.Incident.IncidentID);" title="Recommendations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>&nbsp;&nbsp;&nbsp;&nbsp;(Provide Atleast One Recommendation)
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit" id="submit" title="Save">Save</button>&nbsp;&nbsp;
+                        
+                        @foreach (var item in Model.ObserverTeamList)
+                        {
+
+                            if ((item.CompletedBy > 0) && (item.ObserverTeamLead == Model.CurrentUserID) && (Model.Incident.StatusID == 2) && (Model.Incident.IncidentID == item.IncidentID) && Model.Incident.RootCauseCheck > 0)
+                            {
+                                <button class="btn btn-primary" type="submit" id="SubmitApproval" title="Submit">Submit for Approval</button>
+                                break;
+                            }
+                            if ((Model.Incident.StatusID == 4) && (item.DeptManager == Model.CurrentUserID) && (Model.Incident.IncidentID == item.IncidentID))
+                            {
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Approve / Recycle</button>
+                                break;
+                            }
+
+                        }
+
+                    </div>
+                    <br />
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Incident Approve / Recycle</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                            <tr>
+                                <td>Approver Comments</td>
+                                <td>@Html.TextAreaFor(model => model.Incident.ApproverComments)</td>
+                            </tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <input type="button" class="btn btn-primary" id="btnUpdate" onclick="javascript:ApproveIncident();" value="Approve" />
+                                    <button type="submit" class="btn btn-primary" id="recycle" onclick="javascript:RejectIncident();" value="Recycle"> Recycle</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div id="whyFormModal" class="modal1" style="display: none;">
+            <div class="modal-content1">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!-- The content will be injected here by AJAX -->
+            </div>
+            <div class="modal-footer1">
+                <button type="button" class="btn btn-danger" onclick="closeModal1()">Close</button>
+            </div>
+        </div>
+  
+
+        <!-- Modal CSS -->
+        <style>
+            .modal1 {
+                display: none; /* Hidden by default */
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            }
+
+            .modal-content1 {
+                background-color: #fff;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+                max-width: 800px;
+                position: relative; /* Ensures close button is relative to this container */
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .close {
+                position: absolute; /* Position the close button absolutely within .modal-content */
+                top: 10px; /* Adjust distance from the top */
+                right: 10px; /* Adjust distance from the right */
+                color: #aaa;
+                font-size: 24px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+                .close:hover,
+                .close:focus {
+                    color: #000;
+                    text-decoration: none;
+                }
+
+            .modal-footer1 {
+                padding: 10px;
+                text-align: center;
+            }
+        </style>
+
+
+    </body>
+</html>
+
+
+}
+<script>
+   //$(document).ready(function () {
+   // // Auto-save every 30 seconds
+   // setInterval(autoSaveForm, 30000); // 30000ms = 30 seconds
+
+    function autoSaveForm() {
+        const formData = $('#edit-incident-form').serialize(); // Updated with the new form ID
+
+        $.ajax({
+            url: '@Url.Action("EditIncident", "Incident")', // Controller and action
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    console.log("Auto-save successful.");
+                    $('#save-status').text('Saved at ' + new Date().toLocaleTimeString()).fadeIn().delay(2000).fadeOut();
+                } else {
+                    console.error("Auto-save failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error in auto-save:", error);
+            }
+        });
+    }
+
+
+</script>
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Message");
+                window.location.href = "../Incident/EditIncident?incidentID=" + @Model.Incident.IncidentID;
+        };
+
+    </script>
+}
+
+@if (ViewBag.error != null)
+{
+    <script type="text/javascript">
+
+        {
+        alert("@ViewBag.error");
+
+         };
+
+    </script>
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+
+
+        if (@Model.Incident.StatusID==5) {
+            $("#tbl *").attr('disabled', 'disabled');
+            $("#tbl1 *").attr('disabled', 'disabled');
+            $("#tbl2 *").attr('disabled', 'disabled');
+
+            $('#hideAssign').hide();
+            $('#link *').hide();
+        }
+
+         if (@Model.Incident.StatusID==5) {
+            $("#tbl *").attr('disabled', 'disabled');
+             $("#tbl1 *").attr('disabled', 'disabled');
+             $("#tbl2 *").attr('disabled', 'disabled');
+
+            $('#hideAssign').hide();
+            $('#link').hide();
+            if (@Model.RoleID == 4) {
+                $('#linkob').show();
+            }
+            else {
+                $('#linkob').hide();
+            }
+    }
+
+
+        $("#submit").click(function (event) {
+            $('#tbl1 *').attr('required', true);
+            //$('#tbl2 *').attr('required', true);
+            $('#ReportedBy').attr('required', false);
+            $('#attach').attr('required', false);
+            $('#Incident_PersonAvailable').attr('required', false);
+            $('#Incident_ImmediateAction').attr('required', false);
+            $('#Incident_ProbableCauses').attr('required', false);
+            var type1 = document.getElementById("Chk1");
+            var type2 = document.getElementById("Chk2");
+
+
+            if (type1.checked || type2.checked) {
+
+                $(".InciMethodology").hide();
+
+            }
+            else {
+
+                $(".InciMethodology").show();
+
+                return false;
+            }
+        });
+        $("#SubmitApproval").click(function (event) {
+            $('#Incident_StatusID').val(4);
+        });
+        $("#recycle").click(function (event) {
+            $('#Incident_StatusID').val(2);
+        });
+
+        function chng() {
+            var typ = document.getElementById("whytree").value;
+            var res = typ.match(".jp");
+
+            if (res) {
+
+            }
+            else {
+                alert("Only JPEG images are accepted");
+                document.getElementById("whytree").value = "";
+            }
+        }
+        function ApproveIncident() {
+            var x;
+            if (confirm("Are you sure do you want to Approve?") == true) {
+                x = "OK";
+
+                var CurrentURL = '../Incident/UpdateIncidentStatus';
+                var IncID = $("#Incident_IncidentID").val();
+                var StatusID = "";
+                var Comments = $("#Incident_ApproverComments").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: CurrentURL,
+                    data: { IncidentID: parseInt(IncID), StatusID: parseInt(5), Comments: Comments },
+                    success: function (response) {
+                        //alert(JSON.stringify(response));
+                        alert('Incident Approved Successfully');
+
+                        location.reload(true);
+                    },
+                    error: function (errmessage) {
+                        alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                        $('#myModal').modal('hide');
+                    }
+                });
+
+            } else {
+                x = "Cancel";
+            }
+
+        }
+        function RejectIncident() {
+            var x;
+            if (confirm("Are you sure do you want to Recycle?") == true) {
+                x = "OK";
+                var CurrentURL = '../Incident/UpdateIncidentStatus';
+                var IncID = $("#Incident_IncidentID").val();
+                var StatusID = "";
+                var Comments = $("#Incident_ApproverComments").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: CurrentURL,
+                    data: { IncidentID: parseInt(IncID), StatusID: parseInt(2), Comments: Comments },
+                    success: function (response) {
+                        //alert(JSON.stringify(response));
+                        alert('Incident is recycled to the previous level');
+                        window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+                        /*location.reload(true);*/
+                    },
+                    error: function (errmessage) {
+                        alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                        $('#myModal').modal('hide');
+                    }
+                });
+
+            } else {
+                x = "Cancel";
+            }
+
+        }
+        function Modify(select) {
+
+            if (select.value == "Yes") {
+                $('#tbl *').attr('disabled', false);
+                $(".TypeList").attr("disabled", true);
+                $('#hideAssign').show();
+            } else {
+
+                $('#tbl *').attr('disabled', 'disabled');
+                $('#repno *').attr('disabled', false);
+                $('#submit').attr('disabled', false);
+                $('#Incident_InjuryTypeID').val(7);
+                $('#hideAssign').hide();
+            }
+        }
+
+          $(function () {
+            $("#Incident_PlantID").select2();
+            $("#Incident_IncidentClassficationID").select2();
+
+        });
+        $(function () {
+
+            $("#Incident_InvestigationBegan").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
+        function Observations(IncID) {
+
+            var x;
+            if (confirm("Have you saved the form ?") == true) {
+                x = "OK";
+                window.location.href = '../Incident/Observations?incidentID=' + IncID;
+            } else {
+                x = "Cancel";
+            }
+        }
+
+    //    function UploadImages(IncID) {
+    //        var i;
+    //        if (confirm("Have you saved the form ?") == true) {
+    //            i = "OK";
+    //            window.location.href = '../Incident/UploadImages?incidentID=' + IncID;
+    //        } else {
+    //            i = "Cancel";
+    //        }
+    //    }
+     
+    function closeModal1() {
+        document.getElementById("whyFormModal").style.display = "none";
+    }
+
+
+    function UploadImages(IncID) {
+        autoSaveForm();
+
+        // Perform AJAX request to load the form content into the modal
+        $.ajax({
+            url: '../Incident/UploadImages', // Controller action that returns the view
+            data: { incidentID: IncID }, // Pass the IncidentID
+            type: 'GET',
+            success: function (response) {
+                // Populate the modal with the returned content
+                $('#whyFormModal .modal-content1').html(response);
+                // Show the modal
+                $('#whyFormModal').show();
+            },
+            error: function () {
+                alert('Failed to load the form.');
+            }
+        });
+    }
+
+        
+        function AssignObservers(IncID) {
+            var x;
+            if (confirm("Have you saved the form ?") == true) {
+                x = "OK";
+                window.location.href = '../Incident/AssignObservers?incidentID=' + IncID;
+            } else {
+                x = "Cancel";
+            }
+
+        }
+        //function EditRootCause(IncID) {
+        //    var x;
+        //    if (confirm("Have you saved the form ?") == true) {
+        //        x = "OK";
+        //        window.location.href = '../Incident/RootCauseCategories?incidentID=' + IncID;
+        //    } else {
+        //        x = "Cancel";
+        //    }
+
+        //}
+        function EditRootCause(IncID) {
+
+            autoSaveForm();
+
+            // Perform AJAX request to load the form content into the modal
+            $.ajax({
+                url: '../Incident/RootCauseCategories', // Controller action that returns the view
+                data: { incidentID: IncID }, // Pass the IncidentID
+                type: 'GET',
+                success: function (response) {
+                    // Populate the modal with the returned content
+                    $('#whyFormModal .modal-content').html(response);
+                    // Show the modal
+                    $('#whyFormModal').show();
+                },
+                error: function () {
+                    alert('Failed to load the form.');
+                }
+            });
+        }
+
+
+        function EditTenets(IncID) {
+            window.location.href = '../Incident/Tenets?incidentID=' + IncID;
+        }
+        function ShowWhyFormModal(IncID) {
+            // You can optionally make an AJAX call here to load the form dynamically using the IncidentID
+            // For now, we'll just open the modal and set the IncidentID
+            $('#whyFormModal').modal('show');  // Show the modal
+            // If needed, you can set the IncidentID dynamically or fetch data for the form fields
+            $('#IncidentID').val(IncID); // Set the hidden field for IncidentID
+        }
+
+
+
+        function WhyForm(IncID) {
+         
+               autoSaveForm();
+                  
+                // Perform AJAX request to load the form content into the modal
+                $.ajax({
+                    url: '../Incident/WhyForm', // Controller action that returns the view
+                    data: { incidentID: IncID }, // Pass the IncidentID
+                    type: 'GET',
+                    success: function (response) {
+                        // Populate the modal with the returned content
+                        $('#whyFormModal .modal-content1').html(response);
+                        // Show the modal
+                        $('#whyFormModal').show();
+                    },
+                    error: function () {
+                        alert('Failed to load the form.');
+                    }
+                });
+        }
+
+
+        // Close the modal
+        //function closeModal() {
+        //    $('#whyFormModal').hide();
+        //}
+
+
+
+
+
+        function DecisionPage(IncidentID) {
+            window.location.href = '../Incident/CategoryDesicion?incidentid=' + IncidentID;
+        }
+        function FishbonePage(IncidentID) {
+            window.location.href = '../Incident/FishBoneDiagram?incidentid=' + IncidentID;
+        }
+
+        function yes(select) {
+            if (select.value == "Yes") {
+                $("#Yes1").attr('disabled', false);
+                $("#Yes1").attr('Required', true);
+            }
+            else { $("#Yes1").attr('disabled', true); }
+        }
+        function loss(select) {
+            if (select.value == "Yes") {
+                $('#Yes2').attr('disabled', false);
+            }
+            else {
+                $('#Yes2').attr('disabled', true);
+            }
+        }
+        function Eqiup(select) {
+            if (select.value == "Yes") {
+                $('#Yes3').attr('disabled', false);
+
+            }
+            else {
+                $('#Yes3').attr('disabled', true);
+
+            }
+        }
+        function DeleteWhyTreeImage(IncidentID) {
+            var i;
+            if (confirm("Are you sure you want to delete ?") == true) {
+                i = "OK";
+                var options = { "backdrop": "static", keyboard: true };
+
+                $.ajax({
+                    method: "POST",
+                    url: "../Incident/DeleteWhyTreeImage",
+                    data: { IncidentID: IncidentID },
+                    success: function (response) {
+                        //$('#contentdiv').html(response);
+                        alert(' Deleted Successfully');
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert(JSON.stringify(data));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            } else {
+                i = "Cancel";
+            }
+
+        }
+        $(document).ready (function () {
+
+            if (document.getElementById('invno').value == 'No') {
+                $('#tbl *').attr('disabled', 'disabled');
+                $('#tbl2 *').attr('disabled', false);
+                $('#repno *').attr('disabled', false);
+                $('#submit').attr('disabled', false);
+            }
+            if (document.getElementById('injuid').value == 'No') {
+                $("#Yes1").prop("disabled", true);
+            }
+            if (document.getElementById('Lm').value == 'No') {
+                $("#Yes2").prop("disabled", true);
+            }
+            if (document.getElementById('Deq').value == 'No') {
+                $("#Yes3").prop("disabled", true);
+            }
+
+        });
+        jQuery('#Incident_IncidentTime').datetimepicker({
+            format: 'd/m/Y H:i',
+            lang: 'ru',
+            step: 30,
+            maxDate: new Date(),
+        });
+
+    </script>
+    @*Detailed Incident Summery Textbox retrict enter key*@
+    <script type="text/javascript">
+
+
+        function myFunction() {
+            var keyPressed = event.keyCode || event.which;
+            if (keyPressed === 13) {
+                alert("You pressed the Enter key!!");
+                event.preventDefault();
+                return false;
+            }
+        }
+
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (document.getElementById('invno').value == 'Yes') {
+                $('#hideAssign').show();
+
+            }
+            else {
+                $('#hideAssign').hide();
+
+                $('#Incident_InjuryTypeID').val(7);
+            }
+        })
+
+    </script>
+    @if (TempData["Message"] != null)
+    {
+        <script type="text/javascript">
+         {
+           alert("@TempData["Message"]");
+           @TempData.Remove("Message");
+
+       };
+
+        </script>
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#IncidentSummery").richText({
+                // text formatting
+                bold: true,
+                italic: true,
+                underline: true,
+                // text alignment
+                leftAlign: true,
+                centerAlign: true,
+                rightAlign: true,
+                justify: true,
+                imageUpload: false,
+                fileUpload: false,
+                videoEmbed: false,
+                removeStyles: false,
+                code: false,
+                urls: false,
+                table: false,
+                keyPressed: false,
+
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(".TypeList").attr("disabled", true);
+    </script>
+
+}

@@ -1,0 +1,193 @@
+newpermitlist
+
+1.worktype used , for two work
+
++18326135681
+chella sir Mobile No for Us
+
+
+55
+20
+--
+35
+29
+--
+6
+5
+--
+1
+http://ec2-35-160-105-146.us-west-2.compute.amazonaws.com/ValsparDev/WorkPermit/ApprovePermit/2056
+
+http://localhost:53469/WorkPermit/UpdatePermit/3037
+
+http://localhost:53469/WorkPermit/ApprovedPermitList(Pending List)
+http://localhost:53469/WorkPermit/ApprovePermit/3039
+
+
+New AssignWorkTypeController.cs Create
+
+new Sp AssignApprover,MeasureDataUsersInsert,PermitReviewDueDate,InsertPermitReviewPage,HistoryReview
+new DB  PermitReview,MeasureDataUsers
+
+
+PermitReviewePage()
+HistoryReviewPage
+AssignTypeofWork()
+3042
+
+
+change TypeofWorkforCreatepermitUpdate
+
+, new { @disabled = "true" }
+
+
+pdf
+WorkPermit/ApprovedPermitList
+WorkPermit/NewPermitList
+WorkPermit/ApprovePermit
+
+ PrintPermit
+
+
+Confined Space Entry Permit Checklist (see in server)
+Line Breaking checklist(size decrease and box size increase)
+
+-------
+
+Confined Space Entry Permit (should all width 555 Chemical,action level)
+line breaking check (text size decrease)
+-------
+
+, new { @readonly = "readonly" }
+@Html.TextBoxFor(x => x,new {@class="disabled", @readonly=true })
+
+
+
+        private void UpdateStatus(WorkPermit workPermit)
+
+ if (currentUserID > 0)
+                            objCom.Parameters.AddWithValue("@UserID", currentUserID);
+                        else
+                            objCom.Parameters.AddWithValue("@UserID", DBNull.Value);
+ if (!string.IsNullOrEmpty(currentFromDate) && !string.IsNullOrEmpty(currentEndDate))
+            {
+
+
+
+loto  -- Electical
+loto --- Non-Electrical
+Loading/Unloading --- Unloading Chemical
+
+add Loto/Tagout,Line Breaking
+
+
+
+http://localhost:53469/WorkPermit/ClosePermit/3025
+
+WorkPermit/ApprovePermit/3050
+WorkPermit/PendingApprovalList
+
+
+
+
+
+
+
+
+
+
+
+
+//AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("AM/PM".PadRight(10), FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.NORMAL)), PdfPCell.ALIGN_LEFT));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));
+            //AirmonitoringRecodringlistTable.AddCell(PhraseCell(new Phrase("", FontFactory.GetFont("Times New Roman", 8, iTextSharp.text.Font.BOLD)), PdfPCell.ALIGN_CENTER));

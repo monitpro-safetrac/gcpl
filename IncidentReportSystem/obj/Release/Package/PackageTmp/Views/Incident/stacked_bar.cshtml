@@ -1,0 +1,9 @@
+﻿var barData = [[10, -20, 125, 230, -25, 245, 260, 20, 125, 125, 305, 110], [150, -50, 175, 280, -75, 295, 210, -70, 185, -20, 355, 160]];
+var container = document.getElementById("graphContainer");
+var myGraph = new BarGraph(container);
+myGraph.draw({
+    data: barData,
+    colors: ["#0F0", "blue"],
+    labelsX: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DIC"],
+fontSize: "9px"
+});

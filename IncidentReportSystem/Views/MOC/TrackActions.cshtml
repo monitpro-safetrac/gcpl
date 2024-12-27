@@ -1,0 +1,324 @@
+﻿
+
+@model MonitPro.Models.MOC.AllMOCObservation
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<style>
+
+    html {
+        overflow: scroll;
+    }
+
+
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .padr {
+        padding-right: 70px;
+    }
+
+    .col {
+        padding-left: 70px;
+    }
+
+    .col3 {
+        padding-left: 100px;
+    }
+</style>
+@section scripts
+{
+    <script type="text/javascript">
+
+
+        function SearchMOC(){
+        var response = null;
+        var CurrentURL = '../MOC/TrackActions';
+        var options = { "backdrop": "static", keyboard: true };
+
+        var MOCMod = @Html.Raw(Json.Encode(Model.MOCSearchVM));
+
+            MOCMod.Plant = $("#MOCSearchVM_Plant").val();
+            MOCMod.RecomPriorityID = $("#MOCSearchVM_RecomPriorityID").val();
+            MOCMod.MOCFromDate = $("#MOCSearchVM_MOCFromDate").val();
+            MOCMod.MOCToDate = $("#MOCSearchVM_MOCToDate").val();
+            MOCMod.RecomCategoryID = $("#MOCSearchVM_RecomCategoryID").val();
+            MOCMod.ActionerID = $("#MOCSearchVM_ActionerID").val();
+            MOCMod.RecomStatus = $("#MOCSearchVM_RecomStatus").val();
+           $.ajax({
+            method: "POST",
+            url: "../MOC/TrackActions",
+            data: MOCMod,
+            success: function (response) {
+
+                document.open();
+                document.write(response);
+
+                //assign the values back to control
+                $("#MOCSearchVM_Plant").val(MOCMod.Plant);
+                $("#MOCSearchVM_RecomPriorityID").val(MOCMod.RecomPriorityID);
+                $("#MOCSearchVM_MOCFromDate").val(MOCMod.MOCFromDate);
+                $("#MOCSearchVM_MOCToDate").val(MOCMod.MOCToDate);
+                $("#MOCSearchVM_RecomCategoryID").val(MOCMod.RecomCategoryID );
+                $("#MOCSearchVM_ActionerID").val(MOCMod.ActionerID);
+                $("#MOCSearchVM_RecomStatus").val(MOCMod.RecomStatus);
+                document.close();
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+        }
+
+
+        function Observations(MOCID) {
+            window.location.href = '../MOC/MOCObservations?MOCID=' + MOCID;
+        }
+        function ClearSearch() {
+            $("#MOCSearchVM_Plant").val('');
+            $("#MOCSearchVM_RecomCategoryID").val('');
+            $("#MOCSearchVM_MOCFromDate").val('');
+            $("#MOCSearchVM_MOCToDate").val('');
+            $("#MOCSearchVM_RecomPriorityID").val('');
+            $("#MOCSearchVM_ActionerID").val('');
+            $("#MOCSearchVM_RecomStatus").val('');
+
+        }
+
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            document.getElementById('trackaction').style.height = window.innerHeight - 280 + "px";
+            document.getElementById('trackaction').style.width = window.innerWidth - 10 + "px";
+        });
+
+
+        jQuery('#MOCSearchVM_MOCFromDate').datetimepicker({
+            format: 'd/m/Y',
+            lang: 'ru',
+            step: 30,
+            autoclose: true,
+            timepicker: false
+        });
+
+        jQuery('#MOCSearchVM_MOCToDate').datetimepicker({
+            format: 'd/m/Y',
+            lang: 'ru',
+            step: 30,
+            timepicker: false,
+            autoclose: true
+
+        });
+    </script>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+
+
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid ">
+    <form role="form">
+
+        <div id="contentdiv">
+            <div class="div-border" width="100%">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;MOC Implementation Action List&nbsp;</span></h1>
+
+                <div class="container-lg container-sm container-md padr">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <label>Plant / Area</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2 ">
+
+                            @Html.DropDownListFor(model => Model.MOCSearchVM.Plant,
+                            ViewBag.IncidentPlant as SelectList, new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                        </div>
+
+                        
+                        <label for="MOC From Date" class="col-lg-2 col-sm-2 control-label ">MOC From Date</label>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.EditorFor(model => model.MOCSearchVM.MOCFromDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                        </div>
+                        <label for="MOC To Date" class="col-lg-1 col-sm-2 control-label ">MOC To Date</label>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.EditorFor(model => model.MOCSearchVM.MOCToDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2">
+                            <label>Priority</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.RecomPriorityID,
+                                      new SelectList(Model.Recompriority, "ID", "Name"), new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            <label>Status</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.RecomStatus,
+                                      new SelectList(Model.MOCTrackActionStatus, "ID", "Name"), new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            <label>Category</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2" style="margin-left:-110px">
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.RecomCategoryID,
+                                      new SelectList(Model.Recomcategory, "ID", "Name"), new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+
+                        </div>
+                        </div><div class="row">
+                        <div class="col-lg-2 col-sm-2 col1">
+                            <label>Action By</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.ActionerID,
+                                      new SelectList(Model.ActionList, "UserID", "DisplayUserName"), "All",new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                        </div>
+                        <div class="form-group col-lg-1 col-sm-2">
+                            <img src="~/Images/searchIcon.png" onclick="SearchMOC()" name="btnSearch" id="btnSearch" alt="Search Button" style="cursor: pointer;height:30px;width:30px" title="Search" />
+                            &nbsp; &nbsp; &nbsp;
+                            @if (Model.ObservationViewModelList1.Count > 0)
+                            {
+                                <a href="@Url.Action("ExportTrackActions", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, ActionerID = ViewBag.actionerid, PlantID = ViewBag.PlantID, recomstatus = ViewBag.recomstatus, recompriority = ViewBag.recomp, recomcategory = ViewBag.recomc})">
+                                    <img src="~/Images/ms-excel-icon.png" alt="Export MOC List" style="width: 30px; height: 30px; cursor: pointer;" title="Export MOC List" />
+                                </a>
+
+                            }
+                        </div>
+                    </div>
+
+
+                        @*<div class="text-center">
+            <input type="button" class="btn btn-primary" onclick="SearchMOC()" name="btnSearch" id="btnSearch" value="Search" />
+            <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+        </div>*@
+                    </div>
+
+                <br />
+            </div>
+        </div>
+    </form>
+</div>
+
+@*@if (Model.ObservationViewModelList1.Count > 0)
+{
+    @Html.ActionLink("Export All Recommendations List", "ExportTrackActions", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, ActionerID = ViewBag.actionerid, PlantID = ViewBag.PlantID, recomstatus = ViewBag.recomstatus, recompriority = ViewBag.recomp, recomcategory = ViewBag.recomc, @class = "btn btn-primary" })
+
+}*@
+<br/>
+<div>
+    <div class="table-responsive" id="trackaction">
+        <table class="table" id="SearchResults">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Plant/Area</th>
+                    <th>MOC Number</th>
+                    <th>Recom ID</th>
+                    <th>Recomm Priority</th>
+                    <th>Recomm Category</th>
+                    <th>Actions/Deliverables</th>
+                    <th>Action By</th>
+                    <th>Target Date</th>
+                    <th>Completed Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.ObservationViewModelList1)
+                {
+
+                    <tr>
+                        <td>@item.SNo</td>
+                        <td>@item.PlantName</td>
+                        <td>@item.MOCNo</td>
+                        <td>@item.ObservationID</td>
+                        <td>@item.PriorityName</td>
+                        <td>@item.CategoryName</td>
+                        <td style="word-break:break-all;">@item.Recommendation</td>
+                        <td>@item.CompletedUser</td>
+                        <td>@item.TargetDate</td>
+                        <td>@item.CompletedDate</td>
+                        <td>@item.ActionStatus</td>
+
+                        <td>
+
+                            @if (Model.Roles.Find(a => a.RoleName == "MOC Coordinator") != null && item.ActionStatus != "Completed")
+                            {
+                                <a href="@Url.Action("MOCObservations", "MOC", new { MOCID = @item.MOCID })" title="Observations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+
+                            }
+
+                            @if (((Model.UserFullName == item.CompletedUser)) && Model.Roles.Find(a => a.RoleName != "MOC Coordinator") != null && item.ActionStatus != "Completed")
+                            {
+                                <a href="javascript:Observations(@item.MOCID);" title="Observations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+                                //|| (Model.UserFullName == item.FunctionalMgr)
+                            }
+
+                            else if (Model.UserFullName == item.FunctionalMgr && item.ActionStatus != "Completed")
+                            {
+                                <a href="javascript:Observations(@item.MOCID);" title="Observations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+
+                            }
+
+
+                        </td>
+
+                    </tr>
+
+                }
+
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>
+

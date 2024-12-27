@@ -1,0 +1,202 @@
+
+
+
+monitpro@gmail.com
+
+solutions@17
+
+monitpro1@gmail.com	
+
+solutions@17
+
+skype p:subha2345
+
+kavi14.234@gmail.com
+
+kavi1234
+
+idea :subha87trichy
+
+payoneer: subha123
+
+
+http://www.dotnetfunda.com/articles/show/1391/stored-procedure-with-xml-as-input
+
+
+
+new gmailID for IMS
+
+subhashinisk14@gmail.com
+subhask14
+
+
+
+Public DNS	ec2-52-38-115-235.us-west-2.compute.amazonaws.com
+User name	Administrator
+Password	
+KKH-Zup)JG?
+
+
+
+
+https://dev.socrata.com/blog/2017/01/03/visualizing-data-using-google-calendar-chart.html
+
+
+https://developers.google.com/calendar/quickstart/dotnet
+
+
+https://www.tutorialspoint.com/online_javascript_editor.php
+
+https://code.daypilot.org/10607/monthly-event-calendar-for-asp-net-mvc-and-jquery-open-source
+
+
+
+suganthipriya22051988
+
+https://www.w3schools.com/sql/trysqlserver.asp?filename=trysql_func_sqlserver_sum
+		
+
+NSERT INTO WasteMeasure(Quantity)
+SELECT a.ComplianceFormID,b.WasteTagId from Compliance a,WasteList b
+join WasteMeasure w on w.WasteTagId=b.WasteTagId
+
+
+                //createcompliance.Waste1 = InsertWasteData(wastelist1); 
+                string result = "";
+                objCom.CommandText = "WasteData1";
+                objCom.CommandType = CommandType.StoredProcedure;
+                for(int i=0;i<wastelist1.Count;i++)
+                {
+                    result += wastelist1[i].ComplianceFormID;
+                    result += wastelist1[i].WasteTagId;
+                    result += wastelist1[i].Quantity;
+
+                }
+                
+              objCom.ExecuteNonQuery();
+                objCon.Close();
+
+
+
+
+
+
+
+
+
+
+USE [WpsDev]
+GO
+/****** Object:  StoredProcedure [dbo].[WasteData1]    Script Date: 10/8/2018 5:21:10 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[WasteData1] 
+@XMLWaste xml
+AS
+BEGIN
+ 
+INSERT INTO [dbo].[WasteMeasure]
+SELECT
+  Compliance.Field.value('ComplianceformID[1]', 'int') ComplianceformID
+   ,WasteList.Field.value('WasteTagId[1]', 'varchar(30)')WasteTagId
+   ,Compliance.Field.value('Quantity[1]', 'nvarchar(10)') Quantity
+   ,sysdatetime()  
+FROM @XMLWaste.nodes('/WasteList1') Compliance(Field)
+cross Apply @XMLWaste.nodes('/WasteList1') WasteList(Field)
+END
+
+
+
+
+
+http://www.tutorialsteacher.com/csharp/csharp-list
+
+
+
+
+
+USE [WpsDev]
+GO
+/****** Object:  StoredProcedure [dbo].[WasteQuantity]    Script Date: 10/12/2018 11:03:51 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[WasteQuantity] 
+@WasteMeasure xml
+AS
+BEGIN
+ 
+INSERT INTO [dbo].[WasteMeasure]
+SELECT
+ WasteList.Field.value('WasteId[1]', 'nvarchar(10)')WasteId
+,WasteList.Field.value('Quantity[1]', 'varchar(30)')Quantity
+
+,sysdatetime()  
+FROM @WasteMeasure.nodes('ArrayOfWasteList/WasteList') WasteList(Field) 
+
+END
+
+
+
+https://social.msdn.microsoft.com/Forums/sqlserver/en-US/343a17b0-edaf-4baa-8b04-80cd2da93b98/xml-parent-and-child-nodes-into-tables?forum=sqlxml
+
+ 
+https://www.sqlteam.com/forums/topic.asp?TOPIC_ID=140397
+
+
+
+
+
+
+
+
+
+
+
+
+
+StringWriter sw = new StringWriter();
+                    HtmlTextWriter hw = new HtmlTextWriter(sw);
+                    GridView GridView1 = new GridView();
+                    if (dataSet.Tables[1].Rows.Count>0)
+                    {
+                        GridView1.AllowPaging = false;
+                        GridView1.DataSource = dataSet.Tables[1];
+                        GridView1.DataBind();
+                        GridView1.HeaderRow.Style.Add("width", "6%");
+                        GridView1.HeaderRow.Cells[0].Style.Add("width", "10px");
+                        GridView1.HeaderRow.Cells[1].Style.Add("width", "10px");
+                    
+                        GridView1.HeaderRow.Style.Add("font-size", "9px");
+                        GridView1.Style.Add("text-decoration", "Bold");
+                        GridView1.Style.Add("font-family", "Times New Roman");
+                        GridView1.Style.Add("font-size", "10px");
+                    }
+                    GridView1.RenderControl(hw);
+                    StringReader sr = new StringReader(sw.ToString());
+                   
+
+                    htmlparsers.Parse(sr);
+
+
+
+
+
+
+
+Declare @cols nvarchar(max),
+        @stmt nvarchar(max),
+        @colssec nvarchar(max)
+
+ SELECT @cols = isnull(@cols + ', ','') + QUOTENAME(w.WasteTagId)  FROM (SELECT  case when WasteList.UoM is null then WasteList.WasteName else WasteList.WasteName+'-'+WasteList.UoM end as WasteTagId ,WasteId FROM WasteList) as w order BY w.WasteId 
+
+
+
+SELECT @colssec = isnull(@colssec + ', ', '')+'ISNULL('+ QUOTENAME(w.WasteTagId)+',''-'') AS' +  QUOTENAME(w.WasteTagId)  FROM (SELECT  case when WasteList.UoM is null then WasteList.WasteName else WasteList.WasteName+'-'+WasteList.UoM end as WasteTagId ,WasteId FROM WasteList) as w order BY w.WasteId  
+
+        

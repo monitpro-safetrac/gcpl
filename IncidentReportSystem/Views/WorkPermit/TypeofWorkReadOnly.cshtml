@@ -1,0 +1,75 @@
+﻿
+@model MonitPro.Models.WorkPermit
+@{
+    Layout = null;
+}
+
+
+<style>
+    .table tbody > tr > td, .table tfoot > tr > td {
+        padding: 0px;
+        line-height: 1.5;
+        vertical-align: top;
+        border-top: 1px;
+    }
+</style>
+<table id="fixTable" class="table table-responsive ">
+    <tr>
+        <td>
+
+            @*<h5><b>Type Of Work :</b></h5>*@
+            @foreach (var item in Model.WorkType)
+            {
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <input type="checkbox" class="big-checkbox" name="work" id="check1" Value="@item.WorkTypeID" checked="@item.Ischecked"   disabled = "true"  /> @item.WorkTypeName
+
+
+                </div>
+
+            }
+           
+        </td>
+    </tr>
+    <tr>
+        @if (ViewBag.IsValidationFailed == true)
+        {
+            <td colspan="3" class="text-danger text-center">
+                <strong>@Html.ValidationMessage("PPEValidation")</strong>
+            </td>
+
+        }
+
+    </tr>
+
+</table>
+
+<script>
+    $('form').bind('submit', function () {
+        var $inputs = $(this).find(':input'),
+            disabledInputs = [],
+            $curInput;
+
+        // remove attributes
+        for (var i = 0; i < $inputs.length; i++) {
+            $curInput = $($inputs[i]);
+
+            if ($curInput.attr('disabled') !== undefined) {
+                $curInput.removeAttr('disabled');
+                disabledInputs.push(true);
+            } else
+                disabledInputs.push(false);
+        }
+
+        // add attributes
+        setTimeout(function () {
+            for (var i = 0; i < $inputs.length; i++) {
+
+                if (disabledInputs[i] === true)
+                    $($inputs[i]).attr('disabled', true);
+
+            }
+        }, 1);
+
+    });
+</script>
+

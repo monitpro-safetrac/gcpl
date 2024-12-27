@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Chart BorderColor="26, 59, 105" BorderlineDashStyle="Solid" BorderWidth="2" Palette="none" PaletteCustomColors="#AFAFFF;#CDB075;#FFAFAF" >
+  <Series>
+    <Series Name="serie"  Font="Arial Black, 11pt, style=Bold"  IsValueShownAsLabel="true" Label="#PERCENT{P0},#VALY" CustomProperties="PieLabelStyle=Inside, PieDrawingStyle=Default" LegendText="#VALX" >
+      <SmartLabelStyle Enabled="True" />
+    </Series>
+  </Series>
+  <Titles>
+    <Title  Name="main" Font="Arial Black, 12pt, style=Bold" />
+  </Titles>
+  <Legends>
+    <Legend _Template_="All" BackColor="Transparent" Docking="bottom" Font="Trebuchet MS, 10pt, style=Bold" IsTextAutoFit="False"  ForeColor="#000000"/>
+  </Legends>
+  <BorderSkin SkinStyle="Emboss" />
+</Chart>

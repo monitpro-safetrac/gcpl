@@ -1,0 +1,116 @@
+﻿@model ValsparApp.Models.WorkPermit
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Approve/Reject</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="fixTable" class="table-bordered table-responsive" width="98%">
+                @Html.Partial("PermitTemplateforApprover", Model)
+
+                @*@if (Model.WorkTypeID == 1)
+                {
+                    <tr id="ElectricalInstallation">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("ElectricalInstallation", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                @if (Model.WorkTypeID == 5)
+                {
+                    <tr id="HotWork">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HotWork", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.WorkTypeID == 8)
+                {
+                    <tr id="HeightFragileRoof">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HeightFragileRoof", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.WorkTypeID == 10)
+                {
+                    <tr id="HazardInformation">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HazardInformation", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }*@
+
+
+                <tr>
+                    <td align="right" valign="top">Approver Comment :</td>
+                    <td colspan="4">
+                        @Html.TextAreaFor(m => m.ApproverComment, new { @rows = "5", @cols = "500", @style = "width:500px", @class = "form-control input-sm" })
+                        @Html.ValidationMessageFor(m => m.ApproverComment, null, new { @class = "label label-danger" })
+                    </td>
+                </tr>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" align="center">
+                            <input type="submit" class="btn btn-primary" value="Approve" id="ApprovePermit" style="width:150px" />&nbsp;&nbsp;
+                            <input type="submit" class="btn btn-primary" value="Reject" id="RejectPermit" style="width:150px" />&nbsp;&nbsp;
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        @Html.HiddenFor(m => m.Status);
+        @Html.HiddenFor(m => m.WorkPermitID);
+        @Html.HiddenFor(m => m.WorkTypeID);
+    </div>
+}
+
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+
+    $("#ApprovePermit").click(function (event) {
+        $("#ApproverID").prop("disabled", false);
+        $("#PermitIssuerName").prop("disabled", false);
+        $('#Status').val("A");
+    }
+     );
+
+    $("#RejectPermit").click(function (event) {
+        $("#ApproverID").prop("disabled", false);
+        $("#PermitIssuerName").prop("disabled", false);
+        $('#Status').val("R");
+    }
+   );
+    $(document).ready(function () {
+        $("#ApproverID").prop("disabled", true);
+        $("#PermitIssuerName").prop("disabled", true);
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+
+    $("#Reset").click(function (event) {
+        $(".field-validation-error").empty();
+        $(':text').val(""); // Clear values from all the text boxes
+    }
+  );
+    
+</script>

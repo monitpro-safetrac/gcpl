@@ -1,0 +1,301 @@
+﻿
+@model IncidentReportSystem.Models.ComplianceList
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+
+
+<div id="WasteList" class="table-responsive pre-scrollable" style="max-height:500px">
+    <div class="panel panel-primary">
+        <input type="hidden" id="LoggedInUserID" value="@Model.UserID" />
+        <div class="panel-heading">
+            <h1 class="panel-title">EditTemplate <input type="button" class="btn btn-success" id="addbtn" value="Add Waste" onClick="AddRow()"></h1>
+        </div>
+        <table id="fixTable" class="table table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Waste NO</th>
+                    <th>Waste TagId</th>
+                    <th>Waste Name</th>
+                    <th>UoM</th>
+                </tr>
+            </thead>
+            @for (var loopCounter = 0; loopCounter < Model.Waste.Count; loopCounter++)
+            {
+                <tr>
+                    <td nowrap>
+                        <input type="button" class="btn btn-primary" value="Edit" id="@("Edit" + loopCounter)" onclick="EditPlan(@loopCounter)">
+                        <input type="button" style="display:none" class="btn btn-primary" value="Update" id="@("Update" + loopCounter)" onclick="UpdatePlan(@loopCounter)">
+                        <input type="button" style="display:none" class="btn btn-primary" value="Cancel" id="@("Cancel" + loopCounter)" onclick="CancelEdit(@loopCounter)">
+                    </td>
+                    <td><input type="text" style="width:100px" class="form-control input-sm" disabled="disabled" id=@("WasteNo" + loopCounter) value="@Model.Waste[loopCounter].WasteNo"></td>
+                    <td><input type="text" style="width:100px" class="form-control input-sm" disabled="disabled" id=@("WasteTagId" + loopCounter) value="@Model.Waste[loopCounter].WasteTagId"></td>
+                    <td><input type="text" style="width:250px" class="form-control input-sm" disabled="disabled" id=@("WasteName" + loopCounter) value="@Model.Waste[loopCounter].WasteName"></td>
+                    <td><input type="text" style="width:100px" class="form-control input-sm" disabled="disabled" id=@("UoM" + loopCounter) value="@Model.Waste[loopCounter].UoM"></td>
+                    <td style="display:none">@loopCounter<input type="hidden" class="form-control input-sm" value="@Model.Waste[loopCounter].WasteId" id=@("WasteId"+loopCounter) /></td>
+                </tr>
+            }
+
+            <tr id="NewRow" style="display:none">
+                <td nowrap>
+                    <input type="button" class="btn btn-success" value="Save" id="btnSave" onclick="AddWaste();">
+                </td>
+
+                <td><input type="text" style="width:100px" class="form-control input-sm" id="NewWasteNo"></td>
+                <td><input type="text" style="width:100px" class="form-control input-sm" id="NewWasteTagId"></td>
+                <td><input type="text" style="width:250px" class="form-control input-sm" id="NewWasteName"></td>
+                <td><input type="text" style="width:100px" class="form-control input-sm" id="NewUoM"></td>
+            </tr>
+        </table>
+        <input type="hidden" id="RowCount" value="@Model.Waste.Count" />
+        <input type="hidden" id="EditFlag" />
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/tableHeadFixer.js"></script>
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+
+    <script>
+        function EditPlan(RowID) {
+            if ($("#EditFlag").val() != "") {
+                if (confirm('Do you want to ignore changes?')) {
+                    $("#EditFlag").val('');
+                }
+                else {
+                    return false;
+                }
+
+            }
+            else {
+                $("#EditFlag").val("1");
+            }
+
+            $("#NewRow").hide();
+
+            for (var i = 0; i < $("#RowCount").val(); i++) {
+                $("#Edit" + i).show();
+                $("#Update" + i).hide();
+                $("#Cancel" + i).hide();
+                $("#WasteNo" + i).attr('disabled', 'disabled');
+                $("#WasteTagId" + i).attr('disabled', 'disabled');
+                $("#WasteName" + i).attr('disabled', 'disabled');
+                $("#UoM" + i).attr('disabled', 'disabled');
+
+
+            }
+
+
+            $("#Edit" + RowID).hide();
+            $("#Update" + RowID).show();
+            $("#Cancel" + RowID).show();
+
+            $("#WasteNo" + RowID).removeAttr("disabled");
+            $("#WasteTagId" + RowID).removeAttr("disabled");
+            $("#WasteName" + RowID).removeAttr("disabled");
+
+            $("#UoM" + RowID).removeAttr("disabled");
+
+        }
+
+
+
+        function CancelEdit(RowID) {
+            $("#EditFlag").val('');
+            location.reload();
+
+        }
+
+
+        function UpdatePlan(RowID) {
+            $("#EditFlag").val('');
+            vWasteId = $("#WasteId" + RowID).val();
+            vWasteNo = $("#WasteNo" + RowID).val();
+            vWasteTagId = $("#WasteTagId" + RowID).val();
+            vWasteName = $("#WasteName" + RowID).val();
+            vUoM = $("#UoM" + RowID).val();
+
+
+            if (vWasteNo == "") {
+                alert("Waste No is required.")
+                $("#WasteNo" + RowID).focus();
+                return false;
+            }
+            if (vWasteNo == "0") {
+                alert("Waste No should not be 0 ")
+                $("#WasteNo" + RowID).focus();
+                return false;
+            }
+
+            if (vWasteTagId == "") {
+                alert("WasteTagId is required.")
+                $("#WasteTagId" + RowID).focus();
+                return false;
+            }
+            if (vWasteName == "") {
+                alert("WasteName is required.")
+                $("#WasteName" + RowID).focus();
+                return false;
+            }
+            if (vUoM == "") {
+                alert("UoM is required. ")
+                $("#UoM" + RowID).focus();
+                return false;
+            }
+
+
+
+            try {
+
+                $.ajax({
+                    type: 'post',
+                    dataType: 'html',
+                    url: '../Compliance/EditWasteList',
+                    data: {
+                        WasteId: vWasteId, WasteNo: vWasteNo, WasteTagId: vWasteTagId, WasteName: vWasteName, UoM: vUoM
+                    },
+                    success: function (data) {
+                        if (data >= 1) {
+                            $("#WasteList").load("../Compliance/EditTemplate");
+                        }
+                        else if (data == -1) {
+                            alert("WasteNo already exists.")
+                            return false;
+                        }
+
+                        else if (data == -2) {
+                            alert("WasteTagId already exists.")
+                            return false;
+                        }
+                        else if (data == -3) {
+                            alert("WasteName already exists.")
+                            return false;
+                        }
+
+
+
+                        else {
+                            location.reload();
+                        }
+
+                    },
+                    error: function (xhr, textStatus, error) {
+                        alert("Error on Updating Parameter information.")
+                    }
+                });
+
+            } catch (error) {
+                alert(error)
+            }
+        }
+
+        function AddRow() {
+
+            if ($("#EditFlag").val() != "") {
+                if (confirm('Do you want to ignore the changes?')) {
+                    $("#EditFlag").val('');
+                }
+                else {
+                    return false;
+                }
+
+            }
+            else {
+                $("#EditFlag").val("1");
+            }
+            //$("#target").load(BaseURL + "Admin/EditPlanParameters/" + $('#EquipmentId').val());
+            $("#NewRow").show();
+            $("#NewTagId").focus();
+        }
+
+        function AddWaste() {
+            vWasteNo = $("#NewWasteNo").val();
+            vWasteTagId = $("#NewWasteTagId").val();
+            vWasteName = $("#NewWasteName").val();
+
+            vUoM = $("#NewUoM").val();
+
+            if (vWasteNo == "") {
+                alert("Waste No is required.")
+                $("#NewWasteNo").focus();
+                return false;
+            }
+            if (vWasteNo == "0") {
+                alert("Waste No  should not be 0")
+                $("#NewWasteNo").focus();
+                return false;
+            }
+            if (vWasteTagId == "") {
+                alert("WasteTagId is required.")
+                $("#NewWasteTagId" + RowID).focus();
+                return false;
+            }
+            if (vWasteName == "") {
+                alert("WasteName is required.")
+                $("#NewWasteName" + RowID).focus();
+                return false;
+            }
+            if (vUoM == "") {
+                alert("UoM is required. ")
+                $("#NewUoM" + RowID).focus();
+                return false;
+            }
+
+
+            try {
+
+                $.ajax({
+                    type: 'post',
+                    url: '../Compliance/WasteAdd',
+                    data: {
+                        WasteNo: vWasteNo, WasteTagId: vWasteTagId, WasteName: vWasteName, UoM: vUoM
+                    },
+                    success: function (data) {
+                        if (data >= 1) {
+
+                            $("#WasteList").load("../Compliance/EditTemplate");
+                        }
+
+
+                        else if (data == -1) {
+                            alert("WasteNo already exists.")
+                            return false;
+                        }
+
+                        else if (data == -2) {
+                            alert("WasteTagId already exists.")
+                            return false;
+                        }
+                        else if (data == -3) {
+                            alert("WasteName already exists.")
+                            return false;
+                        }
+
+
+
+                        else {
+                            location.reload();
+                        }
+
+                    },
+                    error: function (xhr, textStatus, error) {
+                        alert("Error on Updating Parameter information.")
+                    }
+                });
+
+            } catch (error) {
+                alert(error)
+            }
+        }
+
+
+    </script>
+
+
+}

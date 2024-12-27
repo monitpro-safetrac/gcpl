@@ -1,0 +1,449 @@
+﻿@model MonitPro.Models.PSSR.AssignTeamViewModel
+
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+
+<script type="text/javascript">
+      function SaveAssignTeam() {
+       
+    var ValidationMessage = '';
+    var ControlToFocus = '';
+    var Coordinator = 0;
+    var ChairPerson = '';
+    var OL = '';
+    var HSELead = '';
+    var EnggLead = '';
+    var PSSRLead = '';
+          var TeamMembers = '';
+        
+    var PSSRID = @Html.Raw(Json.Encode(Model.createModel.PSSRID));
+
+        $('#ObserversList option').each(function (i, selected) {
+            TeamMembers = TeamMembers + "," + $(selected).val();
+    });
+    $('#Coordinator :selected').each(function (i, selected) {
+            Coordinator = Coordinator + $(selected).val();
+         });
+    $('#ChairPerson :selected').each(function (i, selected) {
+            ChairPerson = ChairPerson + $(selected).val();
+         });
+    $('#OperationLead :selected').each(function (i, selected) {
+            OL = OL + $(selected).val();
+        });
+    $('#HSELead :selected').each(function (i, selected) {
+        HSELead = HSELead + $(selected).val();
+    });
+    $('#EnggLead :selected').each(function (i, selected) {
+        EnggLead = EnggLead + $(selected).val();
+    });
+    $('#PSSRLead :selected').each(function (i, selected) {
+        PSSRLead = PSSRLead + $(selected).val();
+    });
+   
+    if (ChairPerson == '') {
+             ValidationMessage = ValidationMessage + '\n Chair Person';
+
+             if (ControlToFocus == '') {
+                 ControlToFocus = "#ChairPerson "
+                                        }
+         }
+    if (OL == '') {
+        ValidationMessage = ValidationMessage + '\n Operations Lead';
+
+        if (ControlToFocus == '') {
+            ControlToFocus = "#OperationLead "
+        }
+    }
+    if (HSELead == '') {
+        ValidationMessage = ValidationMessage + '\n HSE Lead';
+
+        if (ControlToFocus == '') {
+            ControlToFocus = "#HSELead "
+        }
+    }
+    if (EnggLead == '') {
+        ValidationMessage = ValidationMessage + '\n Engineering Lead';
+
+        if (ControlToFocus == '') {
+            ControlToFocus = "#EnggLead "
+        }
+    }
+    if (ChairPerson == '') {
+        ValidationMessage = ValidationMessage + '\n Chair Person';
+
+        if (ControlToFocus == '') {
+            ControlToFocus = "#ChairPerson "
+        }
+    }
+         if (ValidationMessage != '') {
+             alert('Please provide the following field(s) ' + ValidationMessage);
+            $(ControlToFocus).focus();
+         }
+         else {
+            $.ajax({
+                 method: "POST",
+                url: "../PSSR/SaveAssignTeam",
+                data: { PSSRID:PSSRID, Coordinator:Coordinator, ChairPerson:ChairPerson, OL :OL, HSELead:HSELead, EnggLead:EnggLead, PSSRLead:PSSRLead, MemberList: TeamMembers },
+                success: function (resultdata) {
+                     alert(JSON.stringify('PSSR Team Assigned'));
+                     location.reload(true);
+                 },
+                error: function (errdata) {
+                     alert(JSON.stringify(errdata));
+                     alert("Dynamic content load failed.");
+                 }
+             });
+         }
+
+
+
+     }
+</script>
+    <script type="text/javascript">
+
+        // $(function () {
+        //     $("#Coordinator").select2();
+        //     $("#ChairPerson").select2();
+        //     $("#OperationLead").select2();
+        //     $("#HSELead").select2();
+        //     $("#EnggLead").select2();
+        //     $("#PSSRLead").select2();
+        //     $("#DeptID").select2();
+
+        //});
+
+      function AddSelected() {
+            $("#EmployeeList option:selected").appendTo("#ObserversList");
+       }
+
+       function AddAll() {
+            $("#EmployeeList option").appendTo("#ObserversList");
+       }
+
+       function RemoveSelected() {
+            $("#ObserversList option:selected").appendTo("#EmployeeList");
+        }
+
+       function RemoveAll() {
+            $("#ObserversList option").appendTo("#EmployeeList");
+        }
+
+      
+     var $selects = $("select[name='dropdown1']");
+
+        $selects.on('change', function () {
+
+            // enable all options
+            $selects.find('option').prop('disabled', false);
+
+            // loop over each select, use its value to
+            // disable the options in the other selects
+            $selects.each(function () {
+                $selects.not(this)
+                    .find('option[value="' + this.value + '"]')
+                    .prop('disabled', true);
+            });
+
+        });
+        var $dropdown1 = $("select[name='dropdown1']");
+        var $dropdown2 = $("select[name='dropdown2']");
+        var $dropdown3 = $("select[name='dropdown3']");
+        var $dropdown4 = $("select[name='dropdown4']");
+        var $dropdown5 = $("select[name='dropdown5']");
+        var $dropdown6 = $("select[name='dropdown6']");
+        var $dropdown7 = $("select[name='dropdown7']");
+        $dropdown1.change(function () {
+            $dropdown2.children().show();
+            var selectedItem = $($dropdown1).val();
+            if (selectedItem != "") {
+                $('select[name="dropdown7"] option[value="' + selectedItem + '"]').hide();
+                
+            }
+        });
+        $dropdown2.change(function () {
+
+            $dropdown3.children().show();
+            var selectedItem = $($dropdown2).val();
+            if (selectedItem != "")
+                $('select[name="dropdown7"] option[value="' + selectedItem + '"]').hide();
+            
+            $('select[name="dropdown3"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown4"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown5"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown6"] option[value="' + selectedItem + '"]').hide();
+          
+        });
+        $dropdown3.change(function () {
+            $dropdown3.children().show();
+            var selectedItem = $($dropdown3).val();
+            if (selectedItem != "")
+                $('select[name="dropdown7"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown2"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown4"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown5"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown6"] option[value="' + selectedItem + '"]').hide();
+
+        });
+        $dropdown4.change(function () {
+            $dropdown2.children().show();
+            var selectedItem = $($dropdown4).val();
+            if (selectedItem != "")
+                $('select[name="dropdown7"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown3"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown2"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown5"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown6"] option[value="' + selectedItem + '"]').hide();
+  
+        });
+        $dropdown5.change(function () {
+            $dropdown2.children().show();
+            var selectedItem = $($dropdown5).val();
+            if (selectedItem != "")
+                $('select[name="dropdown7"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown3"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown4"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown2"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown6"] option[value="' + selectedItem + '"]').hide();
+           
+        });
+        $dropdown6.change(function () {
+            $dropdown2.children().show();
+            var selectedItem = $($dropdown6).val();
+            if (selectedItem != "")
+                $('select[name="dropdown7"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown3"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown4"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown2"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown5"] option[value="' + selectedItem + '"]').hide();
+        });
+        $(document).ready(function () {
+            $("#DeptID").change(function () {
+                var select = $("#EmployeeList");
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: " "
+                }));
+                var select1 = $("#Obsevers_AssignedLead");
+                select1.empty();
+                select1.append($('<option/>', {
+                    value: "",
+                    text: "--Select Lead-- "
+                }));
+                var selectedDepartID = $(this).val();
+
+                    $.getJSON("../Incident/GetDeptEmployees", { deptID: selectedDepartID }, function (data) {
+                        $.each(data, function (index, itemData) {
+                            select.append($('<option/>', {
+                                value: itemData.Value,
+                                text: itemData.Text
+                            }));
+                            select1.append($('<option/>', {
+                                value: itemData.Value,
+                                text: itemData.Text
+                            }));
+                        });
+                    });
+
+             });
+    });
+
+        function CreatePSSR(pssid) {
+
+            // window.location.href = '../PSSR/EditPSSR?PSSRID=' + pssid;
+            history.back();
+        }
+        $(document).ready(function () {
+
+            document.getElementById('list').style.height = window.innerHeight - 100 + "px";
+        });
+    </script>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+        /**/</script>
+}
+@{
+    ViewBag.Title = "AssignObservers";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        .pad {
+            padding-left: 60px;
+        }
+
+        .select2-container {
+            max-width: 100%;
+        }
+
+        .select2-container {
+            width: 300px; /* or any other value you prefer */
+        }
+
+        .row {
+            padding-bottom: 10px;
+        }
+
+        .col1 {
+            padding-left: 90px;
+        }
+
+        .col2 {
+            padding-left: 40px;
+        }
+
+        .padr {
+            padding-right: 90px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-lg container-sm container-md container-xl">
+        <div class="div-border" id="list" style="width:90%; align-items:center;">
+            <h1 class="div-h1"><span class="div-h1-span">Assign PSSR Team</span></h1>
+            <table id="tbl" style="width:80%" align="center" border="1">
+                <tr>
+                    <th>PSSR Number</th>
+                    <th>Plant/Area</th>
+                    <th>System Description</th>
+                    <th>PSSR Category</th>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayFor(model => model.createModel.PSSRID)</td>
+                    <td>@Html.DisplayFor(model => model.createModel.PlantName)</td>
+                    <td>@Html.DisplayFor(model => model.createModel.SystemDesc)</td>
+                    <td>@Html.DisplayFor(model => model.createModel.CategoryName) </td>
+                </tr>
+            </table>
+            <br />
+            <div class="row padr">
+                @*<div class="col-lg-3 col-sm-3 col1">
+            <label>PSSR Coordinator</label>
+        </div>
+        <div class="col-lg-3 col-sm-3">
+            @Html.DropDownListFor(model => model.Coordinator,
+                                                     new SelectList(Model.CoordinatorList, "UserID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown1", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.Coordinator, "", new { @class = "label label-danger" })
+        </div>*@
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>PSSR Lead</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.PSSRLead, new SelectList(Model.PSSRLeadList, "UserID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown6", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>PSSR Chairperson</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.ChairPerson, new SelectList(Model.ChairPersonList, "UserID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown2", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+
+                </div>
+
+
+
+            </div>
+            <div class="row padr">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Operations Lead</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.OperationLead,
+                                                             new SelectList(Model.OperationHeadList, "UserID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown3", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                    @Html.ValidationMessageFor(model => model.OperationLead, "", new { @class = "label label-danger" })
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>HSE Lead</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.HSELead, new SelectList(Model.HSELeadList, "UserID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown4", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+
+                </div>
+
+
+
+            </div>
+            <div class="row padr">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Department</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(Model => Model.DeptID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                    @Html.ValidationMessageFor(m => m.DepartmentList, null, new { @class = "label label-danger" })
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Engineering Lead</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.EnggLead,
+                                                             new SelectList(Model.EnggLeadList, "UserID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown5", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                    @Html.ValidationMessageFor(model => model.EnggLead, "", new { @class = "label label-danger" })
+                </div>
+              
+
+
+
+            </div>
+
+            <div class="container-lg">
+                <table class="table-borderless" align="center">
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Employees List</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Team Member List</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ListBox("EmployeeList", ViewBag.TeamMembersList as SelectList, new { Name = "dropdown7", style = "width: 225px; height: 250px;" })
+                        </td>
+                        <td align="center">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnAdd" onclick="javascript: AddSelected();" value=">" style="width: 50px;" /><br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnAddAll" onclick="javascript: AddAll();" value=">>" style="width: 50px;" /><br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnRemove" onclick="javascript: RemoveSelected();" value="<" style="width: 50px;" /><br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnRemoveAll" onclick="javascript: RemoveAll();" value="<<" style="width: 50px;" />
+                        </td>
+                        <td>
+                            &nbsp;&nbsp; @Html.ListBox("ObserversList", ViewBag.ObserList as SelectList, new { style = "width: 225px; height: 250px;" })
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <br />
+            <div class="col-lg-12 text-center">
+                <button class="btn btn-primary" type="submit" id="btnSave" onclick="javascript: SaveAssignTeam();" value="Save" style="width: 100px;"> Save </button>&nbsp; &nbsp; &nbsp;
+                <input type="button" class="btn btn-primary" style=" width: 100px;height:30px;" value="PSSR List"
+                       onclick="location.href='@Url.Action("PSSRList", "PSSR")'" />
+            </div>
+
+
+
+        </div>
+    </div>
+</body>
+</html>
+

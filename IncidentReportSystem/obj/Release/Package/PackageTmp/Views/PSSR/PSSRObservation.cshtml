@@ -1,0 +1,657 @@
+﻿@model MonitPro.Models.PSSR.PSSR_Observation
+
+
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<style>
+    .tableFixHead {
+        overflow-y: auto;
+        height: 250px;
+    }
+
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
+
+    html {
+        overflow: auto;
+    }
+
+    .padr {
+        padding-left: 30px;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .row {
+        padding-bottom: 10px;
+    }
+</style>
+
+@section scripts
+    {
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+    <script>
+        //$("#Save").click(function (event) {
+        //    $('#Status').val("D");
+        //});
+
+        $(function () {
+            $('#ActionBy').select2();
+        });
+        $(function () {
+            $("#TargetDate").datepicker({ dateFormat: 'dd/mm/yy' });
+            $("#CompletedDate").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
+
+        function chng() {
+            var typ = document.getElementById("fileToUpload").value;
+            var res = typ.match(".JPG|.jpg|.jpeg|.JPEG");
+            var fileUpload = $("#fileToUpload").get(0);
+            var files = fileUpload.files;
+
+            if (res) {
+                if (files[0].size < 500000) {
+
+                    alert("Attached Successfully");
+                }
+                else {
+                    alert("Only accept JPEG file less then 500KB!");
+                    document.getElementById("fileToUpload").value = "";
+                }
+            }
+            else {
+                alert("Only accept JPEG file less then 500KB!");
+                document.getElementById("fileToUpload").value = "";
+            }
+        }
+
+        function DeleteOBImage(ObservationID) {
+            var i;
+            if (confirm("Are you sure you want to delete ?") == true) {
+                i = "OK";
+                var options = { "backdrop": "static", keyboard: true };
+
+                $.ajax({
+                    method: "POST",
+                    url: "../PSSR/DeleteOBImage",
+                    data: { obid: ObservationID },
+                    success: function (response) {
+                        //$('#contentdiv').html(response);
+                        alert('Deleted Successfully');
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert(JSON.stringify(data));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            } else {
+                i = "Cancel";
+            }
+
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+        function PSSRSaveObservations(status) {
+            if (status == 2) {
+                $("#RecommID").prop("disabled", true);
+                $("#RecommText").prop("disabled", true);
+                $("#PSSRCategory").prop("disabled", true);
+                $("#PriorityID").prop("disabled", true);
+                $("#PriorityID").prop("disabled", true);
+                $("#TargetDate").prop("disabled", false);
+                $("#ActionBy").prop("disabled", true);
+                $("#ActionTaken").prop("disabled", true);
+                $("#Remarks").prop("disabled", false);
+
+            }
+
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var formData = new FormData();
+
+            var SaveURL = '../PSSR/SavePSSRObservation';
+            var options = { "backdrop": "static", keyboard: true };
+
+            if (status == 1) {
+
+                formData.append('CompletedDate', $("#CompletedDate").val());
+            }
+            var fileUpload = $("#fileToUpload").get(0);
+            var files = fileUpload.files;
+            if (files[0] != null) {
+                formData.append(files[0].name, files[0]);
+            }
+            else {
+                formData.append('PSSRObAttachmentName', $("#disvalue").html());
+
+            }
+
+            formData.append('PSSRID', $("#PSSRModel_PSSRID").val());
+            formData.append('RecommID', $("#RecommID").val());
+            formData.append('RecommText', $("#RecommText").val());
+            formData.append('PSSRCategory', $("#PSSRCategory").val());
+            formData.append('PriorityID', $("#PriorityID").val());
+            formData.append('TargetDate', $("#TargetDate").val());
+            formData.append('CompletedDate', $("#CompletedDate").val());
+            formData.append('ActionBy', $("#ActionBy").val());
+            formData.append('ActionTaken', $("#ActionTaken").val());
+            formData.append('Remarks', $("#Remarks").val());
+
+            if ($("#RecommText").val() == '') {
+                ValidationMessage = ValidationMessage + '\n Recommendation';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = "#RecommText"
+                }
+            }
+            if ($("#PSSRCategory").val() == '') {
+                ValidationMessage = ValidationMessage + '\n Recommendation Category';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = "#PSSRCategory"
+                }
+            }
+            if ($("#PriorityID").val() == '') {
+                ValidationMessage = ValidationMessage + '\n Priority';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = "#PriorityID"
+                }
+            }
+            if ($("#TargetDate").val() == '') {
+                ValidationMessage = ValidationMessage + '\n Target Date';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = "#TargetDate"
+                }
+            }
+            if ($("#ActionBy").val() == '') {
+                ValidationMessage = ValidationMessage + '\n Action By';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = "#ActionBy"
+                }
+            }
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else {
+
+                $.ajax({
+                    method: "POST",
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    url: SaveURL,
+                    data: formData,
+
+                })
+                    .done(function (msg) {
+                        alert("Data Saved Successfully " + msg);
+                    });
+
+                alert('Data Saved Successfully');
+                location.reload(true);
+            }
+        }
+    </script>
+
+    <script>
+        function EditObservation(ObsID) {
+            var response;
+            var EditURL = '../PSSR/Editbservation';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var saveData = $.ajax({
+                type: "POST",
+                url: EditURL,
+                data: '{RecommID: ' + ObsID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (resultdata) {
+
+                    $("#RecommID").val(resultdata.Editob.RecommID);
+                    $("#RecommText").val(resultdata.Editob.RecommText);
+                    $("#PSSRCategory").val(resultdata.Editob.PSSRCategory);
+                    $("#PriorityID").val(resultdata.Editob.PriorityID);
+                    $("#TargetDate").val(resultdata.Editob.TargetDate);
+                    $("#ActionBy").val(resultdata.Editob.ActionBy);
+                    $("#ActionBy").select2();
+                    $("#CompletedDate").val(resultdata.Editob.CompletedDate);
+                    $("#ActionTaken").val(resultdata.Editob.ActionTaken);
+                    $("#Remarks").val(resultdata.Editob.Remarks);
+                    $("#RequestIdentity").val(resultdata.Editob.RequestIdentity);
+
+                    var cusr =@Model.UserID;
+                    var acby = resultdata.Editob.ActionBy;
+                    var id = resultdata.Editob.RequestIdentity;
+                    if (acby != cusr) {
+                        $("#btnSave").show();
+                        $("#btncomplete").hide();
+                        $("#btnRequest").hide();
+
+                    }
+                    else {
+
+                        $("#btnSave").hide();
+                        if (id == 0) {
+                            $("#btnRequest").show();
+                            $("#btnRequest").attr("disabled", false);
+                        }
+                        else {
+                            $("#btnRequest").hide();
+                        }
+                        $("#btncomplete").attr("disabled", false);
+
+                    }
+
+                },
+
+                error: function (errdata) {
+                    //alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function DisabledActioner(ObsID) {
+
+            $("#RecommID").prop("disabled", true);
+            $("#RecommText").prop("disabled", true);
+            $("#PSSRCategory").prop("disabled", true);
+            $("#PriorityID").prop("disabled", true);
+            $("#PriorityID").prop("disabled", true);
+            $("#TargetDate").prop("disabled", true);
+            $("#ActionBy").prop("disabled", true);
+            $("#ActionTaken").prop("disabled", false);
+            $("#Remarks").prop("disabled", false);
+        }
+
+    </script>
+    <script>
+        $("#btnSave").click(function () {
+            $("#RecommID").removeAttr('disabled')
+
+        });
+        $(document).ready(function () {
+            $("#RecommStatus").prop("disabled", true);
+
+        });
+    </script>
+    <script type="text/javascript">
+        function callRequestForm() {
+            var recomid = $("#RecommID").val();
+            var CurrentURL = '../PSSR/PSSRTargetDateRequest';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: { RecomID: recomid },
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+     
+
+    </script>
+    @if (Model.ActionByName == Model.UserFullName && Model.RoleID != 19)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                $("#RecommID").prop("disabled", true);
+                $("#RecommText").prop("disabled", true);
+                $("#PSSRCategory").prop("disabled", true);
+                $("#PriorityID").prop("disabled", true);
+                $("#PriorityID").prop("disabled", true);
+                $("#TargetDate").prop("disabled", true);
+                $("#ActionBy").prop("disabled", true);
+                $("#ActionTaken").prop("disabled", true);
+                $("#Remarks").prop("disabled", true);
+            });
+        </script>
+    }
+
+}
+@*@if (ViewBag.SessMessage != null)
+    {
+        <script type="text/javascript">
+            {
+                alert("Newer session exists in another browser/system...Logout");
+                window.location.href = "../Account/Login";
+            };
+
+        </script>
+    }*@
+
+@{
+    ViewBag.Title = "PSSRObservation";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h1 class="panel-title">PSSR Observation</h1>
+    </div>
+    <table id="fixTable" style="width:90%" align="center" class="table-responsive">
+        @Html.HiddenFor(model => model.PSSRModel.PSSRID)
+
+        @*@Html.HiddenFor(model => model.CompletedDate)*@
+
+
+        <tr>
+            <td colspan="4">
+                <table style="width:95%" align="center" border="1">
+                    <tr>
+                        <td style="font-weight:bold;font-size: 15px;">PSSR Number</td>
+                        <td style="font-weight:bold;font-size: 15px;">Plant Area</td>
+                        <td style="font-weight:bold;font-size: 15px;">System Description</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.PSSRModel.PSSRID)</td>
+                        <td>@Html.DisplayFor(model => model.PSSRModel.PlantName)</td>
+                        <td>@Html.DisplayFor(model => model.PSSRModel.SystemDesc)</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br />
+
+    <div class="container-lg container-md container-sm padr">
+
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Recommendation ID</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextBoxFor(Model => Model.RecommID,
+               new
+                    {
+
+                        @class = "form-control input-sm",
+                        @disabled = "disabled",
+                   @maxlength = "100",
+                        @style = "width: 400px;   max-width: 80%;"
+                    })
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Recommendation</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.RecommText,
+               new
+                    {
+
+                        @class = "form-control input-sm",
+                   @style = "width: 500px; height: 60px;  max-width: 80%;"
+                    })
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Priority</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.PriorityID,
+                new SelectList(Model.PriorityList, "PriorityID", "PriorityName"), "--Select--", new
+                {
+                         @class = "form-control input-sm",
+
+                         @maxlength = "100",
+                    @style = "width: 400px;   max-width: 80%;"
+                     })
+            </div>
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Target Date</label>
+            </div>
+
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.EditorFor(model => model.TargetDate,
+               new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control date-time-picker",
+                    @maxlength = "100",
+                            @style = "width: 230px;   max-width: 80%;",
+                   @autocomplete = "off"
+                        }
+                    })
+
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Action By</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.ActionBy,
+                new SelectList(Model.EmployeeList, "UserID", "FullName"), "--Select--", new
+                {
+                         @class = "form-control input-sm",
+
+                    @style = "width: 380px;   max-width: 90%;"
+                     })
+                @Html.ValidationMessageFor(model => model.ActionBy, "", new { @class = "label label-danger" })
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Completed Date </label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.EditorFor(model => model.CompletedDate, new
+           {
+               htmlAttributes = new
+               {
+                   @class = "form-control date-time-picker",
+                   @disabled = "disabled",
+                   @maxlength = "100",
+                   @style = "width: 230px;   max-width: 80%;",
+                   @autocomplete = "off"
+               }
+           })
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Action Taken</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.ActionTaken, new
+           {
+
+               @disabled = "disabled",
+               @class = "form-control input-sm",
+               @style = "width: 500px; height: 60px;  max-width: 80%;"
+           })
+
+            </div>
+
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Remarks</label>
+            </div>
+
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.TextAreaFor(model => model.Remarks, new
+           { @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;" })
+                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "label label-danger" })
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Attachment</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                <input type="file" id="fileToUpload" class="form-control" onchange="chng()" /> (JPEG file less then 500KB )
+
+                <span id="disvalue">@Html.DisplayFor(Model => Model.PSSRObAttachmentName)  </span>
+
+            </div>
+            <div class="col-2 col-sm-2 col-lg-2" align="left">
+                <label>Status</label>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-4" align="left">
+                @Html.DropDownListFor(model => model.RecommStatus,
+                new SelectList(Model.RecommStatusList, "RecommStatusID", "RecommStatusName"), "--Select--", new
+                {
+                    @class = "form-control input-sm",
+
+                    @maxlength = "100",
+                    @style = "width: 400px;   max-width: 80%;"
+                })
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="text-center">
+                <input type="button" id="btnSave" class="btn btn-primary" onclick="javascript: PSSRSaveObservations();" value="Save" />
+                @if (Model.ActionByName == Model.UserFullName)
+                {
+
+                    <input type="button" id="btncomplete" class="btn btn-primary" value="Complete" onclick="javascript: PSSRSaveObservations(1);" disabled="disabled" />
+                    if (Model.RequestIdentity == 0)
+                    {
+                    <input type="button" id="btnRequest" class="btn btn-primary" value="Request Target Date" onclick="callRequestForm();" disabled="disabled" />
+                    }
+                }
+
+                <input type="button" class="btn btn-primary" value="PSSR List" onclick="location.href='@Url.Action("PSSRList", "PSSR")'" />
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="container-fluid">
+    <div class="div-border">
+        <h1 class="div-h1"><span class="div-h1-span">Recommendations List</span></h1>
+        <div class="tableFixHead">
+            <table class="table table-hover pre-scrollable" id="SearchResults">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>PSSR Number</th>
+                        <th>Recom ID</th>
+                        <th>Priority</th>
+                        <th width="30%">Recommendations</th>
+                        <th>Action Taken</th>
+                        <th>Action By</th>
+                        <th>Target Date</th>
+                        <th>Completed Date</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.OBlist)
+                    {
+                        if (item.PSSRID != 0)
+                        {
+                            <tr>
+                                <td>@item.SNO</td>
+                                <td>@item.PSSRID</td>
+                                <td>@item.RecommID</td>
+                                <td>@item.PriorityName</td>
+                                <td style="word-break:break-all;">@item.RecommText</td>
+                                <td style="word-break:break-all;">@item.ActionTaken</td>
+                                <td>@item.ActionByName</td>
+                                <td>@item.TargetDate</td>
+                                <td>@item.CompletedDate</td>
+                                <td>
+                                    @if (item.AttachmentName != "" && item.AttachmentName != "  ")
+                                    {
+                                        <a href="~/PSSRRecomAttachment/@item.AttachmentName" download>
+                                            <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                        </a>
+                                        <a href="javascript:DeleteOBImage(@item.RecommID);" title="Delete Image"><img src="~/Images/remove.png" alt="Delete" style="height:25px;width:25px;" /></a>
+
+                                    }
+                                    @if ((item.ActionByName == Model.UserFullName) && (item.CompletedDate == ""))
+
+                                    {
+                                        <a href="javascript:EditObservation(@item.RecommID);" onclick="DisabledActioner(@item.RecommID);" title="Observations">
+                                            <img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" />
+                                        </a>
+                                    }
+                                    else if (Model.Roles.Find(a => a.RoleID == 19) != null)
+                                    {
+                                        <a href="javascript:EditObservation(@item.RecommID);" title="Observations">
+                                            <img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" />
+                                        </a>
+                                    }
+                                 
+
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>
+
+
+
+

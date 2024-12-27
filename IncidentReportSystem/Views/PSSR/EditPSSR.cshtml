@@ -1,0 +1,693 @@
+﻿@model MonitPro.Models.PSSR.CreatePSSRModel
+
+@{
+    ViewBag.Title = "EditPSSR";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+
+
+
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+
+
+<style>
+
+    html {
+        overflow: scroll;
+    }
+
+    #fixTable h1 {
+        position: fixed;
+        top: 0;
+    }
+</style>
+
+@using (Html.BeginForm("EditPSSR", "PSSR", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="container-lg container-sm container-md container-xl">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h1 class="panel-title">Edit PSSR ID - @Model.PSSRID</h1>
+            </div>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(Model => Model.PSSRID)
+            @Html.HiddenFor(Model => Model.PSSRStatus)
+            @Html.HiddenFor(Model => Model.PlantID)
+            @Html.HiddenFor(Model => Model.SystemDesc)
+            @Html.HiddenFor(Model => Model.CategoryID)
+            @Html.HiddenFor(Model => Model.PSSRType)
+            @Html.HiddenFor(Model => Model.AssessmentDatetime)
+            @Html.HiddenFor(Model => Model.CreatedBy)
+            @Html.HiddenFor(Model => Model.CreatedDateTime)
+            @Html.HiddenFor(Model => Model.SaveButton)
+            <div id="EditPSSR" class="container-lg container-sm container-md container-xl">
+                <table id="tbl1" style="width:95%" align="center">
+                    <tbody>
+                        @Html.Partial("CreatePSSRPage", Model)
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    if (Model.PSSRStatus != 1)
+    {
+        <div class="container-lg container-sm container-md container-xl">
+            <div class="panel panel-primary">
+
+                <div id="ApproverTable" class="table-responsive">
+                    <h1 class="div-h1"><span class="div-h1-span">PSSR Lead</span></h1>
+                    <table class="table table-responsive table-bordered ">
+
+                        <tr>
+                            <th>S.NO </th>
+                            <th>
+                                Role
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th> Remarks </th>
+                            <th>Approved Date</th>
+                            <th style="text-align:center">
+                                Action
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <td>1</td>
+                            <td>PSSR Lead</td>
+                            <td>
+                                <label style="font-weight: normal;">@Model.GetAssignTeams.PSSRLeadName</label>
+
+                            </td>
+                            <td>
+
+                                @Html.TextAreaFor(model => model.PSSRLeadComments, new
+                           {
+                               @class = "form-control input-sm",
+                               @maxlength = "200",
+                               @style = "width: 300px; max-width: 100%;",
+                               @disabled = "disabled"
+                           })
+
+                            </td>
+
+                            <td>
+                                @Html.EditorFor(model => model.PSSRLeadDateTime, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })
+                            </td>
+
+
+                            @if (Model.GetAssignTeams.PSSRLead == Model.UserID && Model.PSSRLeadComments == "")
+                            {
+                                var list = Model.GetCheckLists.Where(x => x.yesNo == true).ToList();
+                                var count = list.Count;
+                                var overcount = 0;
+                                var obser = Model.AllPSSRObservation.Where(x => x.PSSRID == Model.PSSRID).ToList();
+                                var priority = obser.Where(x => x.PriorityName != null).ToList();
+                                var priorityCount = priority.Count;
+                                var obsercount = obser.Count;
+                                var totcritical = priority.Where(x => x.PriorityName == "Critical").ToList();
+                                var totcriticalcount = totcritical.Count;
+                                var critical = priority.Where(x => x.PriorityName == "Critical" && x.CompletedDate != null).ToList();
+                                var criticalcount = critical.Count;
+                                foreach (var i in list)
+                                {
+                                    var identitylist = Model.IdentityChecklist.Where(x => x.PCMID == i.PCMID).ToList();
+                                    var identitycount = identitylist.Count;
+                                    var temp = Model.IdentityChecklist.Where(x => x.PCMID == i.PCMID && x.Ischecked > 0).ToList();
+                                    var savedcount = temp.Count;
+                                    if (identitycount == savedcount && identitycount > 0)
+                                    {
+                                        overcount = overcount + 1;
+                                    }
+                                    if (overcount == count && identitycount > 0 && obsercount > 0 && priorityCount == obsercount && totcriticalcount == criticalcount)
+                                    {
+
+                                        <td style="text-align:center">
+                                            <input type="button" class="btn btn-primary" value="Edit" onclick="EditPSSRLead()" style="width: 80px; height: 30px;">
+
+                                            <button class="btn btn-primary" type="submit" id="savePSSRLead" title="Submit"
+                                                    style="width: 180px; height:30px;" disabled="disabled">
+                                                Submit For Approval
+                                            </button>
+                                        </td>
+
+                                    }
+
+                                }
+                            }
+
+                        </tr>
+
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="container-lg container-sm container-md container-xl">
+            <div class="panel panel-primary">
+                @if (Model.PSSRStatus != 1)
+                {
+                    <div id="ApproverTable1" class="table-responsive">
+                        <h1 class="div-h1"><span class="div-h1-span">PSSR Sign-Off</span></h1>
+                        <table class="table table-responsive table-bordered ">
+                            <tr>
+                                <th>S.NO </th>
+                                <th>
+                                    Role
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th> Remarks </th>
+                                <th>Approved Date</th>
+                                <th style="text-align:center">
+                                    Action
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    Engineering Lead
+                                </td>
+                                <td>
+
+                                    <label style="font-weight: normal;">@Model.GetAssignTeams.EnggLeadName</label>
+
+                                </td>
+                                <td>
+
+                                    @Html.TextAreaFor(model => model.EnggLeadComments, new
+                               {
+                                   @class = "form-control input-sm",
+                                   @maxlength = "200",
+                                   @style = "width: 300px; max-width: 100%;",
+                                   @disabled = "disabled"
+                               })
+
+
+
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.EnggLeadDateTime, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })
+                                </td>
+                                @if ((Model.GetAssignTeams.EnggLead == Model.UserID) && (Model.EnggLeadComments == "") && (Model.PSSRStatus == 3))
+                                {
+                                    <td style="text-align:center">
+                                        <input type="button" class="btn btn-primary" value="Edit" onclick="EditEnggLead()" style="width: 80px; height: 30px; max-width: 100%;" ,>
+
+                                        <button class="btn btn-primary" type="submit" id="saveEnggLead" title="Submit"
+                                                style=" width: 80px;height:30px;" disabled="disabled">
+                                            Approve
+                                        </button>
+
+                                    </td>
+                                }
+
+                            </tr>
+                            <tr>
+                                <td>2 </td>
+                                <td>
+                                    HSE Lead
+                                </td>
+                                <td>
+
+
+                                    <label style="font-weight: normal;">@Model.GetAssignTeams.HSELeadName</label>
+
+
+                                </td>
+                                <td>
+                                    @Html.TextAreaFor(model => model.HSELeadComments, new
+                               {
+                                   @class = "form-control input-sm",
+                                   @maxlength = "200",
+                                   @style = "width: 300px; max-width: 100%;",
+                                   @disabled = "disabled"
+                               })
+
+
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.HSELeadDateTime, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })
+                                </td>
+                                @if ((Model.GetAssignTeams.HSELead == Model.UserID) && (Model.HSELeadComments == "") && (Model.PSSRStatus == 3))
+                                {
+                                    <td style="text-align:center">
+                                        <input type="button" class="btn btn-primary" value="Edit" onclick="EditHSELead()" style="width: 80px; height: 30px; height:30px;">
+
+                                        <button class="btn btn-primary" type="submit" id="saveHSELead" title="Submit"
+                                                style=" width: 80px;height:30px;" disabled="disabled">
+                                            Approve
+                                        </button>
+
+                                    </td>
+                                }
+
+                            </tr>
+
+
+                            <tr>
+                                <td>3</td>
+                                <td>
+                                    PSSR Chairperson
+                                </td>
+                                <td>
+
+                                    <label style="font-weight: normal;">@Model.GetAssignTeams.ChairPersonName</label>
+
+
+
+                                </td>
+                                <td>
+
+                                    @Html.TextAreaFor(model => model.ChairPersonComments, new
+                               {
+                                   @class = "form-control input-sm",
+                                   @maxlength = "200",
+                                   @style = "width: 300px; max-width: 100%;",
+                                   @disabled = "disabled"
+                               })
+
+
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.ChairPersonDateTime, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })
+                                </td>
+                                @if ((Model.GetAssignTeams.ChairPerson == Model.UserID) && (Model.ChairPersonComments == "") && Model.PSSRStatus == 3)
+                                {
+                                    <td style="text-align:center">
+                                        <input type="button" class="btn btn-primary" value="Edit" onclick="EditPSSRChair()" style="width: 80px; height: 30px; ">
+
+                                        <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                                style=" width: 80px;height:30px;" disabled="disabled">
+                                            Approve
+                                        </button>
+
+                                    </td>
+                                }
+
+                            </tr>
+
+                            <tr>
+                                <td>4 </td>
+                                <td>
+                                    Operation Head
+                                </td>
+                                <td>
+
+                                    <label style="font-weight: normal;">@Model.GetAssignTeams.OperationLeadName</label>
+
+                                </td>
+                                <td>
+
+                                    @Html.TextAreaFor(model => model.OperationHeadComments, new
+                               {
+                                   @class = "form-control input-sm",
+                                   @maxlength = "200",
+                                   @style = "width: 300px; max-width: 100%;",
+                                   @disabled = "disabled"
+                               })
+
+
+                                </td>
+                                <td>
+                                    @Html.EditorFor(model => model.OperationHeadDateTime, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })
+                                </td>
+                                @if ((Model.GetAssignTeams.OperationLead == Model.UserID) && (Model.OperationHeadComments == "") && (Model.PSSRStatus == 3))
+                                {
+                                    <td style="text-align:center">
+                                        <input type="button" class="btn btn-primary" value="Edit" onclick="EditOPHead()" style="width: 80px; height: 30px;">
+
+                                        <button class="btn btn-primary" type="submit" id="saveOperationHead" title="Submit"
+                                                style=" width: 80px;height:30px;" disabled="disabled">
+                                            Approve
+                                        </button>
+
+                                    </td>
+                                }
+
+                            </tr>
+
+
+
+
+                        </table>
+                    </div>
+                }
+            </div>
+
+
+
+        </div>
+    }
+    if (Model.RoleID == 19)
+    {
+        <div style="text-align: center; width: 50%; margin: 0 auto;">
+            <button class="btn btn-primary" type="submit" id="save1" title="Submit"
+                    style=" width: 80px;height:30px;">
+                Save
+            </button>
+            <input type="button" class="btn btn-primary" style=" width: 100px;height:30px;" value="PSSR List"
+                   onclick="location.href='@Url.Action("PSSRList", "PSSR")'" />
+        </div>
+    }
+
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+    </script>
+}
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+    $(document).ready(function () {
+        $('#EditPSSR *').attr('disabled', true);
+
+        $("#attach").attr('disabled', false);
+        $("#Attachment").attr('disabled', false);
+        $("#save").attr('disabled', false);
+
+    });
+
+
+    if (@Model.RoleID ==19 )
+    {
+        $(document).ready(function () {
+
+
+            $('.big-checkbox').removeAttr('disabled');
+        });
+    }
+
+    </script>
+    <script type="text/javascript">
+        function category() {
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+        }
+
+    </script>
+
+    <script>
+        $("#save1").click(function () {
+            $('#EditPSSR *').attr('disabled', false);
+
+            $('#ApproverTable *').attr('disabled', false);
+            $('#ApproverTable1 *').attr('disabled', false);
+            $('#SaveButton').val(2);
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        $("#saveChairPerson").click(function (event) {
+            $("#ChairPersonDateTime").removeAttr("disabled");
+            $('#PSSRStatus').val(3);
+            $('#ApproverTable *').attr('disabled', false);
+            $('#ApproverTable1 *').attr('disabled', false);
+            $('#EditPSSR *').attr('disabled', false);
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+            // use myModel object for other purposes
+        })
+        $("#saveOperationHead").click(function (event) {
+            $("#OperationHeadDateTime").removeAttr("disabled");
+            $('#PSSRStatus').val(3);
+            $('#ApproverTable *').attr('disabled', false);
+            $('#ApproverTable1 *').attr('disabled', false);
+            $('#EditPSSR *').attr('disabled', false);
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+            // use myModel object for other purposes
+        })
+        $("#saveHSELead").click(function (event) {
+            $("#HSELeadDateTime").removeAttr("disabled");
+            $('#PSSRStatus').val(3);
+            $('#ApproverTable *').attr('disabled', false);
+            $('#ApproverTable1 *').attr('disabled', false);
+            $('#EditPSSR *').attr('disabled', false);
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+            // use myModel object for other purposes
+        })
+        $("#saveEnggLead").click(function (event) {
+            $("#EnggLeadDateTime").removeAttr("disabled");
+            $('#PSSRStatus').val(3);
+            $('#ApproverTable *').attr('disabled', false);
+            $('#ApproverTable1 *').attr('disabled', false);
+            $('#EditPSSR *').attr('disabled', false);
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+            // use myModel object for other purposes
+        })
+        $("#savePSSRLead").click(function (event) {
+            $("#PSSRLeadDateTime").removeAttr("disabled");
+            $('#PSSRStatus').val(3);
+            $('#ApproverTable *').attr('disabled', false);
+            $('#ApproverTable1 *').attr('disabled', false);
+            $('#EditPSSR *').attr('disabled', false);
+            var temp = document.getElementById("CategoryID");
+            var select = temp.value;
+
+            if (select == 1) {
+                $("#MOCNo").attr("disabled", false);
+                $("#MOCNo").attr("required", true);
+            }
+            else {
+                $("#MOCNo").attr("disabled", true);
+                $("#MOCNo").attr("required", false);
+            }
+            // use myModel object for other purposes
+        })
+
+    </script>
+    <script type="text/javascript">
+        function AssignObservers(pssid) {
+            var x;
+            if (confirm("Have you saved the form ?") == true) {
+                x = "OK";
+                window.location.href = '../PSSR/AssignTeam?PSSRID=' + pssid;
+            } else {
+                x = "Cancel";
+            }
+
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        function EditPSSRLead() {
+            $("#savePSSRLead").removeAttr("disabled");
+            $("#PSSRLeadComments").removeAttr("disabled");
+            $("#PSSRLeadDateTime").val("@DateTime.Now.ToString("dd/MM/yyyy HH:mm")");
+
+
+        }
+        function EditPSSRChair() {
+            $("#saveChairPerson").removeAttr("disabled");
+            $("#ChairPersonComments").removeAttr("disabled");
+            $("#ChairPersonDateTime").val("@DateTime.Now.ToString("dd/MM/yyyy HH:mm")");
+        }
+        function EditOPHead() {
+            $("#saveOperationHead").removeAttr("disabled");
+            $("#OperationHeadComments").removeAttr("disabled");
+            $("#OperationHeadDateTime").val("@DateTime.Now.ToString("dd/MM/yyyy HH:mm")");
+
+        }
+        function EditHSELead() {
+            $("#saveHSELead").removeAttr("disabled");
+            $("#HSELeadComments").removeAttr("disabled");
+            $("#HSELeadDateTime").val("@DateTime.Now.ToString("dd/MM/yyyy HH:mm")");
+
+        }
+        function EditEnggLead() {
+            $("#saveEnggLead").removeAttr("disabled");
+            $("#EnggLeadComments").removeAttr("disabled");
+            $("#EnggLeadDateTime").val("@DateTime.Now.ToString("dd/MM/yyyy HH:mm")");
+
+        }
+    </script>
+    <script type="text/javascript">
+        function FileChange() {
+            $("#Remove").show();
+            $("#save").show();
+        }
+        function RemoveAttachment() {
+            document.getElementById("Attachment").value = "";
+            document.getElementById("Remove").style.display = 'none';
+            document.getElementById("save").style.display = 'none';
+            return false;
+        }
+    </script>
+
+    @if (@ViewBag.messege != null)
+    {
+        <script type="text/javascript">
+        {
+                    alert("@ViewBag.messege");
+
+                window.location.href = '../PSSR/EditPSSR?PSSRID=' +@Model.PSSRID;
+        };
+
+        </script>
+    }
+    @if (@ViewBag.subappromessage != null)
+    {
+        <script type="text/javascript">
+        {
+                alert("@ViewBag.subappromessage");
+                window.location.href = '../PSSR/PSSRList';
+        };
+
+        </script>
+    }
+    @if (@ViewBag.savemessege != null)
+    {
+        <script type="text/javascript">
+        {
+                alert("@ViewBag.savemessege");
+                window.location.href = '../PSSR/EditPSSR?PSSRID=' +@Model.PSSRID;
+        };
+
+        </script>
+    }
+
+    <script type="text/javascript">
+           $(document).ready(function () {
+               $("#PlantID").change(function () {
+                   var select = $("#MOCNo");
+           select.empty();
+           select.append($('<option/>', {
+               value: "",
+               text: "-- Select --"
+           }));
+
+           var selectedPlantID = $(this).val();
+                   if (selectedPlantID != "") {
+                       $.getJSON("../PSSR/GetPlantMOCNumber", { PlantID: selectedPlantID }, function (data) {
+                   $.each(data, function (index, itemData) {
+                       select.append($('<option/>', {
+                           value: itemData.Value,
+                           text: itemData.Text
+                       }));
+
+                   });
+               });
+           }
+       });
+   });
+
+   $(document).ready(function () {
+   var MocIndex = 0;
+       var select = $("#MOCNo");
+       select.empty();
+       select.append($('<option/>', {
+           value: "",
+           text: "-- Select --"
+       }));
+       var selectedPlantID= $("#PlantID").val();
+       if (selectedPlantID != "") {
+           $.getJSON("../PSSR/GetPlantMOCNumber", { PlantID: selectedPlantID }, function (data) {
+               $.each(data, function (index, itemData) {
+                   if (itemData.Value=='@Model.MOCNo')
+                   {
+                       MocIndex = index + 1;
+                   }
+                   select.append($('<option/>', {
+                       value: itemData.Value,
+                       text: itemData.Text
+
+                   }));
+               });
+
+               document.getElementById('MOCNo').selectedIndex = MocIndex;
+           });
+       }
+});
+
+    </script>
+
+
+}
+
+
+
+
+
+
+

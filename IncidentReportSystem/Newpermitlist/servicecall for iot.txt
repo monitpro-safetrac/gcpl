@@ -1,0 +1,1 @@
+http://ec2-35-160-105-146.us-west-2.compute.amazonaws.com/service/data?Tag=temperature&Value=50&DateTime=01/08/2017

@@ -1,0 +1,217 @@
+﻿
+@model IncidentReportSystem.Models.NewIncidentViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .pad {
+            padding-left: 30px;
+        }
+
+        .pad1 {
+            padding-left: 43px;
+        }
+
+        .txtpad {
+            position: relative;
+            left: -15px;
+        }
+
+        .txtpad1 {
+            position: relative;
+            left: -25px;
+        }
+        .select2-container {
+            max-width: 100%;
+        }
+
+        .select2-container {
+            width: 300px; /* or any other value you prefer */
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="row">
+
+        <div class="container-lg container-sm container-fluid ">
+            <br />
+
+            <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+                <label>Plant/Area<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-4 col-lg-3 col-md-3  col-sm-3 ">
+                @Html.DropDownListFor(model => model.Incident.PlantID, new SelectList(Model.PlantList, "ID", "Name"), "-- Select --", new { @class = "form-control input-sm",
+               @maxlength = "100",
+               @style = "width: 300px;  max-width: 100%;"
+           })
+                @Html.ValidationMessageFor(model => model.Incident.PlantID, "", new { @class = "label label-danger" })
+            </div>
+            <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+                <label>Incident Classfication<span style="color:red"> *</span></label>
+            </div>
+            <div class="col-2 col-lg-3 col-md-3 col-sm-3 txtpad">
+                @Html.DropDownListFor(model => model.Incident.IncidentClassficationID, new SelectList(Model.IncidentClassficationList, "ID", "Name"),"--Select--" ,new { @class = "form-control input-sm",@maxlength = "100",@style = "width: 300px;  max-width: 100%;"})
+                @Html.ValidationMessageFor(model => model.Incident.IncidentClassficationID, "", new { @class = "label label-danger" })
+            </div>
+            <br /><br />
+
+        </div>
+
+        <div class="row">
+        </div>
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label>Incident Description<span style="color:red"> *</span><br />(Max 100 characters)</label>
+        </div>
+        <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+            @Html.TextAreaFor(model => model.Incident.Title, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.Incident.Title, "", new { @class = "label label-danger" })
+        </div>
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label>Preliminary Detail<span style="color:red"> *</span></label>
+        </div>
+        <div class="col-4 col-lg-3 col-md-3 col-sm-3 txtpad">
+            @Html.TextAreaFor(model => model.Incident.Description, new {@maxlength = "500",@style = "width: 300px;  max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.Incident.Description, "", new { @class = "label label-danger" })
+            <br />
+        </div>
+        <br /><br /><br />
+
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label>Incident Date</label>
+        </div>
+        <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+            @Html.EditorFor(model => model.Incident.IncidentTime, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.Incident.IncidentTime, "", new { @class = "label label-danger" })
+        </div>
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label>Created By</label>
+        </div>
+        <div class="col-4 col-lg-3 col-md-3 col-sm-3 txtpad">
+            @Html.TextAreaFor(model => model.Incident.CreatedByName, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @disabled = "true" })
+        </div>
+        <br /><br />
+
+        @*<div class="col-2 col-lg-2 col-sm-2">
+                <label>Reported Date</label>
+            </div>
+            <div class="col-4 col-lg-4 col-sm-4">
+                @Html.EditorFor(model => model.Incident.ReportedDate, new { htmlAttributes = new { @class = "form-control date-time-picker", style = "width: 300px;", @disabled = "true" } })
+                @Html.HiddenFor(m => m.Incident.ReportedDate)
+            </div>*@
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label>Reported By</label>
+        </div>
+        <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+            @Html.TextAreaFor(model => model.Incident.ReportedBy, new { @id = "ReportedBy", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+        </div>
+        <br /><br /><br />
+
+        <div class="col-2 col-lg-3 col-sm-2">
+
+        </div>
+        <div class="col-4 col-lg-3 col-sm-4">
+            <label>Is anyone injured? If yes, give details.<span style="color:red"> *</span></label>
+        </div>
+        <div class="col-2 col-lg-3 col-sm-2 pad1">
+            @Html.RadioButtonFor(model => model.Incident.injuredOrNot, "Yes", new { @onclick = "yes(this)", @id = "Yes" })  Yes
+            &nbsp;@Html.RadioButtonFor(model => model.Incident.injuredOrNot, "No", new { @onclick = "yes(this)", @id = "No" })  No
+            @Html.ValidationMessageFor(model => model.Incident.injuredOrNot, null, new { @class = "label label-danger" })
+        </div>
+        <div class="col-4 col-lg-3 col-sm-4 txtpad">
+            @Html.TextAreaFor(model => model.Incident.injuredDecription, new { @id = "Yes1", @class = "form-control input-sm", @style = "width: 300px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.Incident.injuredDecription, "", new { @class = "label label-danger" })
+
+        </div>
+        <br /><br /><br />
+
+        <div class="col-2 col-lg-3 col-sm-2">
+
+        </div>
+        <div class="col-4 col-lg-3 col-sm-4">
+            <label>Is loss of Material? If yes, give details.<span style="color:red"> *</span></label>
+        </div>
+        <div class="col-2 col-lg-3 col-sm-2 pad1">
+            @Html.RadioButtonFor(model => model.Incident.LossOfMaterial, "Yes", new { @onclick = "loss(this)", @id = "Yes" })  Yes
+            &nbsp;@Html.RadioButtonFor(model => model.Incident.LossOfMaterial, "No", new { @onclick = "loss(this)", @id = "No" })  No
+            @Html.ValidationMessageFor(model => model.Incident.LossOfMaterial, "", new { @class = "label label-danger" })
+        </div>
+        <div class="col-4 col-lg-3 col-sm-4 txtpad">
+
+
+            @Html.TextAreaFor(model => model.Incident.LossQuantity, new { @id = "Yes2", @class = "form-control input-sm", @style = "width: 300px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.Incident.LossQuantity, "", new { @class = "label label-danger" })
+
+        </div>
+        <br /><br /><br />
+        <div class="col-2 col-lg-3 col-sm-2">
+
+        </div>
+        <div class="col-4 col-lg-3 col-sm-4">
+            <label>Is damage to equipment? If yes, give details.<span style="color:red"> *</span></label>
+        </div>
+        <div class="col-2 col-lg-3 col-sm-2 pad1">
+            @Html.RadioButtonFor(model => model.Incident.DamageEquipment, "Yes", new { @onclick = "Eqiup(this)", @id = "Yes" }) Yes
+           &nbsp;@Html.RadioButtonFor(model => model.Incident.DamageEquipment, "No", new { @onclick = "Eqiup(this)", @id = "No" })  No
+            @Html.ValidationMessageFor(model => model.Incident.DamageEquipment, "", new { @class = "label label-danger" })
+        </div>
+        <div class="col-4 col-lg-3 col-sm-4 txtpad">
+            @Html.TextAreaFor(model => model.Incident.DamageDetails, new { @id = "Yes3", @class = "form-control input-sm", @style = "width: 300px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.Incident.DamageDetails, "", new { @class = "label label-danger" })
+
+        </div>
+        <br /><br /><br />
+        <div class="row">
+            <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad1">
+                <label>Persons Available during incident  (Write name of  shift Incharge, Plant Operator, Contractors, others)</label>
+            </div>
+            <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+                @Html.TextAreaFor(model => model.Incident.PersonAvailable, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                @*@Html.ValidationMessageFor(model => model.Incident.PersonAvailable, "", new { @class = "label label-danger" })*@
+            </div>
+            <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+                <label>Immediate Actions Taken:(List in logical order, pertinent facts uncovered in the preliminary investigation.) </label>
+            </div>
+            <div class="col-4 col-lg-3 col-md-3 col-sm-3 txtpad1">
+                @Html.TextAreaFor(model => model.Incident.ImmediateAction, new { @class = "form-control input-sm", @style = "width: 300px;  max-width: 100%;" })
+                @*@Html.ValidationMessageFor(model => model.Incident.ImmediateAction, "", new { @class = "label label-danger" })*@
+            </div>
+        </div>
+        <br />
+        <div class="row">
+
+            <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad1">
+                <label>Probable Causes(for the incident from preliminary information)</label>
+            </div>
+            <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+                @Html.TextAreaFor(model => model.Incident.ProbableCauses, new { @class = "form-control input-sm",  @style = "width: 300px;  max-width: 100%;" })
+                @*@Html.ValidationMessageFor(model => model.Incident.ProbableCauses, "", new { @class = "label label-danger" })*@
+            </div>
+            <div class="col-2 col-lg-3col-md-3 col-sm-3 pad">
+                <label>Attachments</label>
+            </div>
+            <div class="col-4 col-lg-3 col-sm-3">
+               @Html.TextBoxFor(m => m.Incident.ImageFile, new { @id = "attach", type = "file", value = "test" })
+                @Html.DisplayFor(m => m.Incident.FileName)
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</body>
+
+
+</html>
+ 

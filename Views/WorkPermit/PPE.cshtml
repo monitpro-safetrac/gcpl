@@ -1,0 +1,63 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+
+<table id="fixTable" class="table table-responsive table-bordered">
+
+    <tr>
+        <td width="25%">@Html.CheckBoxFor(m => m.PPE.HelmetWithChinStrip) Helmet with Chin strip</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.PPE.SplashGoggles) Splash Goggles</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.PPE.EarPlugsMuff) Ear plugs/Muff</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.PPE.CottonHandGloves) Cotton hand gloves</td>
+    </tr>
+    <tr>
+
+        <td>@Html.CheckBoxFor(m => m.PPE.NitrileHandGloves) Nitrile hand gloves</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.HeatResistantHandGloves) Heat resistant hand gloves</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.ElectricalGloves) Electrical Gloves</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.DustMask) Dust Mask</td>
+    </tr>
+
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.PPE.SolventMask) Solvent Mask</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.FaceShield) Face Shield</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.FullBodyHarness) Full Body Harness</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.LifelineWithRatchet) Lifeline With Ratchet</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.PPE.GumBoot) Gum Boot</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.ShoesWithNonConductiveSole) Shoes With Non Conductive Sole</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.RespiratoryProtection)Respiratory Protection (Circle type) SCBA/Supplied Air/Air Purifying Cartridge Type</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.ChemicalProtectiveClothing) Chemical Protective Clothing</td>
+    </tr>
+    <tr>
+
+        <td>@Html.CheckBoxFor(m => m.PPE.Coveralls) Coveralls</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.RescueEquipment) Rescue Equipment</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.TripodHoist) Tripod Hoist</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.Wristlets) Wristlets</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.PPE.Scaffolding) Scaffolding</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.FallArrester) Fall Arrester</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.SafetyBelt) Safety Belt</td>
+        <td>@Html.CheckBoxFor(m => m.PPE.LadderCondition) Ladder Condition</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.PPE.ESDRegular) ESD/Regular</td>
+        <td>Others :@Html.TextAreaFor(m => m.PPE.Others, new { maxlength = "1000", @class = "form-control input-sm", @style = "width:100%", @cols = "500" })</td>
+        @if (ViewBag.IsValidationFailed == true)
+        {
+        
+            <td colspan="2" class="text-danger text-center">
+                <strong>@Html.ValidationMessage("PPEValidation")</strong>
+            </td>
+        
+        }
+
+    </tr>
+
+   
+     
+</table>

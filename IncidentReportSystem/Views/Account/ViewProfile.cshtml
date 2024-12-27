@@ -1,0 +1,61 @@
+﻿@model MonitPro.Models.UserProfile
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">View Profile</h1>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-responsive">
+                        <tr>
+                            <td rowspan="10" class="text-center" style="vertical-align:middle">
+
+                                @if (Model.UserImage != "")
+                                {
+                                    <img class="img-rounded" src="../../Users/@Model.UserImage" title="@Model.UserFullName" height="200" width="200">
+                                }
+                                else
+                                {
+                                    <img class="img-rounded" src="../../Users/notfound.jpg" title="Profile image not found" height="200" width="200">
+                                }
+
+
+                            </td>
+                            <td class="text-right">First Name :</td>
+                            <td>@Model.FirstName </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Last Name :</td>
+                            <td>@Model.LastName</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Email Address :</td>
+                            <td>@Model.EmailAddress</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Mobile Number :</td>
+                            <td>@Model.MobileNo</td>
+                        </tr>
+                         <tr>
+                            <td colspan="2" align="center">
+                                 <input type="button" class="btn btn-primary" value="GoTo WorkPlanner" style="width:200px" id="Cancel" />
+                            </td>
+                        </tr>
+                     </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+}
+@section Scripts {
+     <script>
+        $("#Cancel").click(function (event) {
+            window.location.replace("../../Dashboard/WorkPlanner");
+        });
+    </script>
+}

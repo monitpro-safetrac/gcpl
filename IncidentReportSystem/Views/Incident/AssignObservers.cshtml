@@ -1,0 +1,330 @@
+﻿@model IncidentReportSystem.Models.ObserversViewModel
+
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+<script type="text/javascript">
+      if ((@Model.roleid!=4) && (@Model.roleid !=5))
+    {
+        $("#DepartID").prop("disabled", true);
+        $("#Obsevers_Manager").prop("disabled", true);
+        $("#Obsevers_AssignedLead ").prop("disabled", true);
+        $("#Obsevers_Investigator").prop("disabled", true);
+        $("#EmployeeList").prop("disabled", true);
+        $("#ObserversList").prop("disabled", true);
+     }
+         $(function () {
+             $("#DepartID").select2();
+             $("#Obsevers_AssignedLead").select2();
+
+        });
+      function btnClear() {
+            $("#EmployeeName").val('');
+            $("#Dept").val('');
+      }
+      function AddSelected() {
+            $("#EmployeeList option:selected").appendTo("#ObserversList");
+       }
+
+       function AddAll() {
+            $("#EmployeeList option").appendTo("#ObserversList");
+       }
+
+       function RemoveSelected() {
+            $("#ObserversList option:selected").appendTo("#EmployeeList");
+        }
+
+       function RemoveAll() {
+            $("#ObserversList option").appendTo("#EmployeeList");
+        }
+
+function SaveObservers() {
+    var ValidationMessage = '';
+    var ControlToFocus = '';
+    var observers = "";
+    var lead = "";
+    var deptManager = "";
+    var investigator = "";
+    var IncidentID = @Html.Raw(Json.Encode(Model.IncidentID));
+
+        $('#ObserversList option').each(function (i, selected) {
+        observers = observers + "," + $(selected).val();
+    });
+        $('#Obsevers_AssignedLead :selected').each(function (i, selected) {
+             lead = lead + $(selected).val();
+         });
+        $('#Obsevers_Manager :selected').each(function (i, selected) {
+             deptManager = deptManager + $(selected).val();
+         });
+        $('#Obsevers_Investigator :selected').each(function (i, selected) {
+             investigator = investigator + $(selected).val();
+         });
+         if (deptManager == '') {
+             ValidationMessage = ValidationMessage + '\n Incident Owner';
+
+             if (ControlToFocus == '') {
+                 ControlToFocus = "#Obsevers_Manager"
+                                        }
+         }
+         if (lead == '') {
+             ValidationMessage = ValidationMessage + '\n Team Lead';
+
+             if (ControlToFocus == '') {
+                 ControlToFocus = "#Obsevers_AssignedLead "
+                                        }
+         }
+
+         if (ValidationMessage != '') {
+             alert('Please provide the following field(s) ' + ValidationMessage);
+            $(ControlToFocus).focus();
+         }
+         else {
+            $.ajax({
+                 method: "POST",
+                url: "../Incident/SaveObservers",
+                data: { incidentID: IncidentID, observerList: observers, lead: lead, deptManager: deptManager, investigator: investigator },
+                success: function (resultdata) {
+                     alert(JSON.stringify('Investigation Team Assigned'));
+                     location.reload(true);
+                 },
+                error: function (errdata) {
+                     alert(JSON.stringify(errdata));
+                     alert("Dynamic content load failed.");
+                 }
+             });
+         }
+
+
+
+     }
+     var $selects = $("select[name='dropdown1']");
+
+        $selects.on('change', function () {
+
+            // enable all options
+            $selects.find('option').prop('disabled', false);
+
+            // loop over each select, use its value to
+            // disable the options in the other selects
+            $selects.each(function () {
+                $selects.not(this)
+                    .find('option[value="' + this.value + '"]')
+                    .prop('disabled', true);
+            });
+
+        });
+        var $dropdown1 = $("select[name='dropdown1']");
+        var $dropdown2 = $("select[name='dropdown2']");
+        var $dropdown3 = $("select[name='dropdown3']");
+
+        $dropdown1.change(function () {
+            $dropdown2.children().show();
+            var selectedItem = $($dropdown1).val();
+            if (selectedItem != "")
+                $('select[name="dropdown2"] option[value="' + selectedItem + '"]').hide();
+            $('select[name="dropdown3"] option[value="' + selectedItem + '"]').hide();
+        });
+        $dropdown2.change(function () {
+            $dropdown3.children().show();
+            var selectedItem = $($dropdown2).val();
+            if (selectedItem != "")
+                $('select[name="dropdown3"] option[value="' + selectedItem + '"]').hide();
+        });
+        $dropdown3.change(function () {
+            $dropdown2.children().show();
+            var selectedItem = $($dropdown3).val();
+            if (selectedItem != "")
+                $('select[name="dropdown2"] option[value="' + selectedItem + '"]').hide();
+        });
+
+
+        $(document).ready(function () {
+            $("#DepartID").change(function () {
+                var select = $("#EmployeeList");
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: " "
+                }));
+                var select1 = $("#Obsevers_AssignedLead");
+                select1.empty();
+                select1.append($('<option/>', {
+                    value: "",
+                    text: "--Select Lead-- "
+                }));
+                var selectedDepartID = $(this).val();
+
+                    $.getJSON("../Incident/GetDeptEmployees", { deptID: selectedDepartID }, function (data) {
+                        $.each(data, function (index, itemData) {
+                            select.append($('<option/>', {
+                                value: itemData.Value,
+                                text: itemData.Text
+                            }));
+                            select1.append($('<option/>', {
+                                value: itemData.Value,
+                                text: itemData.Text
+                            }));
+                        });
+                    });
+
+             });
+    });
+
+        function EditIncident(IncID) {
+
+            window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+            //history.back();
+            //var newURL = '../Incident/EditIncident?incidentID=' + IncID;
+
+            // Update the URL without refreshing the page
+            //history.pushState({ incidentID: IncID }, '', newURL);
+        }
+        $(document).ready(function () {
+
+            document.getElementById('list').style.height = window.innerHeight - 100 + "px";
+        });
+</script>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+        /**/</script>
+}
+@{
+    ViewBag.Title = "AssignObservers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        .pad {
+            padding-left: 60px;
+        }
+        .select2-container {
+            max-width: 100%;
+        }
+
+        .select2-container {
+            width: 300px; /* or any other value you prefer */
+        }
+        .row{
+            padding-bottom:10px;
+        }
+        .col1{
+            padding-left:90px;
+        }
+        .col2{
+            padding-left:40px;
+        }
+        .padr{
+            padding-right:90px;
+            padding-left:20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-lg container-sm container-md container-xl">
+        <div class="div-border" id="list" style="width:90%; align-items:center;">
+            <h1 class="div-h1"><span class="div-h1-span">Assign Investigation Team</span></h1>
+            <table id="tbl" style="width:80%" align="center" border="1">
+                <tr>
+                    <th>Incident Number</th>
+                    <th>Incident Description</th>
+                    <th>Incident Category</th>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayFor(model => model.IncidentNO)</td>
+                    <td style="word-break:break-all;">@Html.DisplayFor(model => model.IncidentTitle)</td>
+                    <td>@Html.DisplayFor(model => model.IncidentType)</td>
+                </tr>
+            </table>
+            <br />
+            <div class="row padr">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Incident Owner</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.Obsevers.Manager,
+                                                             new SelectList(Model.GeneralManagerList, "ID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown1", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                    @Html.ValidationMessageFor(model => model.Obsevers.Manager, "", new { @class = "label label-danger" })
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Investigating Facilitator</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.Obsevers.Investigator, new SelectList(Model.InvestigatorList, "ID", "FullName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+
+                </div>
+
+
+
+            </div>
+
+            <div class="row padr">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Department</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">@Html.DropDownListFor(m => m.DepartID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.DepartmentList, null, new { @class = "label label-danger" })</div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Team Lead</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.Obsevers.AssignedLead,
+                                                             new SelectList(Model.LeadList, "ID", "FullName"), "-- Select --", new { @class = "form-control input-sm", Name = "dropdown2", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                    @Html.ValidationMessageFor(model => model.Obsevers.AssignedLead, "", new { @class = "label label-danger" })
+                </div>
+            </div>
+            <div class="container-lg">
+                <table class="table-borderless" align="center">
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Employees List</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Team Member List</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ListBox("EmployeeList", ViewBag.EmployeeList as SelectList, new { Name = "dropdown3", style = "width: 225px; height: 250px;" })
+                        </td>
+                        <td align="center">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnAdd" onclick="javascript: AddSelected();" value=">" style="width: 50px;" /><br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnAddAll" onclick="javascript: AddAll();" value=">>" style="width: 50px;" /><br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnRemove" onclick="javascript: RemoveSelected();" value="<" style="width: 50px;" /><br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnRemoveAll" onclick="javascript: RemoveAll();" value="<<" style="width: 50px;" />
+                        </td>
+                        <td>
+                            &nbsp;&nbsp; @Html.ListBox("ObserversList", ViewBag.ObserversList as SelectList, new { style = "width: 225px; height: 250px;" })
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <br />
+            <div class="col-lg-12 text-center">
+                <input type="button" id="btnSave" onclick="javascript: SaveObservers();" class="btn btn-primary" value="Save" style="width: 100px;" /> &nbsp;&nbsp;
+                <input type="button" class="btn btn-primary" value="Edit Incident" onclick="EditIncident(@Model.IncidentID);" />
+            </div>
+            
+
+
+        </div>
+    </div>
+</body>
+</html>

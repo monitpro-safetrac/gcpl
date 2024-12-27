@@ -1,0 +1,36 @@
+ string constr = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                string query = "INSERT INTO log(username,password) VALUES(@username, @password)";
+            
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    cmd.Parameters.AddWithValue("@username", log.username );
+                    cmd.Parameters.AddWithValue("@password", log.password );
+                    cmd.ExecuteNonQuery();
+                   
+                    con.Close();
+                    Response.Write("<script>alert('Record Insert')</script>");
+                }
+            }
+
+            return View(log);
+
+
+
+
+            SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\MVCDemo_Project\MVCLogin\MVCLogin\App_Data\Database1.mdf;Integrated Security=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into lk11(username,password)values(@username,@password)", con);
+            cmd.Parameters.AddWithValue("@username", log.Username);
+            cmd.Parameters.AddWithValue("@password", log.Password);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            Response.Write("<script>alert('Record Insert')</script>");
+          
+            return View(log);
+
+
+<input type="button" value="clickme" onclick="@("window.location.href='"+@Url.Action("Index","home")+"'");"

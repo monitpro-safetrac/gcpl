@@ -1,0 +1,508 @@
+﻿
+@model MonitPro.Models.MOC.MOCListViewModel
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+<style type="text/css">
+    html {
+        overflow: auto;
+    }
+
+    .col1 {
+        padding-left: 25px;
+    }
+
+    .col2 {
+        padding-left: 60px;
+    }
+
+    .col3 {
+        padding-left: 60px;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .padr {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+</style>
+
+@section scripts
+{
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            document.getElementById('MOCListDiv').style.height = window.innerHeight - 280 + "px";
+            document.getElementById('MOCListDiv').style.width = window.innerWidth - 10 + "px";
+        });
+
+
+        function EditMOC(MOCID) {
+
+            window.location.href = '../MOC/EditMOC?MOCID=' + MOCID;
+
+        }
+
+        function EditFuncationalMOC(MOCID) {
+
+            window.location.href = '../MOC/CreateMOC?MOCID=' + MOCID;
+
+        }
+
+        function Draft(MOCID) {
+
+            window.location.href = '../MOC/CreateMOC?MOCID=' + MOCID;
+
+        }
+        function UploadImages(MOCID) {
+            window.location.href = '../MOC/UploadAttachments?MOCID=' + MOCID;
+        }
+
+
+
+
+
+        function SearchMOC(){
+        var response = null;
+        var CurrentURL = '../MOC/MOCList';
+        var options = { "backdrop": "static", keyboard: true };
+
+        var MOCMod = @Html.Raw(Json.Encode(Model.MOCSearchVM));
+
+            MOCMod.Plant = $("#MOCSearchVM_Plant").val();
+            MOCMod.MOCStatus = $("#MOCSearchVM_MOCStatus").val();
+            MOCMod.MOCFromDate = $("#MOCSearchVM_MOCFromDate").val();
+            MOCMod.MOCToDate = $("#MOCSearchVM_MOCToDate").val();
+            MOCMod.MOCType = $("#MOCSearchVM_MOCType").val();
+            MOCMod.MOCCategory = $("#MOCSearchVM_MOCCategory").val();
+            MOCMod.ActionerID = $("#MOCSearchVM_ActionerID").val();
+            MOCMod.ClassID = $("#MOCSearchVM_ClassID").val();
+            MOCMod.MOCcoordinator = $("#MOCSearchVM_MOCcoordinator").val();
+
+        $.ajax({
+            method: "POST",
+            url: "../MOC/MOCList",
+            data: MOCMod,
+            success: function (response) {
+
+                document.open();
+                document.write(response);
+                //assign the values back to control
+                $("#MOCSearchVM_Plant").val(MOCMod.Plant);
+                $("#MOCSearchVM_MOCStatus").val(MOCMod.MOCStatus);
+                $("#MOCSearchVM_MOCFromDate").val(MOCMod.MOCFromDate);
+                $("#MOCSearchVM_MOCToDate").val(MOCMod.MOCToDate);
+                $("#MOCSearchVM_MOCType").val(MOCMod.MOCType);
+                $("#MOCSearchVM_MOCCategory").val(MOCMod.MOCCategory);
+                $("#MOCSearchVM_ClassID").val(MOCMod.ClassID);
+                $("#MOCSearchVM_ActionerID").val(MOCMod.ActionerID);
+                $("#MOCSearchVM_MOCcoordinator").val(MOCMod.MOCcoordinator);
+                document.close();
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+
+
+    function ClearSearch() {
+        $("#MOCSearchVM_Plant").val('');
+        $("#MOCSearchVM_MOCStatus").val(0);
+        $("#MOCSearchVM_MOCFromDate").val('');
+        $("#MOCSearchVM_MOCToDate").val('');
+        $("#MOCSearchVM_MOCType").val(0);
+        $("#MOCSearchVM_MOCCategory").val(0);
+        $("#MOCSearchVM_ClassID").val(0);
+        $("#MOCSearchVM_ActionerID").val(0);
+        $("#MOCSearchVM_MOCcoordinator").val(0);
+
+    }
+        function Observations(MOCID) {
+
+            window.location.href = '../MOC/MOCObservations?MOCID=' + MOCID;
+
+        }
+
+        function UpdateStatus(MOCID) {
+
+            var CurrentURL = '../MOC/UpdateStatus';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: '{mocID: ' + MOCID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function UpdateStatus1(MOCID) {
+
+            window.location.href = '../MOC/MOCClosureList?MOCID=' + MOCID;
+        }
+
+        jQuery('#MOCSearchVM_MOCFromDate').datetimepicker({
+            format: 'd/m/Y',
+            lang: 'ru',
+            step: 30,
+            autoclose: true,
+            timepicker: false
+        });
+
+        jQuery('#MOCSearchVM_MOCToDate').datetimepicker({
+            format: 'd/m/Y',
+            lang: 'ru',
+            step: 30,
+            autoclose: true,
+            timepicker: false
+        });
+
+
+
+
+    </script>
+}
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid ">
+    <form role="form">
+
+        <div id="contentdiv">
+            <div class="div-border rounded" width="100%" @*align="left"*@>
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;MOC List&nbsp;</span></h1>
+                <div class="container-lg container-sm container-md padr">
+
+
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label>Secondary Changes</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.MOCCategory,
+                          new SelectList(Model.MocCategory, "ID", "Name"),  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                        </div>
+
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label>Change Category</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.MOCType,
+                                      new SelectList(Model.MocType, "ID", "Name"),  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                        </div>
+
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label>Change Type</label>
+                        </div>
+                        <div class="form-group col-lg-2 col-sm-2">
+
+                            @Html.DropDownListFor(Model => Model.MOCSearchVM.ClassID,
+                                      new SelectList(Model.MOCClass, "ID", "Name"),  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-2 ">
+                                <label>MOC Owner</label>
+                            </div>
+                            <div class="form-group col-lg-2 col-sm-2">
+
+
+                                @Html.DropDownListFor(Model => Model.MOCSearchVM.MOCcoordinator,
+                             new SelectList(Model.Coordinator, "UserID", "DisplayUserName"),  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                            </div>
+
+                            <div class="col-lg-2 col-sm-2 ">
+                                <label>Approver</label>
+                            </div>
+                            <div class="form-group col-lg-2 col-sm-2">
+
+                                @Html.DropDownListFor(Model => Model.MOCSearchVM.ActionerID,
+                              new SelectList(Model.approver, "UserID", "DisplayUserName"),  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                            </div>
+
+                            <div class="col-lg-2 col-sm-2 ">
+                                <label>Status</label>
+                            </div>
+                            <div class="form-group col-lg-2 col-sm-2">
+
+                                @Html.DropDownListFor(Model => Model.MOCSearchVM.MOCStatus,
+                              new SelectList(Model.MocstatusList, "ID", "Name"),  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-2 ">
+                                <label>Status</label>
+                            </div>
+                            <div class="form-group col-lg-2 col-sm-2">
+
+                                @Html.DropDownListFor(Model => Model.MOCSearchVM.Plant,
+                                ViewBag.IncidentPlant as SelectList,  new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                            </div>
+                            <label for="MOC From Date" class="col-lg-2 col-sm-2 control-label">MOC From Date</label>
+                            <div class="form-group col-lg-2 col-sm-2">
+
+                                @Html.EditorFor(Model => Model.MOCSearchVM.MOCFromDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                            </div>
+                            <label for="MOC To Date" class="col-lg-2 col-sm-2 control-label">MOC To Date</label>
+                            <div class="form-group col-lg-2 col-sm-2">
+
+                                @Html.EditorFor(Model => Model.MOCSearchVM.MOCToDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                            </div>
+
+                            @*<div class="text-center">
+                <input type="button" class="btn btn-primary" onclick="SearchMOC()" name="btnSearch" id="btnSearch" value="Search" />
+                <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+            </div>*@
+
+
+                        </div>
+                        <div class="row">
+                            <label class="col-lg-5 col-sm-5 control-label"></label>
+                            <div class="form-group col-lg-1 col-sm-2">
+                                <img src="~/Images/searchIcon.png" onclick="SearchMOC()" name="btnSearch" id="btnSearch" alt="Search Button" style="cursor: pointer;height:30px;width:30px" title="Search" />
+                                &nbsp; &nbsp; &nbsp;
+                                @if (Model.MOCList.Count > 0)
+                                {
+                                    <a href="@Url.Action("ExportMOCList", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, moccor = ViewBag.moccor, PlantID = ViewBag.PlantID, moccategory = ViewBag.moccategory, moctype = ViewBag.moctype, mocclass = ViewBag.mocclass, mstatus = ViewBag.mstatus, actionerid = ViewBag.actionerid})">
+                                        <img src="~/Images/ms-excel-icon.png" alt="Export MOC List" style="width: 30px; height: 30px; cursor: pointer;" title="Export MOC List" />
+                                    </a>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </form>
+</div>
+@*@if (Model.MOCList.Count > 0)
+{
+    @Html.ActionLink("Export MOC List", "ExportMOCList", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, moccor = ViewBag.moccor, PlantID = ViewBag.PlantID, moccategory = ViewBag.moccategory, moctype = ViewBag.moctype, mocclass = ViewBag.mocclass, mstatus = ViewBag.mstatus, actionerid = ViewBag.actionerid, @class = "btn btn-primary" })
+
+}*@
+<br>
+
+<div >
+
+    <div class="container-fluid  pre-scrollable" style="max-height: 58vh;">
+
+        @if (Model.MOCList.Count > 0)
+        {
+            <table class="table head-fixed table-striped table table-hover" id="SearchResults" width="100%">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Plant/Area</th>
+                        <th>MOC Number</th>
+                        <th>Change Title</th>
+                        <th>Change Category</th>
+                        <th>Change Type</th>
+                        <th>Secondary Changes</th>
+                        <th>MOC Initiation date</th>
+                        <th>Target Date</th>
+                        <th>Status</th>
+                        <th>Next Approver</th>
+                        <th>MOC Owner</th>
+                        <th>Action</th>
+                        <th>Attachments / PDF</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.Roles.Find(a => a.RoleName == "MOC Coordinator") != null)
+                    {
+                        foreach (var item in Model.MOCList)
+                        {
+                            <tr>
+                                <td>@item.SNo</td>
+                                <td>@item.PlantArea</td>
+                                <td>@item.MOCNumber</td>
+                                <td style="word-break:break-all;">@item.MOCTitle</td>
+                                <td>@item.MOCType</td>
+                                <td>@item.ClassName</td>
+                                <td>@item.MOCCategory</td>
+
+                                <td>@item.MOCCreated</td>
+                                <td>@item.TargetDate</td>
+                                <td>@item.MocStatus</td>
+                                <td>@item.Approver</td>
+                                <td>@item.MOCCOOrdinate</td>
+                                <td>
+                                    @if ((item.MocStatus == "Initiation") && (item.MOCCreatedBy == Model.CurrentUser))
+                                    {
+                                        <a href="javascript:Draft(@item.MOCID);" title="Draft"><img src="~/Images/View.png" title="Draft" alt="Edit" style="height:25px;width:25px;" /></a>
+                                    }
+
+                                    @if (((item.MocStatus != "Initiation") && (item.MocStatus != "Screening")) && (item.MocStatus != "Rejected"))
+                                    {
+                                        <a href="javascript:EditMOC(@item.MOCID);" title="Edit MOC"><img src="~/Images/Edit.png" title="Edit" alt="Edit" style="height:25px;width:25px;" /></a>
+
+
+                                    }
+                                    @if ((item.MocStatus == "Screening") && (item.FuncationalManagerID == Model.CurrentUser))
+                                    {
+                                        <a href="javascript:EditFuncationalMOC(@item.MOCID);" title="Edit MOC"><img src="~/Images/Edit.png" title="Functional Manager Edit" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                    }
+
+                                    @if ((item.MocStatus != "PSSR ") && (item.MocStatus != "Completed") && (item.MocStatus != "As built documentation"))
+                                    {
+                                        <a href="javascript:UpdateStatus1(@item.MOCID);"><img src="~/Images/StatusChange.png" title="Update Status" alt="Change Status" style="height:25px;width:25px;" /></a>
+
+
+                                    }
+                                    else
+                                    {
+                                        if (Model.MOCObserList.Count > 0)
+                                        {
+                                            var temp = 0;
+                                            var list = Model.MOCObserList.Where(x => x.MOCID == item.MOCID).ToList();
+                                            foreach (var i in list)
+                                            {
+                                                if ((item.MOCID == i.MOCID) && (i.CompletedDate != ""))
+                                                {
+                                                    temp = temp + 1;
+                                                }
+                                                if (temp == list.Count)
+                                                {
+
+                                                    if ((item.ClassName == "Permanent\r\n") || ((item.ClassName == "Temporary\r\n") && (item.TempMOCStatus == "Normalized")))
+                                                    {
+                                                        <a href="javascript:UpdateStatus1(@item.MOCID);"><img src="~/Images/StatusChange.png" title="Update Status" alt="Change Status" style="height:25px;width:25px;" /></a>
+
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                </td>
+                                <td>
+                                    @if ((item.MocStatus == "Design Review" || item.MocStatus == "Risk Assessment" || item.MocStatus == "PSSR ") && item.Approver == Model.UserFullName)
+                                    {
+                                        <a id="link" href="javascript:Observations(@item.MOCID);" title="Recommendations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+                                    }
+                                    <a href="javascript:UploadImages(@item.MOCID);" title="Upload Attachments"><img src="~/Images/upload.jpeg" title="Upload Attachments" alt="Upload" style="height:25px;width:25px;" /></a>
+
+                                    <a href="../MOC/MOCPrintPdf/@item.MOCID" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+
+                                </td>
+                            </tr>
+
+
+                        }
+                    }
+                    @if (Model.Roles.Find(a => a.RoleName != "MOC Coordinator") != null)
+                    {
+                        foreach (var item in Model.MOCList)
+                        {
+                            <tr>
+                                <td>@item.SNo</td>
+                                <td>@item.PlantArea</td>
+                                <td>@item.MOCNumber</td>
+                                <td style="word-break:break-all;">@item.MOCTitle</td>
+                                <td>@item.MOCType</td>
+                                <td>@item.ClassName</td>
+                                <td>@item.MOCCategory</td>
+
+                                <td>@item.MOCCreated</td>
+                                <td>@item.TargetDate</td>
+                                <td>@item.MocStatus</td>
+                                <td>@item.Approver</td>
+                                <td>@item.MOCCOOrdinate</td>
+                                <td>
+
+                                    @if ((item.MocStatus == "Initiation") && (item.MOCCreatedBy == Model.CurrentUser))
+                                    {
+                                        <a href="javascript:Draft(@item.MOCID);" title="Draft"><img src="~/Images/View.png" title="Draft" alt="Edit" style="height:25px;width:25px;" /></a>
+                                    }
+                                    @if ((item.MocStatus == "Screening") && (item.FuncationalManagerID == Model.CurrentUser))
+                                    {
+                                        <a href="javascript:EditFuncationalMOC(@item.MOCID);" title="Edit MOC"><img src="~/Images/Edit.png" title="Functional Manager Edit" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                    }
+                                    @if (item.Approver == Model.UserFullName && item.MocStatus != "Rejected")
+                                    {
+                                        <a href="javascript:EditMOC(@item.MOCID);" title="Edit MOC"><img src="~/Images/Edit.png" title="Edit" alt="Edit" style="height:25px;width:25px;" /></a>
+
+
+                                    }
+                                </td>
+                                <td>
+                                    @if ((item.MocStatus == "Design Review" || item.MocStatus == "Risk Assessment" || item.MocStatus == "PSSR ") && item.Approver == Model.UserFullName)
+                                    {
+                                        <a id="link" href="javascript:Observations(@item.MOCID);" title="Recommendations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+                                    }
+                                    <a href="javascript:UploadImages(@item.MOCID);" title="Upload Attachments"><img src="~/Images/upload.jpeg" title="Upload Attachments" alt="Upload" style="height:25px;width:25px;" /></a>
+
+
+                                    <a href="../MOC/MOCPrintPdf/@item.MOCID" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+
+                                </td>
+                            </tr>
+
+
+                        }
+                    }
+
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No MOC Found</p>
+        }
+    </div>
+</div>
+
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>
+
+
+

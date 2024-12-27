@@ -1,0 +1,58 @@
+﻿@model ValsparApp.Models.ContractList
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Contractor Rating</h1>
+        </div>
+        <div class="panel-body">
+            From Date @Html.TextBoxFor(m => m.FromDate, new { style = "width: 150px;", @class = "form-control input-sm" })
+            To Date  @Html.TextBoxFor(m => m.Todate, new { style = "width: 150px;", @class = "form-control input-sm" })
+            <input type="submit" value="Search" class="btn btn-primary" onclick="return Validate();" />&nbsp;
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="ContractList" class="table-bordered table-responsive" cellpadding="2" cellspacing="2" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNo</th>
+                        <th>
+                            Contractor
+                        </th>
+                        <th>Total Permits</th>
+                        <th>Green Permits </th>
+                        <th>Orange Permits</th>
+                        <th>Red Permits</th>
+                        <th>Total Percentage</th>
+                        <th>Assessment Review Frequency </th>
+                        <th>Last Assessment Date </th>
+                        <th>Next Assessment Date </th>
+                    </tr>
+                </thead>
+                @for (var i = 0; i < Model.RatingList.Count; i++)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@Model.RatingList[i].ContractorName</td>
+                        <td>@Model.RatingList[i].TotalPermits</td>
+                        <td>@Model.RatingList[i].GreenPermits</td>
+                        <td>@Model.RatingList[i].orangePermits </td>
+                        <td>@Model.RatingList[i].RedPermits</td>
+                        <td>@Model.RatingList[i].TotalPercentage</td>
+                        <td>@Model.RatingList[i].AssesmentFrequency</td>
+                        <td>@Model.RatingList[i].LastAssessmentDate</td>
+                        <td>@Model.RatingList[i].NextAssessmentDue</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $("#ContractList").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>

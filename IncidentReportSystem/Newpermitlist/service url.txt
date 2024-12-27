@@ -1,0 +1,1 @@
+http://server/service?Tag=temperature&Value=50&DateTime=01/08/2017

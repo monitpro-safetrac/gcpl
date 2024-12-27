@@ -1,0 +1,20 @@
+﻿@model IncidentReportSystem.Models.ChartViewModel
+
+@{
+
+    var myChart1 = new Chart(width: 380, height: 330, themePath: "customtheme.xml")
+        .AddTitle("Incident Summary", "main")
+        .SetXAxis(title:"Months")
+        .SetYAxis(title:"Number of Incidents")
+     
+
+     
+                 .AddSeries(name: "TotalCounts", chartType: "StackedColumn",
+
+            xValue: Model.MonthlyCounts, xField: "MonthName",
+            yValues: Model.MonthlyCounts, yFields: "TotalCount")
+             .AddLegend()
+        .Write();
+
+
+}

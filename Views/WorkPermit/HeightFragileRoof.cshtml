@@ -1,0 +1,41 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+
+
+<table class="table-bordered table-responsive"  width="100%">
+    
+<tr style="font-weight:bold">
+            <td width="80%" class="text-left">Height / Fragile roof/ Excavation – Checklist</td>
+            <td width="20%" class="text-left">Yes</td>
+            <td>N/A</td>
+
+        </tr>
+    <tr><td width="80%" class="text-left">1) Equipment/Pipeline Depressurized/Drained Fully/Flushed with Water</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.EquipmentFlushed, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.EquipmentFlushed, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.EquipmentFlushed, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">2) Under ground pipelines isolated</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.UGPipelinesIsolated, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.UGPipelinesIsolated, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.UGPipelinesIsolated, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">3) Under ground cables are verified and de-energized</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.UGCablesVerified, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.UGCablesVerified, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.UGCablesVerified, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">4) Soil more than 1.2 m (4feet) deep shall be securely shored</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.SoilSecurelyShored, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.SoilSecurelyShored, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.SoilSecurelyShored, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">5) Excavated material shall be kept at least 0.61m (2 feet) away from the edge of the trench.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.ExcavatedMaterial, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.ExcavatedMaterial, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.ExcavatedMaterial, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">6) Atmospheres in the excavation shall be tested for Oxygen content  before employees enter excavations greater than 1.22 m (4 feet) in depth. Oxygen content is……%</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.AtmpspheresTested, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.AtmpspheresTested, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.AtmpspheresTested, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">7) Checked the condition of the safety belt and anchoring of lifeline to rigid structure .</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.SafetyBeltConditonChecked, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.SafetyBeltConditonChecked, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.SafetyBeltConditonChecked, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">8) Checked  provisions of lifelines with fall arresting for both vertical and horizontal movement in the absence of fixed means of access. </td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.ProvisionsOfLifelinesChecked, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.ProvisionsOfLifelinesChecked, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.ProvisionsOfLifelinesChecked, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">9) Area  barricaded / caution boards  provided</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.AreaBarricadedProvided, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.AreaBarricadedProvided, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.AreaBarricadedProvided, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">10) The work area is clear and safe from overhead electrical lines</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.WorkAreaSafe, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.WorkAreaSafe, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.WorkAreaSafe, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">11) Ensured safety net is  properly tied</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.SafetynetTied, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.SafetynetTied, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.SafetynetTied, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">12) Checked Preventive action for collapse of soil heaps </td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.CollapseOfSailHeapsChecked, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.CollapseOfSailHeapsChecked, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.CollapseOfSailHeapsChecked, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">13) Organized pep talks</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.PepTalksOrganized, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.PepTalksOrganized, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.PepTalksOrganized, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">14) Permanent safe means of access to work at height is available</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.HeightFragileRoof.WorkAtHightIsAvailable, "1") </td><td>@Html.RadioButtonFor(m => m.HeightFragileRoof.WorkAtHightIsAvailable, "0") @Html.ValidationMessageFor(m => m.HeightFragileRoof.WorkAtHightIsAvailable, null, new { @class = "label label-danger" })</td></tr>
+
+
+    <tfoot>
+
+        <tr><td colspan="2" class="text-danger text-center"><strong>@Html.ValidationMessage("ValidationError")</strong></td></tr>
+    </tfoot>
+</table>
+
+
+
+
+
+

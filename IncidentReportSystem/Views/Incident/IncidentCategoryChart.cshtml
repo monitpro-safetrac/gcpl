@@ -1,0 +1,18 @@
+﻿
+@model IncidentReportSystem.Models.IncidentTypeChart
+
+@{
+
+    var myChart1 = new Chart(width: 380, height: 330, themePath: "customtheme7.xml")
+
+        .AddTitle(" Incident Category", "main")
+        .AddSeries(name: "serie", chartType: "Pie",
+
+            xValue: Model.CategoryCounts, xField: "TypeName",
+            yValues: Model.CategoryCounts, yFields: "TotalCount")
+                .AddLegend()
+        .Write();
+
+}
+
+

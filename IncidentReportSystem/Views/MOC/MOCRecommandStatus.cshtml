@@ -1,0 +1,34 @@
+﻿
+@model MonitPro.Models.MOC.MonthlyMOCStatusChart
+
+@{
+
+    var myChart1 = new Chart(width: 400, height: 400, themePath: "customthemeRecommend.xml")
+        .AddTitle("MOC Recommend Status", "main")
+        .SetXAxis(title: "StatusName")
+           .SetYAxis(title: "TotalCount")
+
+                .AddSeries(name: "Open", chartType: "Column",
+
+            xValue: Model.mocrecommand, xField: "StatusName",
+            yValues: Model.mocrecommand, yFields: "StatusOpen")
+              .AddLegend()
+
+               .AddSeries(name: "Close", chartType: "Column",
+
+            xValue: Model.mocrecommand, xField: "StatusName",
+            yValues: Model.mocrecommand, yFields: "StatusClose")
+              .AddLegend()
+
+
+         .AddSeries(name: "Overdue", chartType: "Column",
+
+            xValue: Model.mocrecommand, xField: "StatusName",
+            yValues: Model.mocrecommand, yFields: "Overdue")
+              .AddLegend()
+
+              .AddLegend()
+        .Write();
+
+
+}

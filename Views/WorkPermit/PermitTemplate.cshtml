@@ -1,0 +1,127 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+<thead>
+    @if (ViewBag.IsValidationFailed == true)
+    {
+        <tr>
+            <td colspan="4" class="text-danger text-center">
+                <strong>@Html.ValidationMessage("ApproverValidation")</strong>
+            </td>
+        </tr>
+    }
+</thead>
+<tbody>
+    <tr>
+        <td align="right">Validity From :</td>
+        <td>
+            @Html.TextBoxFor(m => m.ValidityFrom, new { style = "width: 150px;", @class = "form-control input-sm" })
+            @Html.ValidationMessageFor(m => m.ValidityFrom, null, new { @class = "label label-danger" })
+        </td>
+        <td align="right">Validity To:</td>
+        <td>
+            @Html.TextBoxFor(m => m.ValidityTo, new { style = "width: 150px;", @class = "form-control input-sm" })
+            @Html.ValidationMessageFor(m => m.ValidityTo, null, new { @class = "label label-danger" })
+        </td>
+    </tr>
+    <tr>
+        <td class="text-right">Exact Location : </td>
+        <td>@Html.TextBoxFor(m => m.Location, new { maxlength = "50", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.Location, null, new { @class = "label label-danger" })</td>
+        <td class="text-right">Equipment : </td>
+        <td>@Html.TextBoxFor(m => m.EquipmentName, new { maxlength = "100", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.EquipmentName, null, new { @class = "label label-danger" })</td>
+    </tr>
+    <tr>
+        <td class="text-right" valign="top">Type Of Work :</td>
+        <td colspan="3">
+            @Html.Partial("TypeofWork", Model)
+        </td>
+    </tr>
+  
+    <tr>
+        @*<td class="text-right">Type of Work : </td>
+        
+@if (Model.WorkTypeID!=0)
+{
+        <td>
+            @Html.DropDownListFor(m => m.WorkTypeID, new SelectList(Model.WorkType, "WorkTypeID", "WorkType"),
+ "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "WorkType" , @disabled = "true" })
+        @Html.ValidationMessageFor(m => m.WorkTypeID, null, new { @class = "label label-danger"})
+       
+      </td>
+}
+else
+{
+    <td>
+        @Html.DropDownListFor(m => m.WorkTypeID, new SelectList(Model.WorkType, "WorkTypeID", "WorkType"),
+ "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "WorkType" })
+        @Html.ValidationMessageFor(m => m.WorkTypeID, null, new { @class = "label label-danger" })
+
+ </td>
+
+}*@
+
+        <td class="text-right">Contractor : </td>
+        <td>@Html.DropDownListFor(m => m.ContractorID, new SelectList(Model.ContractorList, "ContractorID", "ContractorName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "Contractor" })  @Html.ValidationMessageFor(m => m.ContractorID, null, new { @class = "label label-danger" })</td>
+    </tr>
+    <tr>
+        <td class="text-right">Description of the Work : </td>
+        <td>@Html.TextAreaFor(m => m.WorkDescription, new { maxlength = "1000", @class = "form-control input-sm", @style = "width:300px", @cols = "500" })  @Html.ValidationMessageFor(m => m.WorkDescription, null, new { @class = "label label-danger" })</td>
+        <td class="text-right">Fire Watch Required : </td>
+        <td>
+            @Html.CheckBoxFor(m => m.FireWatchRequired) @Html.ValidationMessageFor(m => m.FireWatchRequired, null, new { @class = "label label-danger" })
+        </td>
+            </td>
+    </tr>
+    
+    <tr>
+        <td class="text-right" valign="top">Personal Protective Equipment :</td>
+        <td colspan="3">
+            @Html.Partial("PPE", Model) 
+        </td>
+    </tr>
+    
+    <tr>
+       <td class="text-right"> Checklist Attachment  </td>
+        
+            
+
+            @if (Model.Attachment !=null)
+            {
+
+                <td>
+                <a href="~/Newpermitlist/@Model.Attachment" download>
+                    <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                </a>
+                    </td>
+            }   
+    </tr>
+<tr>
+        <td class="text-right"> Permit Holder :</td>
+        <td>@Html.TextBoxFor(m => m.PermitHolderName, new { @class = "form-control input-sm", @style = "width:300px"})  @Html.ValidationMessageFor(m => m.PermitHolderName, null, new { @class = "label label-danger" })</td>
+        <td class="text-right">No of Person at Site</td>
+        <td> @Html.TextBoxFor(m => m.NoOfPersonAtSite, new { maxlength = "100", @class = "form-control input-sm", @style = "width:100px" })  @Html.ValidationMessageFor(m => m.NoOfPersonAtSite, null, new { @class = "label label-danger" })</td>
+    </tr>
+    <tr>
+        <td class="text-right">Permit Issuer : </td>
+        <td>@Model.PermitIssuerName @Html.HiddenFor(m => m.PermitIssuerID) </td>
+        <td class="text-right">Adjacent Area Owner : </td>
+        <td>@Html.DropDownListFor(m => m.AdjacentAreaOwenerID, new SelectList(Model.AdjacentAreaOwnerList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.AdjacentAreaOwenerID, null, new { @class = "label label-danger" })</td>
+    </tr>
+    <tr>
+        <td class="text-right">Approver : </td>
+        <td>
+            @Html.DropDownListFor(m => m.ApproverID, new SelectList(Model.ApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.ApproverID, null, new { @class = "label label-danger" })
+        </td>
+    </tr>
+</tbody>
+@Html.HiddenFor(m => m.ContractorID)
+<script>
+    //$("#Contractor").change(function (event) {
+
+    //    var contractorIdName = $("#Contractor").val();
+
+    //    $("#ContractorID").val(contractorIdName.split("#")[0]);
+    //    $("#PermitHolderName").val(contractorIdName.split("#")[1]);
+    //});
+</script>

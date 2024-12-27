@@ -1,0 +1,214 @@
+﻿
+@model MonitPro.Models.Contract
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+@using (Html.BeginForm("UpdateContract", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        @Html.HiddenFor(m => m.ContractStatus)
+        <div class="panel-heading">
+            <h1 class="panel-title">Update Contractor Assessment Form</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            @Html.HiddenFor(m => m.ContractID)
+            <table id="fixTable" class="table-bordered table-responsive" width="98%">
+                <tbody>
+                    <tr>
+                        <td colspan="5">
+                            @Html.Partial("ContractTemplate", Model)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            @Html.Partial("OccupationalHealth", Model)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right"> Signed Acknowledgment  </td>
+                        <td colspan="3">
+                            @Html.TextBoxFor(m => m.Acknowledgement, new { type = "file", onchange = "loadFile(event)" })
+                            <span class="label-warning">Please select a file within 5MB</span>
+
+                            @Html.ValidationMessageFor(m => m.Acknowledgement, null, new { @class = "label label-danger" })
+
+                            @Html.HiddenFor(m => m.Attachment)
+
+                            @if (Model.Attachment != null && Model.Attachment != "")
+                            {
+                                <a href="~/ContractAttachment/@Model.Attachment" download>
+                                    <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" align="center">
+                            @if ((Model.updatedby == Model.UserID) && (Model.ContractStatus == "D" || Model.ContractStatus == "A" || Model.ContractStatus == "R"))
+                            {
+                                <input type="submit" class="btn btn-primary" value="Save" id="Update" style="width:125px" />
+
+                                <input type="submit" class="btn btn-primary" value="Submit for Approval" id="Submit" style="width:150px" />
+                            }
+                            @if (Model.ContractStatus == "S" && Model.ContactID == Model.UserID)
+                            {
+                                <input type="submit" class="btn btn-primary" value="Save" id="UpdateApprove" style="width:125px" />
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Approve / Recycle</button>
+                            }
+
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+}
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Contractor Approve / Recycle</h4>
+            </div>
+            <div class="modal-body">
+                <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+                    <tr>
+                        <td>Approver Comments (Max 500 Char)</td>
+                        <td>@Html.TextAreaFor(model => model.ApproverComments, new { @style = "width: 300px; height:100px;", maxlength = "500" })</td>
+                    </tr>
+                    <tr><td colspan="2">&nbsp;</td></tr>
+                    <tr>
+                        <td align="center" colspan="2">
+                            <input type="button" class="btn btn-primary" id="ApproveButton" onclick="javascript:ApproveContract();" value="Approve" />
+                            <input type="button" class="btn btn-primary" id="UpdateButton" onclick="javascript:RejectContract();" value="Recycle" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "/Account/Login";
+        };
+
+    </script>
+}
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+
+    $("#Update").click(function (event) {
+        $('#ContractStatus').val("D");
+
+
+    }); $("#UpdateApprove").click(function (event) {
+        $('#ContractStatus').val("S");
+
+
+    });
+    $("#Submit").click(function (event) {
+
+        $('#ContractStatus').val("S");
+
+        var inp = document.getElementById('Acknowledgement');
+
+       var file = document.getElementById('Attachment').value;
+        if (inp.files.length === 0 && file == "") {
+            alert("Attachment Required");
+            inp.focus();
+
+            return false;
+        }
+    });
+
+    function ApproveContract() {
+        var CurrentURL = '../ContractorApproverStatus';
+        var ContractID = $("#ContractID").val();
+        var StatusID = "A";
+        var Comments = $("#ApproverComments").val();
+
+        $.ajax({
+            type: "POST",
+            url: CurrentURL,
+            data: { ContractID: parseInt(ContractID), StatusID: StatusID, Comments: Comments },
+            success: function (response) {
+                //alert(JSON.stringify(response));
+                alert('Contractor is Approved Successfully');
+
+                window.location.href = '../ContractList';
+            },
+            error: function (errmessage) {
+                alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    }
+    function RejectContract() {
+        var CurrentURL = '../ContractorApproverStatus';
+        var ContractID = $("#ContractID").val();
+        var StatusID = "R";
+        var Comments = $("#ApproverComments").val();
+
+        $.ajax({
+            type: "POST",
+            url: CurrentURL,
+            data: { ContractID: parseInt(ContractID), StatusID: StatusID, Comments: Comments },
+            success: function (response) {
+                //alert(JSON.stringify(response));
+                alert('Contractor is rejected');
+
+                window.location.href = '../ContractList';
+            },
+            error: function (errmessage) {
+                alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    }
+    $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>
+@if (TempData["Message"] != null)
+{
+    <script type="text/javascript">
+          {
+            alert("@TempData["Message"]");
+            @TempData.Remove("Message");
+            window.location.href = "../UpdateContract" +@Model.ContractID;
+        };
+
+    </script>
+}
+
+@if (ViewBag.Submitted != null && TempData["Status"].ToString() == "S")
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Submitted");
+                window.location.href = "../ContractList";
+        };
+
+    </script>
+}

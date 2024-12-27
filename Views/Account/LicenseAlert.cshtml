@@ -1,0 +1,23 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonitPro Solutions</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center"><strong>Your license will expire in @ViewBag.DaysLeft days. Please contact MonitPro Sales team to renew your license.</strong></h3>
+            <h4 class="text-center">Click @Html.ActionLink("here", "../WorkPermit/CreatePermit") to continue using the application</h4>       
+        </div>
+    </div>
+</body>
+</html>

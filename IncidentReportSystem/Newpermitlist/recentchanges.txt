@@ -1,0 +1,22 @@
+contractGet sp,
+
+objCom.Parameters.AddWithValue("@ClosurePermitHolderSignedOn", DateTime.ParseExact(workPermit.ClosurePermitHolderSignedOn, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+                
+ objCom.Parameters.AddWithValue("@ClosureAreaOwnerSignedOn", DateTime.ParseExact(workPermit.ClosureAreaOwnerSignedOn, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+               
+chellathambi • 3 mins
+chellathambi P (chellathambi.p@gmail.com)
+
+
+
+
+cotractGet
+ContractUpdate,
+ContractInsert,
+Typeofworkinsert,
+typeofworkupdate
+Typeofworkget,
+view fully
+bin fully,
+create table typeofworkchecklist,
+

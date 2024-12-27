@@ -1,0 +1,152 @@
+﻿
+@model MonitPro.Models.MOC.MOCClosureList
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    html {
+        overflow: auto;
+    }
+</style>
+@using (Html.BeginForm("MOCClosureList", "MOC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">MOC Look Back</h1>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(m => Model.MOCID)
+        <div class="table-responsive">
+
+            <div id="fixTable" style="width:100%" align="center">
+                <div class="container-lg container-sm">
+                    <div class="container-lg container-sm">
+                        <br />
+                        <label class="col-lg-1 col-sm-1">
+                            S.No
+                        </label>
+                        <label class="col-lg-5 col-sm-5">
+                            Section
+                        </label>
+                        <label class="col-lg-1 col-sm-1">
+                            Yes
+                        </label>
+                        <label class="col-lg-1 col-sm-1">
+                            No
+                        </label>
+                        <label class="col-lg-1 col-sm-1">
+                            NA
+                        </label>
+                        <label class="col-lg-3 col-sm-3">
+                            Remarks
+                        </label>
+                        <br />
+                    </div>
+                    <br />
+                    @for (var i = 0; i < Model.GetMOCClosureList.Count; i++)
+                    {
+                        <div class="col-lg-1 col-sm-1">@(i + 1) @Html.HiddenFor(m => m.GetMOCClosureList[i].MOCClosureId) @Html.HiddenFor(m => m.GetMOCClosureList[i].Name)</div>
+                        <div class="col-lg-5 col-sm-5" width="50%" align="left">@Model.GetMOCClosureList[i].Name</div>
+
+                        <div class="col-lg-1 col-sm-1"> @Html.RadioButtonFor(m => m.GetMOCClosureList[i].Status, "1")</div>
+                        <div class="col-lg-1 col-sm-1"> @Html.RadioButtonFor(m => m.GetMOCClosureList[i].Status, "2")</div>
+
+                        <div class="col-lg-1 col-sm-1"> @Html.RadioButtonFor(m => m.GetMOCClosureList[i].Status, "3")</div>
+
+                        <div class="col-lg-3 col-sm-3">
+                            @Html.TextAreaFor(m => m.GetMOCClosureList[i].Remarks, new { @style = "width: 400px; max-width: 100%;", @class = "rem", maxlength = 500 })
+                            <br /><br />
+                        </div>
+
+                    }
+
+
+                </div>
+
+                <br />
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit" id="submit" title="Submit"> Save</button> &nbsp; &nbsp;
+                    <input type="submit" class="btn btn-primary" id="close" style="display:none" onclick="javascript:UpdateMOCStatus();" value="Close" />
+                    <button class="btn btn-primary" type="button" title="list" onclick="location.href='@Url.Action("MOCList","MOC")'">MOCList</button>
+                    <br />
+                </div>
+                <br />
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Message");
+                window.location.href = '../MOC/MOCList';
+
+        };
+
+    </script>
+}
+@if (ViewBag.SaveMessage != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.SaveMessage");
+                window.location.href = '../MOC/MOCList';
+
+        };
+
+    </script>
+}
+@if (Model.moci > 0)
+{
+    <script type="text/javascript">
+        {
+
+            $("#close").show();
+        };
+
+    </script>
+}
+
+<script type="text/javascript">
+
+    function UpdateMOCStatus() {
+        var CurrentURL = '../MOC/UpdateMOCStatus';
+        var MOCID = $("#MOCID").val();
+        var StatusID = "";
+        var Comments = "";
+
+        $.ajax({
+            type: "POST",
+            url: CurrentURL,
+            data: { MOCID: parseInt(MOCID), StatusID: parseInt(7), CloseComments: Comments },
+            success: function (response) {
+                //alert(JSON.stringify(response));
+                alert('MOC Closed Successfully');
+                window.location = "../MOC/MOCList";
+            },
+            error: function (errdata) {
+                alert(JSON.stringify(errdata));
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    $("#submit").click(function (event) {
+
+        $('#fixTable *').attr('required', true);
+        $('.rem ').attr('required', false);
+    });
+
+</script>

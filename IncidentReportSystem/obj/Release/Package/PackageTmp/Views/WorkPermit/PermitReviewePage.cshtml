@@ -1,0 +1,178 @@
+﻿@*<h1>success</h1>*@
+@model MonitPro.Models.WorkPermit
+
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+
+    input[readonly] {
+        background-color: white !important;
+        cursor: text !important;
+    }
+</style>
+<script>
+    function FileChange() {
+        $("#Remove").show();
+    }
+
+    function RemoveAttachment() {
+        document.getElementById("Attachment").value = "";
+        document.getElementById("Remove").style.display = 'none';
+        return false;
+    }
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+
+@using (Html.BeginForm("PermitReviewePage", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Audit Permits</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            @if (Model.Description != null)
+            {
+                <table id="fixTable" class="table-bordered table-responsive" width="100%">
+                    <thead>
+                        <tr>
+                            <th align="center"><b>SNo.</b></th>
+                            <th align="center">Audit Status</th>
+                            <th align="center">Due Date</th>
+                            <th align="center"><b>Frequency</b></th>
+                            <th align="center"><b>Description</b></th>
+                            <th align="center"><b>Action Comments</b></th>
+                            <th align="center"><b>Auditor Rating</b></th>
+                            <th align="center"><b>Attachment</b></th>
+                            <th align="center"><b>Complete</b></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                @if (Model.GetStatus == "R")
+                                {
+                                    <img src="~/Images/red.png" />
+                                }
+                                @if (Model.GetStatus == "G")
+
+                                {
+                                    <img src="~/Images/green.png" />
+                                }
+
+                            </td>
+
+                            <td>@Model.DueDate</td>
+                            <td>@Model.FrequencyName </td>
+                            <td>@Model.Description </td>
+                            @*<td>@Html.TextAreaFor(m => m.ActionComments)</td>
+                            @Html.ValidationMessageFor(m => m.ActionComments)*@
+                            <td>
+                                @Html.TextAreaFor(m => m.GetComments, new { rows = "3", cols = "40" } ) 
+                            @*@Html.ValidationMessageFor(m => m.GetComments, null, new { @class = "label label-danger" })*@
+                            @if (ViewBag.Putcomments == "N")
+                            {
+                                <center><span class="label label-danger">PutYour Comments</span></center>
+                            } 
+                           
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.AuditorRating, new List<SelectListItem>
+                         {
+                            new SelectListItem { Text = "Excellent", Value = "Excellent"},
+                            new SelectListItem { Text = "Average", Value = "Average"},
+                            new SelectListItem{Text="Poor",Value="Poor"}
+
+                          }, "Select ")
+                            @if (ViewBag.auditorRating == "N")
+                            {
+                                <center><span class="label label-danger">Put Your Rating</span></center>
+                            }
+
+                        </td>
+                        <td nowrap>
+
+                            <span class="file-input btn btn-primary btn-file">
+                                Attach&hellip; <input type="file" onchange="return FileChange();" name="Attachment" id="Attachment">
+                            </span>
+                            <a href="#" style="display:none" id="Remove" onclick="return RemoveAttachment()"><img src="~/Images/remove.png" /></a>
+                        </td>
+
+                        <td align="left"><input type="submit" class="btn btn-primary" name="submitbutton1" value="complete" onclick="SubmitForm()" /></td>
+
+
+
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+            }
+            @if (Model.Description == null )
+            {
+                <center><span class="label label-danger">Task Completed ! Please Wait For Next Review.</span></center>
+            }
+        </div>
+    </div>
+    <input type="hidden" id="row" name="Sno" />
+}
+<script>
+    function SubmitForm() {
+        document.getElementById("row").value = id;
+        document.forms[0].submit();
+    }
+        //$("#SubmitForApproval").click(function (event) {
+        //    $('#Status').val("S");
+        //}
+        //);
+</script>
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+}
+
+
+<script>
+    $(document).ready(function () {
+        $("#WorkPermitList").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>
+<script>
+
+</script>
+
+
+
+
+

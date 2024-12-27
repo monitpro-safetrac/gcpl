@@ -1,0 +1,174 @@
+﻿@model IncidentReportSystem.Models.IncidentImageViewModel
+@{
+    ViewBag.Title = "UploadImages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("UploadImages", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+
+   
+                <!-- Modal Header -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="uploadImagesModalLabel">Upload Supporting Images</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form id="uploadImageForm" enctype="multipart/form-data">
+                        <!-- Incident Details Section -->
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label font-weight-bold">Incident Number</label>
+                            <div class="col-sm-9">
+                                @Html.DisplayFor(model => model.IncidentNO)
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label font-weight-bold">Incident Description</label>
+                            <div class="col-sm-9">
+                                @Html.DisplayFor(model => model.IncidentTitle)
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label font-weight-bold">Plant/Area</label>
+                            <div class="col-sm-9">
+                                @Html.DisplayFor(model => model.PlantArea)
+                            </div>
+                        </div>
+
+                        <!-- Image Upload Section -->
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label font-weight-bold">Image Name</label>
+                            <div class="col-sm-9">
+                                @Html.TextAreaFor(model => model.IncidentImage.ImageName, new { @class = "form-control", @maxlength = "100", placeholder = "Enter image name (Max 100 characters)" })
+                                @Html.ValidationMessageFor(model => model.IncidentImage.ImageName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label font-weight-bold">Image Upload</label>
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.IncidentImage.ImageFile, new { id = "ImageFile", type = "file", accept = "image/*", @class = "form-control-file" })
+                                <small class="text-muted">Please select a JPEG file</small>
+                                @Html.ValidationMessageFor(m => m.IncidentImage.ImageFile, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(model => model.IncidentImage.IncidentId)
+
+                        <!-- Save Button -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success" id="Save" style="width:120px">Save</button>
+                            <button type="button" class="btn btn-secondary" onclick="EditIncident(@Model.IncidentImage.IncidentId);">Edit Incident</button>
+                        </div>
+                    </form>
+
+                    <hr />
+
+                    <!-- Supporting Documents Table -->
+                    <h5 class="mt-4">Supporting Documents List</h5>
+                    @if (Model.IncidentImages.Count > 0)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="SearchResults">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image Name</th>
+                                        <th>Download</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.IncidentImages)
+                                    {
+                                        <tr>
+                                            <td>@item.SNo</td>
+                                            <td>@item.ImageName</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.FileName))
+                                                {
+                                                    <a href="~/UploadImages/@item.FileName" download>
+                                                        <img src="~/images/download.png" alt="Download" width="25" height="25" />
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="javascript:DeleteImage(@item.IncidentImageId);" title="Delete Image">
+                                                    <img src="~/Images/remove.png" alt="Delete" width="25" height="25" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No Images Found</p>
+                    }
+                </div>
+
+                <!-- Modal Footer -->
+   
+}
+
+    @if (ViewBag.SessMessage != null)
+    {
+        <script type="text/javascript">
+            {
+                alert("Newer session exists in another browser/system...Logout");
+                window.location.href = "../Account/Login";
+            };
+
+        </script>
+    }
+    <script>
+
+        function chng() {
+            var typ = document.getElementById("ImageFile").value;
+            var res = typ.match(".jp");
+
+            if (res) {
+
+            }
+            else {
+                alert("Only JPEG images are accepted");
+                document.getElementById("ImageFile").value = "";
+            }
+        }
+        function DeleteImage(IncImageID) {
+            var i;
+            if (confirm("Are you sure you want to delete ?") == true) {
+                i = "OK";
+                var options = { "backdrop": "static", keyboard: true };
+
+                $.ajax({
+                    method: "POST",
+                    url: "../Incident/DeleteImage",
+                    data: { IncidentImageID: IncImageID },
+                    success: function (response) {
+                        //$('#contentdiv').html(response);
+                        alert('Image Deleted Successfully');
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert(JSON.stringify(data));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            } else {
+                i = "Cancel";
+            }
+
+        }
+
+        function EditIncident(IncID) {
+
+            window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+        }
+    </script>

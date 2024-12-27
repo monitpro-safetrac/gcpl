@@ -1,0 +1,122 @@
+﻿@model MonitPro.Models.PSSR.PSSRRequestTargetDate
+
+@{
+    Layout = null;
+}
+
+
+<script type="text/javascript">
+    jQuery('#RevisedTargetDate').datetimepicker({
+        format: 'd/m/Y',
+        timepicker: false,
+        lang: 'ru',
+        step: 30
+
+    });
+</script>
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+        <h4 class="modal-title" id="myModalLabel"><b>Target Date Request</b></h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                        <tr>
+                            <td colspan="2">@Html.HiddenFor(model => model.RecomID)</td>
+                        </tr>
+
+                        <tr>
+                            <td>Recommendation ID</td>
+                            <td>@Html.DisplayFor(model => model.RecomID)</td>
+                        </tr>
+
+                        <tr>
+                            <td>Revised Target Date</td>
+                            <td>
+                                @Html.EditorFor(model => model.RevisedTargetDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @style = "width: 160px;height:25px", @autocomplete = "off" } })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Remarks</td>
+                            <td>@Html.TextAreaFor(model => model.RevisedRemarks)</td>
+                        </tr>
+                        <tr><td colspan="2">&nbsp;</td></tr>
+                        <tr>
+                          
+
+                            <td align="center" colspan="2">
+                                <input type="button" class="btn btn-primary" id="btnUpdate" value="Request" />
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+    <br /><br />`
+</div>
+
+
+<script type="text/javascript">
+  
+
+    $(document).ready(function () {
+        // Add event listener to the "Complete" button
+        $('#btnUpdate').click(function () {
+            RequestTargetdate();
+        });
+    });
+
+    function RequestTargetdate() {
+        var reommid = $("#RecomID").val();
+        var comments = $("#RevisedRemarks").val();
+        var ReviseTargetDate = $("#RevisedTargetDate").val();
+        if (comments.trim() === "") {
+            // Comments field is empty, close the modal without updating the status
+            $('#myModal').modal('hide');
+        } else {
+            // Comments field is not empty, proceed with updating the status
+            updateStatus(parseInt(reommid), ReviseTargetDate, comments,1);
+        }
+    }
+
+    function updateStatus(recomid, targetdate, comments,identity) {
+        var currentURL = '../PSSR/UpdatePSSRTargetDateRequest';
+
+        $.ajax({
+            type: "POST",
+            url: currentURL,
+            data: { Recomid: recomid, Identiy: identity, Comments: comments, RevisedTargetDate: targetdate },
+            success: function (response) {
+                alert('Target Date Requested Successfully');
+                $('#myModal').modal('hide');
+                location.reload(true);
+            },
+            error: function (errmessage) {
+                alert("Failed to update PSSR status: " + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    }
+</script>
+
+
+
+
+@*function CloseModel() {
+        $('#myModal').modal('hide');
+    }*@
+
+

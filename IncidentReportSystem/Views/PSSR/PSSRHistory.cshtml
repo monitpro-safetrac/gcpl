@@ -1,0 +1,308 @@
+﻿@model MonitPro.Models.PSSR.PSSRHistoryMainModel
+
+@{
+    ViewBag.Title = "CreatePSSR";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<style>
+    .PSSRList {
+        overflow: scroll;
+    }
+
+    #SearchResults thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    html {
+        overflow: scroll;
+    }
+
+    .leftpad {
+        padding-left: 20px;
+    }
+
+    .pad {
+        padding-left: 30px;
+    }
+
+    .txtpad {
+        position: relative;
+        left: -70px;
+    }
+
+    .pre-scrollable {
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+
+    .col1 {
+        padding-left: 60px;
+    }
+
+    .col2 {
+        padding-left: 60px;
+    }
+
+    .col3 {
+        padding-left: 70px;
+    }
+
+    .row {
+        padding-bottom: 8px;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+</style>
+@section scripts
+{
+
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $('#PlantID').select2();
+            $('#CategoryID').select2();
+        });
+
+        jQuery('#searchHistory_FromDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery('#searchHistory_ToDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+    </script>
+
+    <script type="text/javascript">
+        function SearchPSSRHistory() {
+
+
+            var response = null;
+            var options = { "backdrop": "static", keyboard: true };
+            var Search = @Html.Raw(Json.Encode(Model.searchHistory));
+
+            Search.PlantID = $("#searchHistory_PlantID").val();
+            Search.Type = $("#searchHistory_PSSRType").val();
+            Search.FromDate = $("#searchHistory_FromDate").val();
+            Search.ToDate = $("#searchHistory_ToDate").val();
+
+            $.ajax({
+
+                method: "POST",
+                url: "../PSSR/PSSRHistory",
+                data: Search,
+                success: function (response) {
+
+                    document.open();
+                    document.write(response);
+
+                    //assign the values back to control
+                    $("#searchHistory_PlantID").val(Search.PlantID);
+                    $("#searchHistory_PSSRType").val(Search.Type);
+                    $("#searchHistory_FromDate").val(Search.FromDate);
+                    $("#searchHistory_ToDate").val(Search.ToDate);
+                    document.close();
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function ClearSearch() {
+            $("#searchHistory_PlantID").val(0);
+            $("#searchHistory_PSSRType").val(0);
+            $("#searchHistory_FromDate").val(0);
+            $("#searchHistory_ToDate").val(0);
+
+            window.location.href = "../PSSR/PSSRHistory";
+        }
+
+
+
+    </script>
+}
+
+
+
+
+<div class="container-lg container-sm container-md container-xl">
+    <div class="container-fluid ">
+        <form role="form">
+
+            <div id="contentdiv">
+                <div class="div-border" width="100%">
+                    <h1 class="div-h1"><span class="div-h1-span">&nbsp;Search PSSR History&nbsp;</span></h1>
+
+                    <div class="container-lg container-sm container-md padr">
+                        @*<div class="row">
+
+
+                                                <div class="col-lg-2 col-sm-2 ">
+                                                <label for="MOC To Date">PSSR Type</label>
+                                                </div>
+
+                            <div class=" col-lg-3 col-sm-3">
+                                                @Html.DropDownListFor(model => model.searchHistory.PSSRType, new SelectList(Model.TypeList, "PTID", "PTName"), "--Select Status--", new
+                                { @maxlength = "100", @style = "width: 230px;  max-width: 100%;", @class = "form-control input-sm" })
+                                                </div>
+
+                                            </div>*@
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-1">
+                            </div>
+                            <div class="col-lg-1 col-sm-1">
+                                <label for="Plant / Area">Plant / Area</label>
+                            </div>
+
+                            <div class=" col-lg-2 col-sm-2">
+
+                                @Html.DropDownListFor(model => model.searchHistory.PlantID, new SelectList(Model.PlantList, "ID", "Name"), "-- Select --", new
+                                { @class = "form-control input-sm", @maxlength = "100", @style = "width: 230px;  max-width: 100%;" })
+                            </div>
+                            <div class="col-lg-1 col-sm-1">
+                                <label for="Recomm Priority">From Date</label>
+                            </div>
+
+                            <div class=" col-lg-2 col-sm-2">
+                                @Html.EditorFor(model => model.searchHistory.FromDate, new
+                                {
+                                    htmlAttributes = new
+                                { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 230px;height:25px;   max-width: 100%;", @autocomplete = "off" }
+                                })
+                            </div>
+
+                            <div class="col-lg-1 col-sm-1 ">
+                                <label for="Recomm Category">To Date</label>
+                            </div>
+
+                            <div class=" col-lg-2 col-sm-2">
+                                @Html.EditorFor(model => model.searchHistory.ToDate, new
+                                {
+                                    htmlAttributes = new
+                                { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 230px;height:25px;   max-width: 100%;", @autocomplete = "off" }
+                                })
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="text-center">
+                            <input type="button" class="btn btn-primary" onclick="SearchPSSRHistory()" name="btnSearch" value="Search" />
+                            <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+                        </div>
+                    </div>
+
+                    <br />
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    @*@Html.ActionLink("Export All Recommendations List", "ExportAllObservation", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, ActionerID = ViewBag.Actioner, DeptID = ViewBag.DeptID, IncidentPlantID = ViewBag.PlantID, incidentstatus = ViewBag.IncidentStatus1, incidenttype = ViewBag.IncidentType, @class = "btn btn-primary" })*@
+
+
+
+    <div class="container-lg container-md container-sm container-xl">
+        <div class="div-border">
+            <h1 class="div-h1"><span class="div-h1-span"> PSSR  History</span></h1>
+            <div class="container-lg container-md container-sm container-xl pre-scrollable">
+
+                <table class="table table-striped header-fixed table-hover" id="SearchResults">
+                    <thead>
+                        <tr>
+                            <th width="1%">S.No</th>
+                            <th width="5%">PSSR ID</th>
+                            <th width="15%">Plant/Area</th>
+                            <th width="15%">System Description</th>
+
+                            @*<th width="10%">PSSR Type</th>*@
+
+
+                            <th width="10%">PSSR Lead</th>
+
+                            <th width="10%">Scheduled Date</th>
+                            <th width="10%">Completed Date</th>
+                            <th width="10%">Attachment</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.HistoryList.Count > 0)
+                        {
+                            foreach (var item in Model.HistoryList)
+                            {
+
+                                <tr>
+                                    <td>@item.SNO</td>
+                                    <td>@item.PSSRID</td>
+                                    <td>@item.Plant</td>
+                                    <td>@item.SystemDesc</td>
+                                    @*<td>@item.PSSRType</td>*@
+                                    <td>@item.PSSRLead</td>
+                                    <td>@item.ScheduledDate</td>
+                                    <td>@item.ClosedDate</td>
+
+                                    <td>
+                                        @if (item.Attachment != "")
+                                        {
+                                            <a style="width:25px" href="~/PSSRAttachment/@item.Attachment" download>
+                                                <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                            </a>
+                                        }
+                                        <a href="../PSSR/PSSRPdf/@item.PSSRID" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" style="text-align:center">NO Data Found</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+

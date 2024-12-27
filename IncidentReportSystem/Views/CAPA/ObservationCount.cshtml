@@ -1,0 +1,21 @@
+﻿
+@model IncidentReportSystem.Models.ActionsStatusChartViewModel
+
+@{
+
+    var myChart1 = new Chart(width: 400, height: 300, themePath: "customtheme4.xml")
+        .AddTitle("Annual CAPA Summary", "main")
+        .SetXAxis(title: "Month")
+           .SetYAxis(title: "Counts")
+        .AddSeries(name: "CAPA Observations Counts", chartType: "Column",
+
+            xValue: Model.observationcount, xField: "MonthName",
+            yValues: Model.observationcount, yFields: "MonthlyCount")
+              .AddLegend()
+
+
+
+        .Write();
+
+
+}

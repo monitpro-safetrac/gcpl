@@ -1,0 +1,157 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" align="top" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+
+@using (Html.BeginForm("ExtensionSave", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Extension Permit_#@Html.DisplayFor(m => m.WorkPermitID)</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="fixTable" class="table-bordered table-responsive" width="98%">
+
+                @Html.Partial("PermitTemplateReadOnly", Model)
+                <table table class="table-bordered table-responsive" align="center" width="100%">
+                    <tr>
+                        <td class="text-right" rowspan="4" width="12%"><strong>Extension of Work Permit</strong></td>
+                    </tr>
+                   
+                    <tr>
+                        <td class="text-right" style="width:12%">Extension From : </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.ExtensionFrom, new { @class = "form-control input-sm", @style = "width:300px", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(m => m.ExtensionFrom, null, new { @class = "label label-danger" })
+                        <td class="text-right">Extension To : </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.ExtensionTo, new { @class = "form-control input-sm", @style = "width:300px", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(m => m.ExtensionTo, null, new { @class = "label label-danger" })
+                    </tr>
+                    <tr>
+                        <td class=" text-right">Permit Holder</td>
+                        <td>
+                            @Html.TextBoxFor(m => m.ExtensionPermitHolder, new { maxlength = 50, @class = "form-control input-sm", @style = "width:300px" })
+                            @Html.ValidationMessageFor(m => m.ExtensionPermitHolder, null, new { @class = "label label-danger" })
+                        <td class="text-right">Approver : </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.ExtensionApproverID, new SelectList(Model.ExtensionPermitApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })
+                            @Html.ValidationMessageFor(m => m.ExtensionApproverID, null, new { @class = "label label-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">Permit Issuer : </td>
+                        <td>
+                            @Model.ExtensionIssuerName @Html.HiddenFor(m => m.ExtensionPermitIssuerID)
+                            @Html.ValidationMessageFor(m => m.ExtensionIssuerName, null, new { @class = "label label-danger" })
+                        </td>
+                        <td class="text-right">Area Owner : </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.ExtensionAreaOwnerID, new SelectList(Model.ExtensionAreaOwnerList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px" })
+                            @Html.ValidationMessageFor(m => m.ExtensionAreaOwnerID, null, new { @class = "label label-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" align="center">
+                            <br />
+                            <br />
+                            <input type="submit" class="btn btn-primary" value="Save" id="Save" style="width:200px" />
+                            <br />
+                            <br />
+                            <br />
+                        </td>
+                    </tr>
+                </table>               
+                <tfoot>
+                    <tr>
+                        <td colspan="4" align="center">
+
+                        
+
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+</div>
+@Html.HiddenFor(m => m.Status)
+@Html.HiddenFor(m => m.WorkPermitID)
+@Html.HiddenFor(m => m.ContractorID)
+@Html.HiddenFor(m => m.PermitIssuerID)
+@Html.HiddenFor(m => m.WorkTypeID)
+@Html.HiddenFor(m => m.ExtensionPermitID)
+
+</div>
+}
+
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $("#Save").click(function (event) {
+        $('#Status').val("E");
+    });
+
+    $("#ClosePermit").click(function (event) {
+        $('#Status').val("C");
+    }
+    );
+
+
+    $("#PrintPermit").click(function (event) {
+        $('#Status').val("P");
+    }
+    );
+    $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+
+    $("#Reset").click(function (event) {
+        $(".field-validation-error").empty();
+        $(':text').val(""); // Clear values from all the text boxes
+    }
+    );
+</script>
+<script>
+
+    jQuery('#ExtensionFrom').datetimepicker({
+        format: 'd/m/Y H:i:s',
+        lang: 'ru',
+        step: 30
+
+
+    });
+    jQuery('#ExtensionTo').datetimepicker({
+        format: 'd/m/Y H:i:s',
+        lang: 'ru',
+        step: 30
+
+
+    });
+</script>
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "/Account/Login";
+        };
+
+    </script>
+}

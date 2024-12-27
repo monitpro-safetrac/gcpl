@@ -1,0 +1,88 @@
+﻿
+@model MonitPro.Models.LoginHistory
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">User Login History</h1>
+        </div>
+        <div class="panel-body">
+            From Date @Html.TextBoxFor(m => m.FromDate, new { style = "width: 150px;", @class = "form-control input-sm", @autocomplete = "off" })
+            To Date  @Html.TextBoxFor(m => m.ToDate, new { style = "width: 150px;", @class = "form-control input-sm", @autocomplete = "off" })
+            <input type="submit" value="Search" class="btn btn-primary" onclick="return Validate();" />&nbsp;
+            @if (Model.LoginList.Count > 0)
+            {
+                @Html.ActionLink("Export Login History", "ExportLoginHistory", new { currentFromDate = ViewBag.fromdate, currentTodate = ViewBag.Todate, @class = "btn btn-primary" })
+
+            }
+
+
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="LoginList" class="table-bordered table-responsive" cellpadding="2" cellspacing="2" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNo</th>
+                        <th> Employee ID</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                    </tr>
+                </thead>
+                @for (var i = 0; i < Model.LoginList.Count; i++)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@Model.LoginList[i].EmployeeID</td>
+                        <td>@Model.LoginList[i].FirstName</td>
+                        <td>@Model.LoginList[i].LastName</td>
+                        <td>@Model.LoginList[i].LoginTime</td>
+                        <td>@Model.LoginList[i].LogOutTime</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#LoginList").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 120 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>
+<script>
+
+    jQuery('#FromDate').datetimepicker({
+        format: 'd/m/Y H:i:s',
+        lang: 'ru',
+        step: 30
+    });
+    jQuery('#ToDate').datetimepicker({
+        format: 'd/m/Y H:i:s',
+        lang: 'ru',
+        step: 30
+    });
+</script>

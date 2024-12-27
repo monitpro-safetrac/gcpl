@@ -1,0 +1,42 @@
+﻿
+
+@model IncidentReportSystem.Models.ActionsStatusChartViewModel
+
+@{
+
+    var myChart1 = new Chart(width: 400, height: 300, themePath: "customtheme3.xml")
+        .AddTitle("CAPA Priority", "main")
+        .SetXAxis(title: "Priority")
+           .SetYAxis(title: "Counts")
+
+                .AddSeries(name: "Overdue", chartType: "Column",
+
+            xValue: Model.prioritycount, xField: "PriorityName",
+            yValues: Model.prioritycount, yFields: "Overdue")
+              .AddLegend()
+
+               .AddSeries(name: "Completed", chartType: "Column",
+
+            xValue: Model.prioritycount, xField: "PriorityName",
+            yValues: Model.prioritycount, yFields: "Closed")
+              .AddLegend()
+
+
+         .AddSeries(name: "Pending", chartType: "Column",
+
+            xValue: Model.prioritycount, xField: "PriorityName",
+            yValues: Model.prioritycount, yFields: "Opened")
+              .AddLegend()
+
+.AddSeries(name: "InProgress", chartType: "Column",
+
+            xValue: Model.prioritycount, xField: "PriorityName",
+            yValues: Model.prioritycount, yFields: "Inprogress")
+              .AddLegend()
+
+
+
+        .Write();
+
+
+}

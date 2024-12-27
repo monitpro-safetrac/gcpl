@@ -1,0 +1,44 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="~/dashboard/StyleSheet1.css" />
+</head>
+<body>
+    <div>    
+       
+       
+
+        <div class="dashboard">
+            <div class="dashboard3col">
+                <div class="dashboardCol">
+
+                    @Html.Action("Trend", "Chart")
+                    @Html.Action("OthersKPInew", "Chart")
+                </div>
+            
+            <div class="dashboardCol">
+                @Html.Action("Trend", "Chart")
+                @Html.Action("TreeMap", "Chart")
+               
+            </div>
+                <div class="dashboardCol">
+                    @Html.Action("TreeMap", "Chart")
+                    @Html.Action("WorkPlanner", "Dashboard")
+
+                </div>
+
+                </div>
+        </div>
+           </div>
+
+       
+</body>
+</html>

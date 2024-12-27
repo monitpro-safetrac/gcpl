@@ -1,0 +1,525 @@
+﻿@model MonitPro.Models.PSSR.CreatePSSRModel
+
+@{
+    ViewBag.Title = "CreatePSSR";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<style>
+    .PSSRList {
+        overflow: scroll;
+    }
+
+    #SearchResults thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    html {
+        overflow: scroll;
+    }
+
+    .leftpad {
+        padding-left: 20px;
+    }
+
+    .pad {
+        padding-left: 30px;
+    }
+
+    .txtpad {
+        position: relative;
+        left: -70px;
+    }
+
+    .pre-scrollable {
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+
+    .col1 {
+        padding-left: 60px;
+    }
+
+    .col2 {
+        padding-left: 60px;
+    }
+
+    .col3 {
+        padding-left: 70px;
+    }
+
+    .row {
+        padding-bottom: 8px;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+</style>
+
+@using (Html.BeginForm("PSSRList", "PSSR", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+
+    <body>
+        <div class="container-lg container-sm container-md container-xl">
+            <div class="div-border ">
+
+
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Search PSSR List&nbsp;</span></h1>
+
+                <div class="container-lg container-sm container-md padr">
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-1">
+
+                        </div>
+                        <div class="col-lg-1 col-sm-1">
+                            <label for="Plant / Area">Plant / Area</label>
+                        </div>
+
+                        <div class=" col-lg-2 col-sm-2">
+
+                            @Html.DropDownListFor(model => model.searchList.PlantID, new SelectList(Model.PSSRPlantList, "ID", "Name"), "-- Select --", new
+                       {
+                           @class = "form-control input-sm",
+                           @maxlength = "100",
+                           @style = "width: 230px;  max-width: 100%;"
+                       })
+                        </div>
+
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label>PSSR Category</label>
+                        </div>
+                        <div class=" col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(model => model.searchList.Category, new SelectList(Model.PSSRCategoryList, "CategoryID", "CategoryName"), "-- Select --", new
+                       { @class = "form-control input-sm", @maxlength = "100", @style = "width: 230px;  max-width: 100%;" })
+                        </div>
+
+                        <div class="col-lg-1 col-sm-1 ">
+                            @*<label>PSSR Type</label>*@
+                        </div>
+                        <div class=" col-lg-2 col-sm-2">
+
+                            @*@Html.DropDownListFor(model => model.searchList.Type, new SelectList(Model.PSSRTypeList, "PTID", "PTName"), "--Select Status--", new
+                                { @maxlength = "100", @style = "width: 240px;  max-width: 100%;", @class = "form-control input-sm" })*@
+                        </div>
+                        <div class="col-lg-1 col-sm-1">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-1">
+
+                        </div>
+                        <div class="col-lg-1 col-sm-1 ">
+                            <label>From Date</label>
+                        </div>
+                        <div class=" col-lg-2 col-sm-2">
+                            @Html.EditorFor(model => model.searchList.FromDate, new
+                       {
+                           htmlAttributes = new
+                           { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 230px;height:25px;   max-width: 100%;", @autocomplete = "off" }
+                       })
+                        </div>
+
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label>To Date</label>
+                        </div>
+                        <div class=" col-lg-2 col-sm-2">
+                            @Html.EditorFor(model => model.searchList.ToDate, new
+                       {
+                           htmlAttributes = new
+                           {
+                               @class = "form-control date-time-picker",
+                               @maxlength = "100",
+                               @style = "width: 230px;height:25px;   max-width: 100%;",
+                               @autocomplete = "off"
+                           }
+                       })
+
+                        </div>
+
+                        <div class="col-lg-1 col-sm-1 ">
+                            <label>Status</label>
+                        </div>
+                        <div class=" col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(model => model.searchList.Status, new SelectList(Model.PSSRStatusList, "StatusID", "StatusName"), "--Select Status--", new
+                       { @maxlength = "100", @style = "width: 240px;  max-width: 100%;", @class = "form-control input-sm" })
+                        </div>
+                        <div class="col-lg-1 col-sm-1">
+
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <input type="button" class="btn btn-primary" onclick="SearchPSSR()" name="btnSearch" id="btnSearch" value="Search" />
+                        <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+                    </div>
+                </div>
+
+                <br />
+
+            </div>
+
+        </div>
+
+
+
+        @if (Model.PSSRListView.Count > 0)
+        {
+            @*@Html.ActionLink("Export All Recommendations List", "ExportAllObservation", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, ActionerID = ViewBag.Actioner, DeptID = ViewBag.DeptID, IncidentPlantID = ViewBag.PlantID, incidentstatus = ViewBag.IncidentStatus1, incidenttype = ViewBag.IncidentType, @class = "btn btn-primary" })*@
+
+        }
+
+        <div class="container-lg container-md container-sm container-xl">
+            <div class="div-border">
+                <h1 class="div-h1"><span class="div-h1-span"> PSSR  List</span></h1>
+
+                <div class="container-lg container-md container-sm container-xl pre-scrollable">
+
+                    <table class="table table-striped header-fixed table-hover" id="SearchResults">
+                        <thead>
+                            <tr>
+                                <th width="1%">S.No</th>
+                                <th width="9%">PSSR ID</th>
+                                <th width="10%">Plant/Area</th>
+                                <th width="10%">System Description</th>
+                                <th width="10%">PSSR Category</th>
+                                @*<th width="10%">PSSR Type</th>*@
+
+
+                                <th width="10%">PSSR Lead</th>
+
+                                <th width="10%">Scheduled Date</th>
+                                <th width="10%">Status</th>
+
+                                <th width="10%" style="scroll-padding-block:10px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.PSSRListView.Count > 0)
+                            {
+                                for (var i = 0; i < Model.PSSRListView.Count; i++)
+                                {
+
+                                    @Html.HiddenFor(x => x.PSSRListView[i].SNO)
+                                    <tr>
+                                        <td>@Model.PSSRListView[i].SNO</td>
+                                        <td>@Model.PSSRListView[i].PSSRID</td>
+                                        <td>@Model.PSSRListView[i].PlantName</td>
+                                        <td>@Model.PSSRListView[i].SystemDesc</td>
+
+                                        <td>@Model.PSSRListView[i].Category</td>
+
+                                        @*<td>@item.PSSRType</td>*@
+                                        <td>@Model.PSSRListView[i].PSSRLead</td>
+
+                                        <td>@Model.PSSRListView[i].ScheduledDatetime</td>
+                                        <td>@Model.PSSRListView[i].PSSRStatus</td>
+
+                                        <td>
+                                            @*RoleID 18=PSSR Adviser*@
+
+                                            @if ((Model.GetAllAssignTeams.Count > 0) && Model.GetAllAssignTeams != null && Model.PSSRListView[i].PSSRStatus != "Draft")
+                                            {
+
+                                                var list = Model.GetAllAssignTeams.Where(x => x.PSSRID == Model.PSSRListView[i].PSSRID).ToList();
+
+                                                foreach (var j in list)
+                                                {
+                                                    if ((Model.PSSRListView[i].PSSRID == j.PSSRID) && ((j.ChairPerson == Model.UserID && j.ChairPersonComments == "")
+                                                        || (j.OperationLead == Model.UserID && j.OperationHeadComments == "" && Model.PSSRListView[i].PSSRStatus == "PSSR Under Approval")
+                                                        || (j.HSELead == Model.UserID && j.HSELeadComments == "" && Model.PSSRListView[i].PSSRStatus == "PSSR Under Approval")
+                                                        || (j.EnggLead == Model.UserID && j.EnggLeadComments == "" && Model.PSSRListView[i].PSSRStatus == "PSSR Under Approval")
+                                                        || (j.PSSRLead == Model.UserID && j.PSSRLeadComments == "") || (Model.Roles.Exists(a => a.RoleID == 19)||(Model.Roles.Exists(a => a.RoleID == 18)))))
+                                                    {
+                                                        <a href="@Url.Action("EditPSSR", "PSSR", new { PSSRID = Model.PSSRListView[i].PSSRID })" title="Edit">
+                                                            <img src="~/Images/Edit.png" title="Edit" alt="Edit" style="height:25px;width:25px;" />
+                                                        </a>
+                                                        break;
+                                                    }
+
+                                                }
+
+                                            }
+
+                                            else
+                                            {
+                                                if (Model.Roles.Exists(a => a.RoleID == 19) && Model.PSSRListView[i].PSSRStatus != "PSSR Signed Off")
+                                                {
+                                                    <a href="@Url.Action("EditPSSR", "PSSR", new { PSSRID = Model.PSSRListView[i].PSSRID })" title="Edit">
+                                                        <img src="~/Images/Edit.png" title="Edit" alt="Edit" style="height:25px;width:25px;" />
+                                                    </a>
+                                                }
+
+                                            }
+
+                                            @if ((Model.PSSRListView[i].OPLead == Model.UserID) || (Model.PSSRListView[i].EnggLead == Model.UserID) || (Model.PSSRListView[i].HSELead == Model.UserID) ||
+                                              (Model.PSSRListView[i].chairper == Model.UserID) || (Model.PSSRListView[i].PSSRLead == Model.UserFullName))
+                                            {
+
+                                                <a href="@Url.Action("PSSRObservation", "PSSR", new { PSSRID = Model.PSSRListView[i].PSSRID })" title="PSSR Observation">
+                                                    <img src="~/Images/Recommendation.jpg" title="Add Observation" alt="Complete Request" style="height:25px;width:25px;" />
+                                                </a>
+                                                <a href="@Url.Action("CheckList", "PSSR", new { PSSRID = Model.PSSRListView[i].PSSRID })" title="PSSR CheckList">
+                                                    <img src="~/Images/TickmarkIcon.png" title="Check List" alt="Check List" style="height:25px;width:25px;" />
+                                                </a>
+                                                if (Model.PSSRListView[i].Attachment == "")
+                                                {
+                                                    <label for=@("Attachment" + i) class="btn btn-secondary">
+                                                        <img border="0" src="~/images/Attach.png" title="Attach" alt="download" width="20" height="25">
+
+                                                    </label>
+                                                }
+                                                <input type="file" style="display: none" onchange="return FileChange(@i);" name="Attachment" id=@("Attachment" + i)>
+
+                                                @*<input type="file" style="display: none" onchange="FileChange()" name="Attachment" id="Attachment">*@
+
+                                                <a href="#" style="display:none" id="@("Remove" + i)" onclick="RemoveAttachment(@i)"><img src="~/Images/remove.png" /></a>
+                                                <button id=@("save" + i) class="btn btn-primary" style="display:none" type="submit" onclick="SubmitForm(@Model.PSSRListView[i].SNO)"> <img border="0" src="~/images/Save icon.png" style="height:25px;width:25px;"> </button>
+
+                                            }
+                                            <a href="../PSSR/PSSRPdf/@Model.PSSRListView[i].PSSRID" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+
+
+                                            @if ((Model.AllPSSRObservation.Count > 0) && Model.Roles.Exists(a => a.RoleID == 19))
+                                            {
+                                                var temp = 0;
+                                                var list = Model.AllPSSRObservation.Where(x => x.PSSRID == Model.PSSRListView[i].PSSRID).ToList();
+
+                                                foreach (var j in list)
+                                                {
+                                                    if ((Model.PSSRListView[i].PSSRID == j.PSSRID) && (j.CompletedDate != null))
+                                                    {
+                                                        temp = temp + 1;
+                                                    }
+                                                    if (temp == list.Count)
+                                                    {
+                                                        <a href="javascript:UpdatePSSRStatus(@Model.PSSRListView[i].PSSRID);">
+                                                            <img src="~/Images/StatusChange.png" title="Update Status" alt="Change Status" style="height:25px;width:25px;" />
+                                                        </a>
+                                                    }
+                                                }
+
+                                            }
+
+                                            @if (Model.PSSRListView[i].Attachment != "")
+                                            {
+                                                <a style="width:25px" href="~/PSSRAttachment/@Model.PSSRListView[i].Attachment" download>
+                                                    <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                                </a>
+                                            }
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" style="text-align:center"> NO Data Found</td>
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal" id='myModal'>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id='myModalContent'></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <input type="hidden" id="row" name="Sno" />
+}
+@section scripts
+{
+
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+        $(function () {
+            $('#PlantID').select2();
+            $('#CategoryID').select2();
+        });
+
+        jQuery('#FromDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery('#ToDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#searchList_PlantID').select2();
+            $('#searchList_Category').select2();
+        });
+        jQuery('#searchList_FromDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+        jQuery('#searchList_ToDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        function SearchPSSR() {
+
+
+            var response = null;
+            var options = { "backdrop": "static", keyboard: true };
+            var Search = @Html.Raw(Json.Encode(Model.searchList));
+
+            Search.PlantID = $("#searchList_PlantID").val();
+            Search.Status = $("#searchList_Status").val();
+            Search.Category = $("#searchList_Category").val();
+            Search.Type = $("#searchList_Type").val();
+            Search.FromDate = $("#searchList_FromDate").val();
+            Search.ToDate = $("#searchList_ToDate").val();
+
+            $.ajax({
+
+                method: "POST",
+                url: "../PSSR/PSSRList",
+                data: Search,
+                success: function (response) {
+
+                    document.open();
+                    document.write(response);
+
+                    //assign the values back to control
+                    $("#searchList_PlantID").val(Search.PlantID);
+                    $("#searchList_Category").val(Search.Category);
+                    $("#searchList_Status").val(Search.Status);
+                    $("#searchList_Type").val(Search.Type);
+                    $("#searchList_FromDate").val(Search.FromDate);
+                    $("#searchList_ToDate").val(Search.ToDate);
+                    document.close();
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function ClearSearch() {
+            $("#searchList_PlantID").val(0);
+            $("#searchList_Category").val(0);
+            $("#searchList_Status").val(0);
+            $("#searchList_Type").val(0);
+            $("#searchList_FromDate").val(0);
+            $("#searchList_ToDate").val(0);
+
+            window.location.href = "../PSSR/PSSRList";
+        }
+
+        function UpdatePSSRStatus(pssrid) {
+            var CurrentURL = '../PSSR/PSSRUpdateStatus';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: { PSSRID: pssrid },
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function CloseModel() {
+            $('#myModal').modal('hide');
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function SubmitForm(id) {
+
+            document.getElementById("row").value = id;
+            document.forms[0].submit();
+        }
+        function FileChange(id) {
+            $("#Remove" + id).show();
+            $("#save" + id).show();
+        }
+
+        function RemoveAttachment(id) {
+            document.getElementById("Attachment" + id).value = "";
+            document.getElementById("Remove" + id).style.display = 'none';
+            document.getElementById("save" + id).style.display = 'none';
+            return false;
+        }
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    @if (ViewBag.issave == "Y")
+    {
+        <script type="text/javascript">
+            alert("Attached Successfully!!!");
+            window.location.href("../PSSR/PSSRList");
+
+        </script>
+    }
+}
+
+
+
+

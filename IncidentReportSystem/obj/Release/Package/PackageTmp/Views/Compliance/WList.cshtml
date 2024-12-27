@@ -1,0 +1,36 @@
+﻿
+@model IncidentReportSystem.Models.CreateComplianceViewModel
+@{
+    ViewBag.Title = "Insert row";
+}
+
+    <table id="fixTable" class="table table-responsive table-bordered">
+   
+            <tr>
+                <th>
+                   SNo
+                </th>
+                
+                <th>
+                  WasteName
+                </th>
+                <th>
+                   Quantity
+                </th>
+                <th>
+               UoM
+                </th>  
+      
+        @for (var i = 0; i<Model.Waste.Count;i++)
+        {
+            <tr>
+                <td>@(i+1) @Html.HiddenFor(m => m.Waste[i].WasteId) @Html.HiddenFor(m => m.Waste[i].WasteTagId)  @Html.HiddenFor(m => m.Waste[i].WasteName) @Html.HiddenFor(m => m.Waste[i].UoM)</td>
+                <td>@Model.Waste[i].WasteName</td>
+                <td>@Html.TextBoxFor(m => m.Waste[i].Quantity, new { @type = "number", @class = "form-control input-sm", @style = "width:75%", @maxlength = "30" })</td>
+               
+                <td>@Model.Waste[i].UoM</td>
+               </tr>
+            }
+             
+</table>
+

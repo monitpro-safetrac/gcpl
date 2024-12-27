@@ -1,0 +1,183 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-3" style="float:left">
+
+    <input type="button" id="btnLastyears" name="Last 12 Month" style="background-color:#DCDCDC" value="Last 12 Month" />&nbsp;
+    <input type="button" id="btnLastMonth" name="Last Month" value="Last Month" style="background-color:#DCDCDC" />&nbsp;
+
+</div>
+
+<div class="col-lg-12" id="list" style="float:right;">
+    <div id="firstshowyearchart">
+        <table width="78%" align="center" cellpadding="2">
+            <tr>
+                <td><p><img src="ObservationCount" /> </p></td>
+                <td><p><img src="CapaSourceCount" /> </p></td>
+                <td><p><img src="CategoryCount" /> </p></td>
+
+            </tr>
+
+        </table>
+
+
+        <table width="60%" align="center" cellpadding="2">
+            <tr>
+                <td><p><img src="ActionStatusChart" /> </p></td>
+                <td><p><img src="CapaPriorityCount" /> </p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="LastyearsChart">
+        <table width="78%" align="center" cellpadding="2">
+            <tr>
+                <td><p><img src="ObservationCount" /> </p></td>
+                <td><p><img src="CapaSourceCount" /> </p></td>
+                <td><p><img src="CategoryCount" /> </p></td>
+
+            </tr>
+
+        </table>
+
+
+        <table width="60%" align="center" cellpadding="2">
+            <tr>
+                <td><p><img src="ActionStatusChart" /> </p></td>
+                <td><p><img src="CapaPriorityCount" /> </p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="LastMonthChart">
+        <table width="78%" align="center" cellpadding="2">
+            <tr>
+                <td><p><img src="LastMonthObservationCount" /> </p></td>
+                <td><p><img src="LastMonthCapaSourceCount" /> </p></td>
+                <td><p><img src="LastMonthCategoryCount" /> </p></td>
+
+            </tr>
+
+        </table>
+
+
+        <table width="60%" align="center" cellpadding="2">
+            <tr>
+                <td><p><img src="LastMonthActionStatusChart" /> </p></td>
+                <td><p><img src="LastMonthCapaPriorityCount" /> </p></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br />
+<br />
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+
+    @* On page loading when click IIRdashboard *@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#LastyearsChart").hide();
+            $("#LastMonthChart").hide();
+            $("#CurrentMonthChart").hide();
+            $("#btnLastyears").css("background-color", "#538DFF");
+            $("#btnLastyears").css("color", "#FFFFFF");
+        });
+
+    </script>
+
+    @* last 12 month button click event *@
+    <script type="text/javascript">
+        $("#btnLastyears").click(function () {
+            $("#LastyearsChart").show();
+            $("#LastMonthChart").hide();
+            $("#CurrentMonthChart").hide();
+            $("#firstshowyearchart").hide();
+        });
+
+    </script>
+
+    @* last  month button click event *@
+    <script type="text/javascript">
+        $("#btnLastMonth").click(function () {
+            $("#LastMonthChart").show();
+            $("#LastyearsChart").hide();
+            $("#CurrentMonthChart").hide();
+            $("#firstshowyearchart").hide();
+        });
+
+    </script>
+
+    @* Current month button click event *@
+    <script type="text/javascript">
+        $("#btnCurrentMonth").click(function () {
+            $("#CurrentMonthChart").show();
+            $("#LastMonthChart").hide();
+            $("#LastyearsChart").hide();
+            $("#firstshowyearchart").hide();
+
+        });
+
+    </script>
+
+
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnLastyears").bind('click', function (event) {
+                $("#btnLastyears").css("background-color", "#538DFF");
+                $("#btnLastyears").css("color", "#FFFFFF");
+                $("#btnLastMonth").css("background-color", '');
+                $("#btnCurrentMonth").css("background-color", '');
+                $("#btnLastMonth").css("color", '');
+            });
+
+
+        });
+
+
+        $(document).ready(function () {
+            $("#btnLastMonth").bind('click', function (event) {
+                $("#btnLastMonth").css("background-color", "#538DFF");
+                $("#btnLastyears").css("background-color", '');
+                $("#btnLastMonth").css("color", "#FFFFFF");
+                $("#btnCurrentMonth").css("background-color", '');
+                $("#btnLastyears").css("color", '');
+            });
+
+
+        });
+
+        $(document).ready(function () {
+            $("#btnCurrentMonth").bind('click', function (event) {
+                $("#btnCurrentMonth").css("background-color", "#2B65EC");
+                $("#btnLastyears").css("background-color", '');
+                $("#btnLastMonth").css("background-color", '');
+            });
+
+
+        });
+
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            document.getElementById('list').style.height = window.innerHeight - 100 + "px";
+            document.getElementById('list').style.width = window.innerWidth - 10 + "px";
+        });
+    </script>

@@ -1,0 +1,262 @@
+﻿@model MonitPro.Models.EmpProfile
+@{
+
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script type="text/javascript">
+
+
+    function SearchEmployeelist() {
+        var response = null;
+        var CurrentURL = '../WorkPermit/ContractorEmployeeList';
+        var options = { "backdrop": "static", keyboard: true };
+
+        var ContractMod = @Html.Raw(Json.Encode(Model.searchContractor));
+
+        ContractMod.ContractID = $("#searchContractor_ContractID").val();
+        ContractMod.SkillsID = $("#searchContractor_SkillsID").val();
+        ContractMod.DepartID = $("#searchContractor_DepartID").val();
+        ContractMod.TrainingFromDate = $("#searchContractor_TrainingFromDate").val();
+        ContractMod.TrainingToDate = $("#searchContractor_TrainingToDate").val();
+     /*   alert(ContractMod.ContractID)*/
+        $.ajax({
+            method: "POST",
+            url: '../WorkPermit/ContractorEmployeeList',
+            data: ContractMod,
+            success: function (response) {
+
+                document.open();
+                document.write(response);
+
+                //assign the values back to control
+
+                $("#searchContractor_ContractID").val(ContractMod.ContractID);
+                $("#searchContractor_SkillsID").val(ContractMod.SkillsID);
+                $("#searchContractor_DepartID").val(ContractMod.DepartID);
+                $("#searchContractor_TrainingFromDate").val(ContractMod.TrainingFromDate);
+                $("#searchContractor_TrainingToDate").val(ContractMod.TrainingToDate);
+                document.close();
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+
+    }
+
+
+
+</script>
+<style>
+    .pre-scrollable {
+        max-height: 400px;
+        overflow: scroll;
+    }
+    .row{
+        padding-bottom:8px;
+    }
+    .col1{
+        padding-left:40px;
+    }
+    .col2{
+        padding-left:30px;
+    }
+    .col3{
+        padding-left:20px;
+    }
+    .padr{
+        padding-left:20px;
+        padding-right:30px;
+    }
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+    html{
+        overflow:scroll;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+   <br/>
+    <div id="contentdiv" class="container-fluid" >
+
+        <div class="div-border">
+
+            <h1 class="div-h1"><span class="div-h1-span">&nbsp;Search Contractor Employee &nbsp;</span></h1>
+            <div class="container-fluid padr">
+                
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2 col1"><label>Company Name</label> </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(Model => Model.searchContractor.ContractID, new SelectList(Model.ContractorList, "ContractorID", "ContractorName"), "-- Select Contractor--", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 200px;height:25px;max-width: 100%;" })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 col2"><label>Last Training From Date</label> </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.TextBoxFor(m => m.searchContractor.TrainingFromDate, new { @maxlength = "100", @style = "width: 200px;height:25px;max-width: 100%;", @class = "trainingdate" })
+                        </div>
+                        <div class="col-lg-2 col-sm-2 col3"><label>Last Training To Date</label></div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.TextBoxFor(m => m.searchContractor.TrainingToDate, new { @maxlength = "100", @style = "width: 200px;height:25px;max-width: 100%;", @class = "trainingdate" })
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2 col1"><label>Department</label> </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.searchContractor.DepartID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 200px;height:25px;max-width: 100%;" })
+                        </div>
+
+                        <div class="col-lg-2 col-sm-2 col2"><label>Skill</label> </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.searchContractor.SkillsID, new SelectList(Model.contractorskills, "SkillsID", "SkillName"), "-- Select--", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 200px;height:25px;max-width: 100%;" })
+
+                        </div>
+
+                    </div>
+
+                    <div class="row text-center">
+                        <input type="button" class="btn btn-primary" onclick="SearchEmployeelist()" name="btnSearch" id="btnSearch" value="Search" />
+                        <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+                    </div>
+                
+            </div>
+        </div>
+        @if (Model.empUserProfile.Count > 0)
+        {
+            @Html.ActionLink("Export Contractor Employee List", "ExportContractorEmployeeList", new { @class = "btn btn-primary" })
+
+        }
+    <div class="container-fluid">
+        <div class="div-border">
+
+            <h1 class="div-h1"><span class="div-h1-span">&nbsp;Contractor Employee List &nbsp;</span></h1>
+
+            @if (Model.empUserProfile.Count > 0)
+            {
+                <div id="container" class=" table table-responsive pre-scrollable">
+                    <table id="UserList" class=" table table-bordered table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>SNO</th>
+                                <th>
+                                    Action
+                                </th>
+                                <th>User</th>
+                                <th>Contractor Employee ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Company Name</th>
+                                <th>MobileNo</th>
+                                <th>Last Training Date</th>
+                                <th>Next Traning Date</th>
+                                <th>Skill</th>
+                                <th>Department</th>
+                                <th>IsActive</th>
+                                <th>Downloads</th>
+                                @*<th>IsInvestigate</th>*@
+                            </tr>
+                        </thead>
+                        @for (var i = 0; i < Model.empUserProfile.Count; i++)
+                        {
+                            <tr>
+                                <td width="2%">@(i + 1)    @Html.HiddenFor(m => m.empUserProfile[i].ContractorProfile.FileName)</td>
+
+
+
+                                <td>
+                                    @if ((Model.Roles.Find(a => a.RoleName == "Administrator") != null) || (Model.Roles.Find(a => a.RoleName == "HSE Manager") != null))
+                                    {
+                                        @Html.ActionLink("Edit", "UpdateContractorEmployeeProfile", new { id = Model.empUserProfile[i].UserID })
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.empUserProfile[i].UserImage != "")
+                                    {
+                                        <img class="img-rounded" src="../ContractorUserImage/@Model.empUserProfile[i].UserImage" height="30px" width="30px">
+                                    }
+                                    else
+                                    {
+                                        <img class="img-rounded" src="../ContractorUserImage/notfound.jpg" height="30px" width="30px">
+                                    }
+                                </td>
+                                <td>@Model.empUserProfile[i].EmployeeID</td>
+                                <td>@Model.empUserProfile[i].FirstName</td>
+                                <td>@Model.empUserProfile[i].LastName</td>
+                                <td>@Model.empUserProfile[i].ConCompanyName</td>
+                                <td>@Model.empUserProfile[i].MobileNumber</td>
+                                <td>@Model.empUserProfile[i].TraningDate</td>
+                                <td>@Model.empUserProfile[i].NextTrainingDate</td>
+                                <td>@Model.empUserProfile[i].SkillsName</td>
+                                <td>@Model.empUserProfile[i].DeptName</td>
+                                <td>@Model.empUserProfile[i].IsActiveSelect</td>
+
+                                @*<td>@Model.empUserProfile[i].IsInvestigateSelect</td>*@
+                                <td>
+                                    <a href="@Url.Action("ContractorEmployeePDF","WorkPermit", new { id =@Model.empUserProfile[i].UserID })" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+                                    @*@Html.ActionLink("Pdf", "ContractorEmployeePDF", new { id = Model.empUserProfile[i].UserID }" target="_blank" title="Pdf")*@
+                                    @if ((Model.Roles.Find(a => a.RoleName == "Administrator") != null) || (Model.Roles.Find(a => a.RoleName == "HSE Manager") != null))
+                                    {
+                                        @Html.ActionLink("Export", "ExportContractorTrainingDetails", new { id = Model.empUserProfile[i].UserID, @class = "btn btn-primary" })
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p style="text-align:center ">No Records Found</p>
+            }
+        </div>
+    </div>
+    </div>
+
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $(".trainingdate").datepicker({ dateFormat: 'dd/mm/yy' });
+        $("#UserList").tableHeadFixer({ "left": 0 });
+        
+    });
+
+    function SearchUserName() {
+        window.location.href = '../Admin/UserList';
+    }
+
+    function ClearSearch() {
+
+        $("#searchContractor_SkillsID").val(0);
+        $("#searchContractor_ContractID").val(0);
+        $("#searchContractor_DepartID").val(0);
+        $("#searchContractor_TrainingFromDate").val('');
+        $("#searchContractor_TrainingToDate").val('');
+    }
+
+</script>

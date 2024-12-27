@@ -1,0 +1,342 @@
+﻿
+@model MonitPro.Models.WorkPermit
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+@{
+    ViewBag.Title = "DashboardWPS";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<table class="columns">
+    <tr>
+        <td><div id="barchart_div" style="border: 5px solid #808080;position: absolute;top: 10%;left: 5%"></div></td>
+        <td><div id="Stackchart1_div" style="border: 5px solid #808080;position: absolute;top: 10%;right:5%"></div></td>
+    </tr>
+    <tr>
+        <td><div id="Tablechart_div" style="border: 5px solid #808080;position: absolute;top: 55%;left:5%"></div></td>
+        <td><div id="Stackchart_div" style="border: 5px solid #808080;position: absolute;top:55%;right: 5%"></div></td>
+    </tr>
+
+</table>
+
+
+<style>
+    body {
+        background-color: #F0F1F2;
+    }
+</style>
+
+<style>
+    .cssHeaderRow {
+        background-color: #2A94D6;
+    }
+
+    .cssTableRow {
+        background-color: #ffffff;
+    }
+
+    .cssOddTableRow {
+        background-color: #F0F1F2;
+    }
+
+    .cssSelectedTableRow {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .cssHoverTableRow {
+        background: #ccc;
+    }
+
+    .cssHeaderCell {
+        color: #FFFFFF;
+        font-size: 14px;
+        padding: 10px !important;
+        border: solid 1px #FFFFFF;
+    }
+
+    .cssTableCell {
+        font-size: 14px;
+        padding: 10px !important;
+        border: solid 1px #FFFFFF;
+    }
+
+    .cssRowNumberCell {
+        text-align: center;
+    }
+</style>
+
+
+
+<script type="text/javascript">
+
+        google.charts.load('current', { 'packages': ['table'] });
+        google.charts.load('current', { 'packages': ['corechart'] });
+        var chartData = new Array;
+        var cdd = new Array;
+        var stackData = new Array;
+        var ConData = new Array;
+        var i;
+
+
+        $(document).ready(function () {
+
+            $.ajax({
+
+                url: "../Chart/GetData1",
+
+                dataType: "json",
+
+                contentType: "application/json; chartset=utf-8",
+                success: function (data) {
+                    for (i = 0; i < data.length; i++)
+                     { cdd.push(data[i]); }
+        },
+            error: function () {
+                alert("Error loading Post and Comment data! Please try again.");
+            }
+            }).done(function () {
+                google.charts.setOnLoadCallback(drawChart2);
+
+            });
+
+        });
+
+
+        $(document).ready(function () {
+
+            $.ajax({
+
+                url: "../Chart/GetData",
+
+                dataType: "json",
+
+                contentType: "application/json; chartset=utf-8",
+                success: function (data) {
+                    for (var l = 0; l < data.length; l++)
+                    { chartData.push(data[l]); }
+                },
+                error: function () {
+                    alert("Error loading Post and Comment data! Please try again.");
+                }
+            }).done(function () {
+                google.charts.setOnLoadCallback(drawChart1);
+
+            });
+
+        });
+        $(document).ready(function () {
+
+            $.ajax({
+
+                url: "../Chart/GetData2",
+
+                dataType: "json",
+
+                contentType: "application/json; chartset=utf-8",
+                success: function (data) {
+                    for (var n = 0; n < data.length;n++)
+                    { stackData.push(data[n]); }
+                },
+                error: function () {
+                    alert("Error loading Post and Comment data! Please try again.");
+                }
+            }).done(function () {
+                google.charts.setOnLoadCallback(drawChart3);
+
+            });
+
+        });
+        $(document).ready(function () {
+
+            $.ajax({
+
+                url: "../Chart/GetData3",
+
+                dataType: "json",
+
+                contentType: "application/json; chartset=utf-8",
+                success: function (data) {
+                    for (var a = 0; a < data.length; a++)
+                    { ConData.push(data[a]); }
+                },
+                error: function () {
+                    alert("Error loading Post and Comment data! Please try again.");
+                }
+            }).done(function () {
+                google.charts.setOnLoadCallback(drawChart4);
+
+            });
+
+        });
+
+
+
+        function drawChart2() {
+            var j;
+            var data1 = new google.visualization.DataTable();
+            data1.addColumn('string', 'Type of Permits in Progress');
+            data1.addColumn('number', 'Number');
+            for (j = 0; j < cdd.length; j++)
+            {
+                data1.addRow([cdd[j].WorkType, cdd[j].PermitCount]);
+
+            }
+
+            var barchart_options = {
+                title: 'Types Of Permits In Progress ( Today )',
+                width: 600,
+                height: 260,
+                pieSliceText: 'none',
+                'legend': 'bottom',
+
+
+                animation: {
+                    "startup": true,
+                    duration: 1000,
+                    easing: 'out'
+
+                },
+                titleTextStyle:
+                {
+                    fontSize: 14,
+                },
+
+                //legend: { position: 'Top', textStyle: { color: 'Black', fontSize: 16 } }
+            };
+            var barchart = new google.visualization.PieChart(document.getElementById('barchart_div'));
+            barchart.draw(data1, barchart_options);
+        }
+
+
+        function drawChart1() {
+            var k;
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Cumulative Status of  Permits');
+            data.addColumn('number', 'Total Counts');
+
+            for (var k = 0; k < chartData.length; k++) {
+                data.addRow([chartData[k].Name, chartData[k].TotalCount]);
+            }
+
+            var cssClassNames = {
+                'headerRow': 'cssHeaderRow',
+                'tableRow': 'cssTableRow',
+                'oddTableRow': 'cssOddTableRow',
+                'selectedTableRow': 'cssSelectedTableRow',
+                'hoverTableRow': 'cssHoverTableRow',
+                'headerCell': 'cssHeaderCell',
+                'tableCell': 'cssTableCell',
+                'rowNumberCell': 'cssRowNumberCell'
+            };
+
+            var Tablechart_options = {
+                title: 'Permit Status',
+                width: 600,
+                height: 270,
+                showRowNumber: true,
+                cssClassNames: cssClassNames,
+
+                animation: {
+                    "startup": true,
+                    duration: 1000,
+                    easing: 'out'
+
+                },
+
+                legend: 'none'
+            };
+            var Tablechart = new google.visualization.Table(document.getElementById('Tablechart_div'));
+            Tablechart.draw(data, Tablechart_options);
+        }
+        function drawChart3() {
+            var m;
+            var data2 = new google.visualization.DataTable();
+            data2.addColumn('string', 'PermitMonth');
+            data2.addColumn('number', 'Number of Permits');
+
+            for (var m = 0; m < stackData.length; m++) {
+                data2.addRow([stackData[m].PermitMonth, stackData[m].MonthlyCount]);
+
+            }
+
+
+            var Stackchart_options = {
+                title: 'Cumulative Work Permits Progress',
+
+                width: 600,
+                height: 270,
+            colors: ['#e0440e'],
+            hAxis:
+            {
+            title: 'Month'
+            },
+            vAxis:
+            {
+                title: 'Number of Permits', maxValue: 'none', format: '0'
+            },
+            animation:
+            {
+              "startup": true,
+              duration: 1000,
+              easing: 'out'
+            },
+            titleTextStyle:
+            {
+              fontSize:14,
+            },
+            legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '80%' },
+
+            };
+         var Stackchart = new google.visualization.ColumnChart(document.getElementById('Stackchart_div'));
+         Stackchart.draw(data2, Stackchart_options);
+        }
+        function drawChart4() {
+            var p;
+            var data3 = new google.visualization.DataTable();
+            data3.addColumn('string', 'Contractor Name');
+            data3.addColumn('number', 'Number of Permits');
+
+            for (var p = 0; p < ConData.length; p++) {
+                data3.addRow([ConData[p].ContractorName, ConData[p].CountOfCon]);
+
+            }
+            var Stackchart1_options = {
+                title: 'Contractors Vs Number of Permits ( Today )',
+                width: 600,
+                height: 260,
+                'legend': 'top',
+                hAxis: {
+                    title: 'Contractor Name',
+                },
+                vAxis: {
+                    title: 'Number of Permits', maxValue: 'none', format: '0'
+                },
+                animation: {
+                    "startup": true,
+                    duration: 1000,
+                    easing: 'out'
+                },
+                titleTextStyle:
+                {
+                    fontSize: 14,
+                },
+
+
+                bar: { groupWidth: '80%' },
+            };
+            var Stackchart1 = new google.visualization.ColumnChart(document.getElementById('Stackchart1_div'));
+            Stackchart1.draw(data3, Stackchart1_options);
+        }
+</script>
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+

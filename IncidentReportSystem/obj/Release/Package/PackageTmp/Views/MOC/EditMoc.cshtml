@@ -1,0 +1,1562 @@
+﻿
+@model MonitPro.Models.MOC.NewMOCModel
+
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<style type="text/css">
+    .verticalscroll {
+        height: 1000px;
+        overflow: auto;
+    }
+
+    .pad {
+        padding-left: 30px;
+    }
+
+    html {
+        overflow: scroll;
+    }
+    .RArating{
+        flex:2;
+    }
+</style>
+@using (Html.BeginForm("EditMoc", "MOC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="verticalscroll" style="height:700px">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h1 class="panel-title">Section 1: Change Initiaion (@Html.DisplayFor(m => m.moca.MOCNumber))</h1>
+            </div>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.moca.MOCID)
+            @Html.HiddenFor(m => m.moca.MOCNumber)
+            @Html.HiddenFor(m => m.moca.MOCStatusID)
+            @Html.HiddenFor(m => m.moca.FileName)
+            @Html.HiddenFor(m => m.moca.ImageFile)
+            @Html.HiddenFor(m => m.moca.CreatedDate)
+            @Html.HiddenFor(m => m.moca.MOCFunCMgrID)
+            @Html.HiddenFor(m => m.moca.PlantID)
+            @Html.HiddenFor(m => m.moca.MOCClassificationID)
+            @Html.HiddenFor(m => m.moca.MOCTypeID)
+            @Html.HiddenFor(m => m.moca.MOCTitle)
+            @Html.HiddenFor(m => m.moca.MOCDescription)
+            @Html.HiddenFor(m => m.moca.CreatedBy)
+            @Html.HiddenFor(m => m.moca.CreatedDate)
+            @Html.HiddenFor(m => m.moca.MOCRequiredOrNot)
+            @Html.HiddenFor(m => m.moca.MOCRequiredDetails)
+            @Html.HiddenFor(m => m.moca.Process)
+            @Html.HiddenFor(m => m.moca.Civil)
+            @Html.HiddenFor(m => m.moca.Electrical)
+            @Html.HiddenFor(m => m.moca.Mechanical)
+            @Html.HiddenFor(m => m.moca.Instrument)
+            @Html.HiddenFor(m => m.moca.Others)
+            @Html.HiddenFor(m => m.moca.FactoryManagerComments)
+            @Html.HiddenFor(m => m.moca.MOCStatusIdentify)
+
+
+            <div id="container" class="table-responsive">
+                <table id="Create" style="width:95%" align="center" class="table-bordered table-responsive">
+                    <tbody>
+                        @Html.Partial("EditMOCHeaderPage", Model)
+
+                    </tbody>
+                </table>
+
+
+            </div>
+            <br />
+            <div class=" panel-primary">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;&nbsp;Categorization </span></h1>
+                <br />
+                <div id="container">
+
+                    <div style="width:95%" class="container-fluid">
+                        <div class="row ">
+                            <div class=" col-sm-1 col-md-1 col-lg-1   "></div>
+                            <div class=" col-sm-1 col-md-2 col-lg-2  ">
+                                <label for="Assign Team">&nbsp; Assign Team<span style="color:red"> *</span></label>&nbsp;&nbsp;
+                                <a id="hideAssign" href="javascript:MOCObservers(@Model.moca.MOCID);" title="Assign "><img src="~/Images/Observers.png" alt="Assign Observers" style="height:25px;width:25px;" /></a>
+
+                            </div>
+
+                            <div class=" col-sm-1 col-md-1 col-lg-1  ">
+                                <label for="MOC Priority">MOC Priority<span style="color:red">*</span></label>
+
+                            </div>
+                            <div class=" col-sm-4 col-md-3 col-lg-3 ">
+
+                                @foreach (var a in Model.Prioritylist)
+                                {
+                                    if ((@Model.RoleID == 4) || (@Model.RoleID == 18))
+                                    {
+
+
+                                        @Html.RadioButtonFor(b => b.moca.MOCPriorityID, a.ID, new { @style = "width:20px" }) @a.Name
+
+
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(b => b.moca.MOCPriorityID, a.ID, new { @style = "width:20px", @disabled = "disabled" }) @a.Name
+
+                                    }
+                                }
+
+                                @Html.ValidationMessageFor(model => model.moca.MOCPriorityID, "", new { @class = "label label-danger" })
+
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-2">
+                                <label for="Instrument" class="col-sm-1 col-lg-1 col-md-1 control-label  ">Actions/Deliverables<span style="color:red">*</span></label>
+                            </div>
+
+                            <div class=" col-sm-2 col-md-2 col-lg-2" style="margin-left: 30px;">
+                                <a id="link" href="javascript:Observations(@Model.moca.MOCID);" title="Recommendations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a> &nbsp;&nbsp;
+                                @if (Model.Roles.Find(a => a.RoleName == "MOC Coordinator") != null)
+                                {
+                                    <button class="btn btn-primary" type="submit" title="Submit" id="submit">Save</button>
+                                }
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class=" col-sm-1 col-md-1 col-lg-1"></div>
+                            <div class=" col-sm-1 col-md-2 col-lg-2 RArating">
+                                <label for="RA">
+                                    Risk assessment (The Risk of Doing change)
+                                </label>
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-3  ">
+                                <label>Impact</label>
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-3  ">
+                                <label>Likelihood</label>
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-3  ">
+                                <label>RA Rating</label>
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-3   ">
+                                @Html.DropDownListFor(model => model.moca.Consequences,
+    ViewBag.Consequences as SelectList, "--Select--", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                                @Html.ValidationMessageFor(model => model.moca.Consequences, "", new { @class = "label label-danger" })
+
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-3  ">
+                                @Html.DropDownListFor(model => model.moca.Likelihood,
+    ViewBag.Likelihood as SelectList, "--Select--", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                                @Html.ValidationMessageFor(model => model.moca.Likelihood, "", new { @class = "label label-danger" })
+
+                            </div>
+                            <div class=" col-sm-1 col-md-2 col-lg-3  ">
+                                @if ((@Model.moca.RARating != "D2") && (@Model.moca.RARating != "E2") && (@Model.moca.RARating != "C3") && (@Model.moca.RARating != "D3") && (@Model.moca.RARating != "E3") && (@Model.moca.RARating != "B4") && (@Model.moca.RARating != "C4") && (@Model.moca.RARating != "D4") && (@Model.moca.RARating != "E4") && (@Model.moca.RARating != "A5") && (@Model.moca.RARating != "B5") && (@Model.moca.RARating != "C5") && (@Model.moca.RARating != "D5") && (@Model.moca.RARating != "E5") && (@Model.moca.RARating !=""))
+                                {
+                                    <img src="~/Images/BlueCircle.png" style="width:20px;height:20px" />
+                                }
+                                else if ((@Model.moca.RARating == "E3")|| (@Model.moca.RARating == "D4") || (@Model.moca.RARating == "E4") || (@Model.moca.RARating == "C5") || (@Model.moca.RARating == "D5") || (@Model.moca.RARating == "E5"))
+                                {
+                                    <img src="~/Images/OrangeCircle.png" style="width:20px;height:20px" />
+                                }
+                                else if ((@Model.moca.RARating == "D2") || (@Model.moca.RARating == "E2") || (@Model.moca.RARating == "C3") || (@Model.moca.RARating == "D3") || (@Model.moca.RARating == "B4") || (@Model.moca.RARating == "C4")|| (@Model.moca.RARating == "A5")|| (@Model.moca.RARating == "B5"))
+                                {
+                                    <img src="~/Images/YellowCircle.png" style="width:20px;height:20px" />
+                                }
+                                <label>@Model.moca.RARating</label>
+                            </div>
+                        </div>
+
+                        </div>
+
+                </div>
+        </div>
+        <br />
+        <div class=" panel-primary">
+            <div class="container-lg container-sm container-md">
+
+
+
+                <table style="width:100%" class="table-bordered table-responsive table-striped">
+                    <thead>
+
+
+                        <tr>
+                            <th width="3%">S.NO</th>
+                            <th width="15%">Stages</th>
+                            <th width="15%">Name</th>
+                            <th width="35%">Remarks</th>
+                            <th width="8%">Target Date</th>
+                            <th width="10%">Approval Date</th>
+                            <th width="15%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th colspan="7" style="color: #5F9EA0;">Section 3: MOC Review</th>
+                        </tr>
+                        <tr>
+
+                            <td>1</td>
+                            <td>Design Review</td>
+
+                            <td>@Model.ApprovalStage.DRName</td>
+
+
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.DRRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 1100px; ", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.DRTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.DRApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.DRUserID == Model.CurrentUserID) && (Model.ApprovalStage.DRTargetDate != null) && (Model.moca.MOCStatusInList == "Design review"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" title="Provide minimum one Category A recommendation for DR" onclick="EditDesign()">
+                                    if (Model.RecomID > 0)
+                                    {
+                                        <button type="submit" class="btn btn-success" id="AddDesign">Complete</button>
+
+                                    }
+                                }
+                            </td>
+
+
+                        </tr>
+
+                        <tr>
+
+                            <td>2</td>
+                            <td>Risk Assessment</td>
+
+                            <td>@Model.ApprovalStage.RiskName</td>
+
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.RiskRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.RiskTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.RiskApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.RiskUserID == Model.CurrentUserID) && (Model.ApprovalStage.RiskTargetDate != null) && (Model.moca.MOCStatusInList == "Risk Assessment"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" onclick="EditRisk()">
+                                    if (Model.RecomID > 0)
+                                    {
+                                        <button type="submit" class="btn btn-success" id="AddRisk">Complete</button>
+
+                                    }
+                                    <button type="submit" class="btn btn-success" id="AddRiskRecycle">Recycle</button>
+                                }
+                            </td>
+
+                        </tr>
+                        <tr>
+
+                            <td>3</td>
+                            <td>
+                                Technical Approval
+                            </td>
+
+                            <td>@Model.ApprovalStage.TechName</td>
+
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.TechRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.TechTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.TechApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.TechRemarks == null) && (Model.ApprovalStage.TechUserID == Model.CurrentUserID) && (Model.ApprovalStage.TechTargetDate != null) && (Model.moca.MOCStatusInList == "Technical Approval"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" onclick="EditTech()">
+                                    <button type="submit" class="btn btn-success" id="AddTechApprove">Approve</button>
+                                    <button type="submit" class="btn btn-success" id="AddTechRejected">Reject</button>
+
+                                }
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <th colspan="7" style="color: #5F9EA0;">Section 4: MOC Approval</th>
+                        </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td>Operations Lead</td>
+
+                            <td>@Model.ApprovalStage.ExcivilName</td>
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.ExcivilRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.ExcivilTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.ExcivilApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.ExcivilRemarks == null) && (Model.ApprovalStage.CivilUserID == Model.CurrentUserID) && (Model.ApprovalStage.ExcivilTargetDate != null) && (Model.moca.MOCStatusInList == "Operations"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" onclick="EditCivil()">
+                                    <button type="submit" class="btn btn-success" id="AddExeCivilApprove">Complete</button>
+
+                                }
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>5</td>
+                            <td>Maintenance Lead</td>
+
+                            <td>@Model.ApprovalStage.ExMechName</td>
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.ExMechRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.ExMechTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.ExMechApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.ExMechRemarks == null) && (Model.ApprovalStage.MechUserID == Model.CurrentUserID) && (Model.ApprovalStage.ExMechTargetDate != null) && (Model.moca.MOCStatusInList == "Maintenance Lead"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" onclick="EditMech()">
+                                    <button type="submit" class="btn btn-success" id="AddExeMechApprove">Complete</button>
+
+                                }
+                            </td>
+
+
+                        </tr>
+                        <tr>
+
+                            <td>6</td>
+                            <td>HSEF Lead</td>
+
+                            <td>@Model.ApprovalStage.ExElecName</td>
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.ExElecRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.ExElecTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.ExElecApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.ExElecRemarks == null) && (Model.ApprovalStage.ElecUserID == Model.CurrentUserID) && (Model.ApprovalStage.ExElecTargetDate != null) && (Model.moca.MOCStatusInList == "HSEF Lead"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" onclick="EditElec()">
+                                    <button type="submit" class="btn btn-success" id="AddExeElecApprove">Complete</button>
+                                }
+                            </td>
+
+                        </tr>
+                        <tr>
+
+                            <td>7</td>
+                            <td>Factory Manager Approval</td>
+
+                            <td>@Model.ApprovalStage.FacMgrName</td>
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.FacMgrRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.FacMgrTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.FacMgrApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            <td>
+                                @if ((Model.ApprovalStage.FacMgrRemarks == null) && (Model.ApprovalStage.FacMgrUserID == Model.CurrentUserID) && (Model.ApprovalStage.FacMgrTargetDate != null) && (Model.moca.MOCStatusInList == "Factory Manager Approval"))
+                                {
+                                    <input type="button" class="btn btn-primary" value="Edit" onclick="EditFacMgr()">
+                                    <button type="submit" class="btn btn-success" id="FactoryManagerApprover">Approve</button>
+                                    <button type="submit" class="btn btn-success" id="FactoryManagerReject">Reject</button>
+
+                                }
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <label>Condition for MOC Approval</label>
+                            </td>
+                            <td colspan="5">
+                                @Html.RadioButtonFor(model => model.moca.ConditionforMOCApprove, 1) Additional Budget not required
+                                &nbsp; &nbsp;@Html.RadioButtonFor(model => model.moca.ConditionforMOCApprove, 2)  No cost impact on approved Budget
+                                &nbsp; &nbsp;@Html.RadioButtonFor(model => model.moca.ConditionforMOCApprove, 3) Subject to cost exposure
+                                &nbsp; &nbsp;@Html.RadioButtonFor(model => model.moca.ConditionforMOCApprove, 4) Others
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="7" style="color: #5F9EA0;">Section 6: PSSR </th>
+                        </tr>
+                        <tr>
+
+                            <td>8</td>
+                            <td>PSSR Lead</td>
+
+                            <td>@Model.ApprovalStage.PSSRName</td>
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.PSSRRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.PSSRTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.PSSRApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+                            @if (Model.MocObserList.obserlist.Count > 0)
+                            {
+                                var temp = 0;
+                                <td>
+                                    @if ((Model.ApprovalStage.PSSRRemarks == null) && (Model.ApprovalStage.PSSRUserID == Model.CurrentUserID) && (Model.ApprovalStage.PSSRTargetDate != null) && (Model.moca.MOCStatusInList == "PSSR"))
+                                    {
+                                        <input type="button" class="btn btn-primary" value="Edit" title="Close all Critical Recommendations (DR/RA)  & Provide at least one PSSR recommendation" onclick="EditPSSR()">
+
+                                    }
+                                    @foreach (var i in Model.MocObserList.obserlist)
+                                    {
+                                        if ((Model.moca.MOCID == i.MOCID) && (i.CompletedDate != ""))
+                                        {
+
+                                            temp = temp + 1;
+                                        }
+
+
+
+                                        if (temp == Model.MocObserList.obserlist.Count)
+                                        {
+
+                                            if (Model.PSSRRecomID > 0)
+                                            {
+                                                if ((Model.ApprovalStage.PSSRRemarks == null) && (Model.ApprovalStage.PSSRUserID == Model.CurrentUserID) && (Model.ApprovalStage.PSSRTargetDate != null) && (Model.moca.MOCStatusInList == "PSSR"))
+                                                {
+                                                    <button type="submit" class="btn btn-success" id="AddPSSRApprove">Complete</button>
+                                                }
+                                            }
+                                        }
+
+
+                                    }
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+
+
+
+                        </tr>
+                        <tr>
+
+                            <td>9</td>
+                            <td>PSSR Sign Off</td>
+
+                            <td>@Model.ApprovalStage.PSSRSignName</td>
+
+                            @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                            <td>@Html.TextAreaFor(model => model.ApprovalStage.PSSRSignRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+                            <td>
+                                @Html.EditorFor(model => model.ApprovalStage.PSSRSignTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+                            </td>
+                            <td>@Html.EditorFor(model => model.ApprovalStage.PSSRSignApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+
+
+                            @if (Model.MocPSSRObserList.obserlist.Count > 0)
+                            {
+                                var temppssr = 0;
+
+                                <td rowspan="2">
+                                    @if ((Model.ApprovalStage.PSSRSignRemarks == null) && (Model.ApprovalStage.PSSRSignUserID == Model.CurrentUserID) && (Model.ApprovalStage.PSSRSignTargetDate != null) && (Model.moca.MOCStatusInList == "PSSR Sign Off") && (Model.ApprovalStage.PSSRRemarks != null))
+                                    {
+                                        <input type="button" class="btn btn-primary" value="Edit" title="Ensure all Category A recommendations closed" onclick="EditPSSRSign()">
+                                    }
+                                    @foreach (var i in Model.MocPSSRObserList.obserlist)
+                                    {
+                                        if ((Model.moca.MOCID == i.MOCID) && (i.CompletedDate != ""))
+                                        {
+
+                                            temppssr = temppssr + 1;
+                                        }
+                                        if (temppssr == Model.MocPSSRObserList.obserlist.Count)
+                                        {
+                                            if ((Model.ApprovalStage.PSSRSignRemarks == null) && (Model.ApprovalStage.PSSRSignUserID == Model.CurrentUserID) && (Model.ApprovalStage.PSSRSignTargetDate != null) && (Model.moca.MOCStatusInList == "PSSR Sign Off") && (Model.ApprovalStage.PSSRRemarks != null))
+                                            {
+                                                <button type="submit" class="btn btn-success" id="AddPSSRSignApprove">Complete</button>
+                                            }
+
+                                        }
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @if ((Model.ApprovalStage.PSSRSignRemarks == null) && (Model.ApprovalStage.PSSRSignUserID == Model.CurrentUserID) && (Model.ApprovalStage.PSSRSignTargetDate != null) && (Model.moca.MOCStatusInList == "PSSR Sign Off") && (Model.ApprovalStage.PSSRRemarks != null))
+                                    {
+                                        <input type="button" class="btn btn-primary" value="Edit" title="Ensure all Category A recommendations closed" onclick="EditPSSRSign()">
+                                        <button type="submit" class="btn btn-success" id="AddPSSRSignApprove">Complete</button>
+
+                                    }
+                                </td>
+                            }
+
+
+                        </tr>
+                        <tr>
+                            <th colspan="7" style="color: #5F9EA0;">Section 7: Close out </th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="4">
+                                &nbsp; &nbsp;&nbsp; &nbsp; @Html.RadioButtonFor(model => model.moca.PSSRSignOFFDecision, 1, new { @class = "PSSRSignOFFDecision" }) MOC implemented. All implementation actions listed in section 3 and PSSR have all been completed. The MOC request can be closed.
+                                &nbsp; &nbsp;@Html.RadioButtonFor(model => model.moca.PSSRSignOFFDecision, 2, new { @class = "PSSRSignOFFDecision" }) MOC Cancelled
+                            </td>
+                            @*<td>
+                                @if ((Model.Roles.Find(a => a.RoleName == "MOC Coordinator") != null) && (Model.moca.MOCStatusInList == "Completed"))
+                                {
+                                    <button class="btn btn-primary" type="submit" title="Submit" id="PSSRSignOffcomplete">Save</button>
+                                }
+                            </td>*@
+                        </tr>
+
+
+
+
+
+
+
+                        <!--<tr>
+
+    <td>10</td>
+    <td>As Built Documentation</td>
+
+    <td>@Model.ApprovalStage.BDocName</td>-->
+                        @*<td>@Html.TextAreaFor(model => model.approvallist[i].UserName, new { style = "width: 200px", @id = ("FunManager" + i) })</td>*@
+                        <!--<td>@Html.TextAreaFor(model => model.ApprovalStage.BDocRemarks, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 800px;", maxlength = 500 })</td>
+
+        <td>
+            @Html.EditorFor(model => model.ApprovalStage.BDocTargetDate, new { htmlAttributes = new { @class = "dt", style = "width: 150px", @disabled = "disabled" } })
+
+        </td>
+        <td>@Html.EditorFor(model => model.ApprovalStage.BDocApprovalDate, new { htmlAttributes = new { style = "width: 150px", @disabled = "disabled" } })</td>
+        <td>
+            @if ((Model.ApprovalStage.BDocRemarks == null) && (Model.ApprovalStage.BDocUserID == Model.CurrentUserID) && (Model.ApprovalStage.BDocTargetDate != null) && (Model.moca.MOCStatusInList == "As Built Documentation"))
+            {
+                <input type="button" class="btn btn-primary" value="Edit" onclick="EditBDoc()">
+                <button type="submit" class="btn btn-success" id="AddDocument">Complete</button>
+
+            }
+        </td>
+
+
+    </tr>-->
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+            <input type="hidden" id="RowCount" value="@Model.Prioritylist.Count" />
+        </div>
+    </div>
+
+}
+
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Message");
+                window.location.href = "../MOC/EditMOC?MOCID=" + @Model.moca.MOCID;
+        };
+
+    </script>
+}
+
+@if (ViewBag.error != null)
+{
+    <script type="text/javascript">
+
+        {
+        alert("@ViewBag.error");
+
+         };
+
+    </script>
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        function MOCObservers(MOCID) {
+            window.location.href = '../MOC/MOCObservers?MOCID=' + MOCID;
+        }
+        $(".dt").datepicker({ dateFormat: 'dd/mm/yy' });
+
+        function EditDesign() {
+
+            $("#ApprovalStage_DRRemarks").removeAttr("disabled");
+            $("#ApprovalStage_DRApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+
+        }
+        function EditDesignApproval() {
+
+            $("#ApprovalStage_DRARemarks").removeAttr("disabled");
+               $("#ApprovalStage_DRAApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+        }
+        function EditRisk() {
+
+            $("#ApprovalStage_RiskRemarks").removeAttr("disabled");
+               $("#ApprovalStage_RiskApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditTech() {
+
+            $("#ApprovalStage_TechRemarks").removeAttr("disabled");
+            $("#ApprovalStage_TechApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditFacMgr() {
+
+            $("#ApprovalStage_FacMgrRemarks").removeAttr("disabled");
+               $("#ApprovalStage_FacMgrApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditCivil() {
+
+            $("#ApprovalStage_ExcivilRemarks").removeAttr("disabled");
+            $("#ApprovalStage_ExcivilApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditElec() {
+
+            $("#ApprovalStage_ExElecRemarks").removeAttr("disabled");
+            $("#ApprovalStage_ExElecApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditMech() {
+
+            $("#ApprovalStage_ExMechRemarks").removeAttr("disabled");
+            $("#ApprovalStage_ExMechApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditPSSR() {
+
+            $("#ApprovalStage_PSSRRemarks").removeAttr("disabled");
+                    $("#ApprovalStage_PSSRApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        function EditPSSRSign() {
+
+            $("#ApprovalStage_PSSRSignRemarks").removeAttr("disabled");
+            $("#ApprovalStage_PSSRSignApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+
+        }
+        function EditBDoc() {
+
+            $("#ApprovalStage_BDocRemarks").removeAttr("disabled");
+            $("#ApprovalStage_BDocApprovalDate").val("@DateTime.Now.ToString("dd/MM/yyyy")");
+
+        }
+        $("#PSSRSignOffcomplete").click(function (event){
+            $(".PSSRSignOFFDecision").attr('required', true);
+            var vDecision = $(".PSSRSignOFFDecision").val();
+            var vapprovestatus = 0;
+            if (vDecision == "1") {
+                vapprovestatus = 9;
+            }
+            else if (vDecision == "2") {
+                vapprovestatus = 10;
+            }
+            else {
+                vapprovestatus = 0;
+            }
+            $("#moca_MOCStatusID").val(vapprovestatus);
+        })
+
+
+        $("#AddTechApprove").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+
+            vRemarks = $("#ApprovalStage_TechRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_TechApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_TechTargetDate").val();
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_TechRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(8), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(5), ApproveStatus: parseInt(4)
+                    },
+                    success: function (data) {
+                        alert('	Technical Approval Approved');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+
+        })
+        $("#AddTechRejected").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+
+            vRemarks = $("#ApprovalStage_TechRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_TechApprovalDate").val();
+             var TargetDate = $("#ApprovalStage_TechTargetDate").val();
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', true);
+             }, 0);
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', false);
+             }, 5000);
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_TechRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(5), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(5), ApproveStatus: parseInt(8)
+                    },
+                    success: function (data) {
+                        alert('	Technical Approval Rejected');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+
+        })
+
+        $("#AddExeCivilApprove").click(function (event) {
+             var ValidationMessage = '';
+             var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+             vRemarks = $("#ApprovalStage_ExcivilRemarks").val();
+             vExeApprovalDate = $("#ApprovalStage_ExcivilApprovalDate").val();
+             var TargetDate = $("#ApprovalStage_ExcivilTargetDate").val();
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', true);
+             }, 0);
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', false);
+             }, 5000);
+             if (vRemarks == '') {
+                 ValidationMessage = ValidationMessage + '\n Remarks';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = $("#ApprovalStage_ExcivilRemarks").val();
+                 }
+             }
+
+
+             if (ValidationMessage != '') {
+                 alert('Please provide the following field(s) ' + ValidationMessage);
+                 $(ControlToFocus).focus();
+             }
+             else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(7), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(6), ApproveStatus: parseInt(4)
+                    },
+                    success: function (data) {
+                        alert('Operation Completed');
+                        window.location.href = '../MOC/MOCList';
+
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                 });
+
+            }
+
+    })
+        $("#AddExeElecApprove").click(function (event) {
+             var ValidationMessage = '';
+             var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+             vRemarks = $("#ApprovalStage_ExElecRemarks").val();
+             vExeApprovalDate = $("#ApprovalStage_ExElecApprovalDate").val();
+             var TargetDate = $("#ApprovalStage_ExElecTargetDate").val();
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', true);
+             }, 0);
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', false);
+             }, 5000);
+             if (vRemarks == '') {
+                 ValidationMessage = ValidationMessage + '\n Remarks';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = $("#ApprovalStage_ExElecRemarks").val();
+                 }
+             }
+
+
+             if (ValidationMessage != '') {
+                 alert('Please provide the following field(s) ' + ValidationMessage);
+                 $(ControlToFocus).focus();
+             }
+             else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(9), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(8), ApproveStatus: parseInt(4)
+                    },
+                    success: function (data) {
+                        alert('HSEF Completed');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                 });
+
+            }
+
+    })
+
+        $("#AddExeMechApprove").click(function (event) {
+             var ValidationMessage = '';
+             var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+             vRemarks = $("#ApprovalStage_ExMechRemarks").val();
+             vExeApprovalDate = $("#ApprovalStage_ExMechApprovalDate").val();
+             var TargetDate = $("#ApprovalStage_ExMechTargetDate").val();
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', true);
+             }, 0);
+             setTimeout(function () {
+                 $('button[type=submit]').prop('disabled', false);
+             }, 5000);
+             if (vRemarks == '') {
+                 ValidationMessage = ValidationMessage + '\n Remarks';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = $("#ApprovalStage_ExMechRemarks").val();
+                 }
+             }
+
+
+             if (ValidationMessage != '') {
+                 alert('Please provide the following field(s) ' + ValidationMessage);
+                 $(ControlToFocus).focus();
+             }
+             else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(8), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(7), ApproveStatus: parseInt(4)
+                    },
+                    success: function (data) {
+                        alert('Maintenance Lead Completed');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                 });
+
+            }
+
+    })
+        $("#AddPSSRApprove").click(function (event) {
+             var ValidationMessage = '';
+             var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+             vRemarks = $("#ApprovalStage_PSSRRemarks").val();
+             vExeApprovalDate = $("#ApprovalStage_PSSRApprovalDate").val();
+         var TargetDate = $("#ApprovalStage_PSSRTargetDate").val();
+         setTimeout(function () {
+             $('button[type=submit]').prop('disabled', true);
+         }, 0);
+         setTimeout(function () {
+             $('button[type=submit]').prop('disabled', false);
+         }, 5000);
+             if (vRemarks == '') {
+                 ValidationMessage = ValidationMessage + '\n Remarks';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = $("#ApprovalStage_PSSRRemarks").val();
+                 }
+             }
+
+
+             if (ValidationMessage != '') {
+                 alert('Please provide the following field(s) ' + ValidationMessage);
+                 $(ControlToFocus).focus();
+             }
+             else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(16), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(15), ApproveStatus: parseInt(5)
+                    },
+                    success: function (data) {
+                        alert('PSSR Completed');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                 });
+
+            }
+
+        })
+        $("#AddPSSRSignApprove").click(function (event) {
+             var ValidationMessage = '';
+             var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+           
+        vRemarks = $("#ApprovalStage_PSSRSignRemarks").val();
+        vExeApprovalDate = $("#ApprovalStage_PSSRSignApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_PSSRSignTargetDate").val();
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+             if (vRemarks == '') {
+                 ValidationMessage = ValidationMessage + '\n Remarks';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = $("#ApprovalStage_PSSRSignRemarks").val();
+                 }
+             }
+
+
+             if (ValidationMessage != '') {
+                 alert('Please provide the following field(s) ' + ValidationMessage);
+                 $(ControlToFocus).focus();
+             }
+             else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(17), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(16), ApproveStatus: 9
+                    },
+                    success: function (data) {
+                        alert('PSSR sign off Approved');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                 });
+
+            }
+
+        })
+
+
+        $("#AddDesign").click(function (event) {
+            var SaveURL = '../MOC/MOCList';
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+            vRemarks = $("#ApprovalStage_DRRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_DRApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_DRTargetDate").val();
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+
+
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_DRRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(3), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(2), ApproveStatus: parseInt(3)
+                    },
+                    success: function (data) {
+                        alert('Design Review Completed');
+                        window.location.href = '../MOC/MOCList';
+                    },
+
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+
+                });
+
+            }
+
+        })
+
+        $("#AddDesignApproval").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+            vRemarks = $("#ApprovalStage_DRARemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_DRAApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_DRATargetDate").val();
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+
+
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_DRARemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(4), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(3), ApproveStatus: parseInt(5)
+                    },
+                    success: function (data) {
+                        alert('Design Review  Approved');
+                        window.location.href = '../MOC/MOCList';
+                    },
+
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+
+                });
+
+            }
+
+        })
+        $("#AddDesignApprovalReject").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+            vRemarks = $("#ApprovalStage_DRARemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_DRAApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_DRATargetDate").val();
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_DRARemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(3), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(3), ApproveStatus: parseInt(8)
+                    },
+                    success: function (data) {
+                        alert('Design Review Rejected');
+                        window.location.href = '../MOC/MOCList';
+                    },
+
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+
+                });
+
+            }
+
+        })
+        $("#AddRisk").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+
+            vRemarks = $("#ApprovalStage_RiskRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_RiskApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_RiskTargetDate").val();
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks' ;
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_RiskRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+        else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(5), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(4), ApproveStatus: parseInt(6)
+                    },
+                    success: function (data) {
+                        alert('Risk Assessment Completed');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+
+        })
+        $("#AddRiskRecycle").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+
+            vRemarks = $("#ApprovalStage_RiskRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_RiskApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_RiskTargetDate").val();
+
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks' ;
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_RiskRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+        else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(4), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(4), ApproveStatus: parseInt(2)
+                    },
+                    success: function (data) {
+                        alert('Risk Assessment Recycle Successfully');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+
+        })
+        $("#AddDocument").click(function (event) {
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+            vRemarks = $("#ApprovalStage_BDocRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_BDocApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_BDocTargetDate").val();
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_BDocRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(18), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(17), ApproveStatus: parseInt(14)
+                    },
+                    success: function (data) {
+
+                        alert('As built documentation completed');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+
+        })
+        $("#FactoryManagerApprover").click(function (event) {
+
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+             var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+            vRemarks = $("#ApprovalStage_FacMgrRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_FacMgrApprovalDate").val();
+            var TargetDate = $("#ApprovalStage_FacMgrTargetDate").val();
+
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', true);
+            }, 0);
+            setTimeout(function () {
+                $('button[type=submit]').prop('disabled', false);
+            }, 5000);
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_FacMgrRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(15), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(9), ApproveStatus: parseInt(5)
+                    },
+                    success: function (data) {
+                        alert('Factory Manager Approved');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+        })
+        $("#FactoryManagerReject").click(function (event) {
+
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+             var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+
+            vRemarks = $("#ApprovalStage_FacMgrRemarks").val();
+            vExeApprovalDate = $("#ApprovalStage_FacMgrApprovalDate").val();
+        var TargetDate = $("#ApprovalStage_FacMgrTargetDate").val();
+
+        setTimeout(function () {
+            $('button[type=submit]').prop('disabled', true);
+        }, 0);
+        setTimeout(function () {
+            $('button[type=submit]').prop('disabled', false);
+        }, 5000);
+            if (vRemarks == '') {
+                ValidationMessage = ValidationMessage + '\n Remarks';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = $("#ApprovalStage_FacMgrRemarks").val();
+                }
+            }
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else
+
+            {
+                $.ajax({
+                    method: "POST",
+                    url: "../MOC/FuncationalManagerApprovers",
+                    data: {
+                        MOCID: MOCID, Remarks: vRemarks, TargetDate: TargetDate, ID: parseInt(9), FunApprovalDate: vExeApprovalDate, FuncationalManagerID: parseInt(9), ApproveStatus: parseInt(8)
+                    },
+                    success: function (data) {
+                        alert('Factory Manager Rejected');
+                        window.location.href = '../MOC/MOCList';
+                    },
+                    error: function (errdata) {
+                        alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            }
+        })
+
+        function FactoryManagerRecycle () {
+            var CurrentURL = '../MOC/UpdateMOCStatus';
+            var MOCID = @Html.Raw(Json.Encode(Model.moca.MOCID));
+            var StatusID = "";
+            var Comments = $("#moca_CloseComments").val();
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: { MOCID: parseInt(MOCID), StatusID: parseInt(2), CloseComments: Comments },
+                success: function (response) {
+                    //alert(JSON.stringify(response));
+                    alert('Factory Manager recycled ');
+                    $('#myModal').modal('hide');
+                    location.reload();
+                },
+                error: function (errmessage) {
+                    alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                    $('#myModal').modal('hide');
+                }
+            });
+        }
+
+
+        function Observations(MOCID) {
+
+            window.location.href = '../MOC/MOCObservations?MOCID=' + MOCID;
+
+        }
+
+        function UploadImages(MOCID) {
+            window.location.href = '../MOC/UploadAttachments?MOCID=' + MOCID;
+        }
+
+        $("#submit").click(function (event) {
+            $('#moca_MOCStatusIdentify').val(80);
+            $('#moca_MOCPriorityID').attr('required', true);
+            $("#Create *").attr('disabled', false);
+            $('#moca_Emergency').attr('required', false);
+            $('.PSSRSignOFFDecision').rules('remove');
+            $('.PSSRSignOFFDecision-error').text('');
+            $(".PSSRSignOFFDecision").attr('required', false);
+            $('#moca_ConditionforMOCApprove').rules('remove');
+            $('#moca_ConditionforMOCApprove-error').text('');
+            $("#moca_ConditionforMOCApprove").attr('required', false);
+           
+
+        });
+
+        function Required(select) {
+            if (select.value == "Yes") {
+                $('#RequiredYes').attr('disabled', false);
+            }
+            else {
+                $('#RequiredYes').attr('disabled', true);
+            }
+        }
+
+    </script>
+
+
+}

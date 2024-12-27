@@ -1,0 +1,345 @@
+﻿@model IncidentReportSystem.Models.CAPAListViewModel
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@section scripts
+{
+    <script type="text/javascript">
+
+
+        function SearchCAPA()
+        {
+            var response = null;
+            var CurrentURL = '../CAPA/CAPAHistory';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var CAPAMod = @Html.Raw(Json.Encode(Model.CAPASearch));
+
+        CAPAMod.CAPAPlant = $("#CAPASearch_CAPAPlant").val();
+        CAPAMod.CAPAStatus = $("#CAPASearch_CAPAStatus").val();
+        CAPAMod.CAPAFromDate = $("#CAPASearch_CAPAFromDate").val();
+        CAPAMod.CAPAToDate = $("#CAPASearch_CAPAToDate").val();
+        CAPAMod.AuditType = $("#CAPASearch_AuditType").val();
+        CAPAMod.CAPASource = $("#CAPASearch_CAPASource").val();
+
+            $.ajax({
+                method: "POST",
+                url: "../CAPA/CAPAHistory",
+                data: CAPAMod,
+                success: function (response) {
+                    document.open();
+                    document.write(response);
+                 /*   $('#MainBody').html(response);*/
+                    $("#CAPASearch_CAPAPlant").val(CAPAMod.CAPAPlant);
+                    $("#CAPASearch_CAPAStatus").val(CAPAMod.CAPAStatus);
+                    $("#CAPASearch_CAPAFromDate").val(CAPAMod.CAPAFromDate);
+                    $("#CAPASearch_CAPAToDate").val(CAPAMod.CAPAToDate);
+                    $("#CAPASearch_AuditType").val(CAPAMod.AuditType);
+                    $("#CAPASearch_CAPASource ").val(CAPAMod.CAPASource);
+                    document.close();
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+        }
+
+         $(document).ready(function () {
+            $("#CAPASearch_AuditType").change(function () {
+                var select = $("#CAPASearch_CAPASource");
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "-- Select --"
+                }));
+
+                var selectedAuditTypeID = $(this).val();
+                if (selectedAuditTypeID != "") {
+                    $.getJSON("../CAPA/GetAuditCAPAsource", { AuditID: selectedAuditTypeID }, function (data) {
+                        $.each(data, function (index, itemData) {
+                            select.append($('<option/>', {
+                                value: itemData.Value,
+                                text: itemData.Text
+                            }));
+
+                        });
+                    });
+                }
+            });
+        });
+
+
+         $(document).ready(function () {
+        var SourceIndex = 0;
+             var select = $("#CAPASearch_CAPASource");
+            select.empty();
+            select.append($('<option/>', {
+                value: "",
+                text: "-- Select CAPA Source--"
+            }));
+             var selectedAuditTypeID = $("#CAPASearch_AuditType").val();
+            if (selectedAuditTypeID!= "") {
+                $.getJSON("../CAPA/GetAuditCAPAsource", { AuditID: selectedAuditTypeID }, function (data) {
+                    $.each(data, function (index, itemData) {
+                        if (itemData.Value=='@Model.CAPASearch.CAPASource')
+                        {
+                            SourceIndex = index + 1;
+                        }
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+
+                        }));
+                    });
+
+                    document.getElementById('CAPASearch_CAPASource').selectedIndex = SourceIndex;
+                });
+            }
+     });
+
+        function ClearSearch() {
+            $("#CAPASearch_CAPAPlant").val('');
+             $("#CAPASearch_CAPAPlant").select2('');
+            $("#CAPASearch_CAPAStatus").val('');
+            $("#CAPASearch_CAPAFromDate").val('');
+            $("#CAPASearch_CAPAToDate").val('');
+            $("#CAPASearch_AuditType").val('');
+            $("#CAPASearch_CAPASource").val('');
+             $("#CAPASearch_CAPASource").select2('');
+        }
+
+
+        jQuery('#CAPASearch_CAPAFromDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery('#CAPASearch_CAPAToDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            document.getElementById('container').style.height = window.innerHeight - 270 + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+         $(function () {
+
+            $("#CAPASearch_CAPAPlant").select2();
+            $("#CAPASearch_CAPASource").select2();
+          });
+    </script>
+
+    <style>
+        #SearchResults thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        html {
+            overflow: scroll;
+        }
+        .table-hover tbody tr:hover td {
+            background-color: #B4CFEC;
+        }
+
+        .table > thead > tr > th {
+            background-color: #428BCA;
+            color: white;
+        }
+
+        .select2-container {
+            max-width: 100%;
+        }
+
+        .select2-container {
+            width: 300px; /* or any other value you prefer */
+        }
+
+        .txtpad {
+            /*position: relative;*/
+            left: -40px;
+        }
+
+        .leftpad {
+            padding-left: 20px;
+        }
+
+        .col1 {
+            padding-left: 90px;
+        }
+
+        .col2 {
+            padding-left: 90px;
+        }
+
+        .col3 {
+            padding-left: 70px;
+        }
+    </style>
+
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+        /**/</script>
+}
+
+@{
+    ViewBag.Title = "CAPAIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <form>
+        <div id="contentdiv">
+            <div class="div-border" width="100%">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;CAPA History&nbsp;</span></h1>
+                <div class="container-fluid leftpad">
+                   
+                    <div class="row">
+
+                        <div class="col-lg-2  col-sm-2 ">
+                            <label>CAPA From Date</label>
+                        </div>
+
+                        <div class="col-lg-2  col-sm-2">
+                            @Html.EditorFor(model => model.CAPASearch.CAPAFromDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                        </div>
+
+                        <div class="col-lg-2  col-sm-2 ">
+                            <label>CAPA To Date</label>
+                        </div>
+
+                        <div class="col-lg-2  col-sm-2">
+                            @Html.EditorFor(model => model.CAPASearch.CAPAToDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                        </div>
+                        <div class="col-lg-2  col-sm-2 ">
+                            <label>Audit Type</label>
+                        </div>
+
+                        <div class="col-lg-2  col-sm-2">
+                            @Html.DropDownListFor(model => Model.CAPASearch.AuditType,
+                                ViewBag.AuditType as SelectList, new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                        </div>
+                    </div><br />
+                    <div class="row">
+                        <div class="col-lg-2  col-sm-2 ">
+                            <label>CAPA Source</label>
+                        </div>
+
+                        <div class="col-lg-2  col-sm-2">
+                            @Html.DropDownListFor(model => Model.CAPASearch.CAPASource,
+                                 ViewBag.CapaSources as SelectList, "--Select CAPA Source--", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                        </div>
+                        <div class="col-lg-3 col-sm-2 col5">
+                            <img src="~/Images/searchIcon.png" onclick="SearchCAPA()" name="btnSearch" id="btnSearch" alt="Search Button" style="cursor: pointer;height:30px;width:30px" title="Search" />
+                            &nbsp; &nbsp; &nbsp;
+                            @if (Model.CapaList.Count > 0)
+                            {
+                                <a href="@Url.Action("ExportCAPAHistory", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentPlantID = ViewBag.PlantID, currentAuditType = ViewBag.CAPAAudit, currentCAPASource = ViewBag.CapaSource})">
+                                    <img src="~/Images/ms-excel-icon.png" alt="Export Incident History" style="width: 30px; height: 30px; cursor: pointer;" title="Export Incident History" />
+                                </a>
+
+                            }
+                        </div>
+                    </div>
+
+
+                        @*<div class="row text-center">
+                            <input type="button" class="btn btn-primary" name="btnSearch" id="btnSearch" onclick="SearchCAPA()" value="Search" />
+                            <input type="button" class="btn btn-primary" name="btnReset" id="btnReset" onclick="ClearSearch()" value="Clear" />
+                        </div>*@
+
+                   <br />
+                </div>
+            </div>
+        </div>
+    </form>
+</div><br />
+
+@*@if (Model.CapaList.Count > 0)
+{
+    @Html.ActionLink("Export CAPA History", "ExportCAPAHistory", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentPlantID = ViewBag.PlantID, currentAuditType = ViewBag.CAPAAudit, currentCAPASource = ViewBag.CapaSource, @class = "btn btn-primary" })
+
+}*@
+<div>
+    <div class="container-fluid pre-scrollable">
+        
+            @if (Model.CapaList.Count > 0)
+            {
+                <table class="table table-hover header-fixed table-striped" id="SearchResults">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>CAPA ID</th>
+                            <th>Audit Date</th>
+                            <th>Audit Type</th>
+                            <th>CAPA Source</th>
+                            <th>Status</th>
+                            <th>Closed Date</th>
+                            <th>Downloads</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CapaList)
+                        {
+                            <tr>
+                                <td>@item.SNo</td>
+                                <td>@item.CAPANumber</td>
+                                <td>@item.AuditTime.ToString("dd/MM/yyyy")</td>
+                                <td>@item.AuditType</td>
+                                <td>@item.CAPASource</td>
+                                <td>@item.ClosedStatus</td>
+                                <td>@item.ClosedTime.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a href="../CAPA/CAPAPrintPDF/@item.CAPAID" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+
+                                    @if (item.FileName != "")
+                                    {
+                                        <a href="~/CAPAAttachments/@item.FileName" download>
+                                            <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                        </a>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No CAPA history found</p>
+            }
+        </div>
+    </div>
+
+
+
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>

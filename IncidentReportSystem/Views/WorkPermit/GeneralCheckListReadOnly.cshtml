@@ -1,0 +1,42 @@
+﻿
+
+@model MonitPro.Models.WorkPermit
+
+@{
+    Layout = null;
+}
+
+
+<table id="fixTable" class="table table-responsive">
+    <tr>
+        <td>
+
+            @*<h5><b>General Check List</b></h5>*@
+            @for (var i = 0; i < Model.GeneralList.Count; i++)
+            {
+                <div class="col-md-3 col-sm-3 col-xs-3">
+
+                    @Html.HiddenFor(m => m.GeneralList[i].GenID)@Html.HiddenFor(m => m.GeneralList[i].GenName)
+                    @Html.CheckBoxFor(m => m.GeneralList[i].Gencheck, htmlAttributes: new { @class = "big-checkbox", @disabled = "true" })
+                    @Model.GeneralList[i].GenName
+                </div>
+
+            }
+        </td>
+    </tr>
+    <tr>
+
+        @if (ViewBag.IsValidationFailed == true)
+        {
+            <td colspan="3" class="text-danger text-center">
+                <strong>@Html.ValidationMessage("PPEValidation")</strong>
+            </td>
+
+        }
+
+    </tr>
+
+
+
+</table>
+

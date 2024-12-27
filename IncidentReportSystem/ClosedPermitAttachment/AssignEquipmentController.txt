@@ -1,0 +1,93 @@
+AssignEquipmentController.cs
+
+
+[HttpGet]
+        //[AuthorizedUsers("Supervisor")]
+        public ActionResult AssignEquipment()
+        {
+
+            AssignEquipments assignEquipments = null;
+            try
+            {
+                AdminBLL adminBLL = new AdminBLL();
+                assignEquipments = adminBLL.AssignEquipment(0);
+            }
+            catch (Exception objException)
+            {
+                ModelState.AddModelError("Error", objException.Message);
+            }
+            assignEquipments.UserID = CurrentUser.UserID;
+            assignEquipments.UserFullName = CurrentUser.FullName;
+            assignEquipments.Roles = CurrentUser.Roles;
+            assignEquipments.ProfileImage = CurrentUser.ProfileImage;
+            return View(assignEquipments);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //[AuthorizedUsers("Supervisor")]
+        public ActionResult AssignEquipment(AssignEquipments assignEquipments)
+        {
+            try
+            {
+                AdminBLL adminBLL = new AdminBLL();
+
+                if (Request.Form["GetEquipmentList"] == "1")
+                {
+                    int userID = assignEquipments.SelectedUserID;
+                    assignEquipments = adminBLL.AssignEquipment(userID);
+                    assignEquipments.SelectedUserID = userID;
+                }
+
+                if (Request.Form["SaveUserEquipments"] == "1")
+                {
+                    List<int> equipmentList = assignEquipments.Equipments.Where(x => x.Assigned == true).Select(y => y.EquipmentID).ToList();
+
+                    MeasureDataUsersEntity measureDataUsersEntity = new MeasureDataUsersEntity();
+                    measureDataUsersEntity.AssignTo = assignEquipments.SelectedUserID;
+                    measureDataUsersEntity.AssignedBy = CurrentUser.UserID;
+                    measureDataUsersEntity.EquipmentList = equipmentList;
+
+                    //foreach (var item in assignEquipments.Equipments)
+                    //{
+                    //    if (item.Assigned ==true)
+                    //    {
+                    //        equipmentList.Add(item.EquipmentID);
+                    //        listEquipments.Add( 
+                    //            new MeasureDataUsersEntity
+                    //            {
+                    //                assi =assignEquipments.SelectedUserID,
+                    //                EquipmentID =item.EquipmentID,
+                    //                AssignedBy =CurrentUser.UserID 
+                    //             });
+                    //        //int recordCount = adminBLL.MeasureDataUsersInsert(listEquipments);
+                    //        //ViewBag.IsInsertSuccessful = true;
+                    //     }
+                    //}
+
+                    int recordCount = adminBLL.MeasureDataUsersInsert(measureDataUsersEntity);
+                    ViewBag.IsInsertSuccessful = true;
+
+                    int userID = assignEquipments.SelectedUserID;
+                    assignEquipments = adminBLL.AssignEquipment(userID);
+                    assignEquipments.SelectedUserID = userID;
+                }
+            }
+            catch (Exception objException)
+            {
+                ModelState.AddModelError("ServerSideError", objException.Message);
+                ViewBag.IsServerSideError = true;
+            }
+
+            ModelState.Clear();
+            assignEquipments.UserID = CurrentUser.UserID;
+            assignEquipments.Roles = CurrentUser.Roles;
+            assignEquipments.UserFullName = CurrentUser.FullName;
+            assignEquipments.ProfileImage = CurrentUser.ProfileImage;
+            return View(assignEquipments);
+        }
+        
+        SqlDataAdapter sda = new SqlDataAdapter();
+        DataSet ds = new DataSet();
+
+      }

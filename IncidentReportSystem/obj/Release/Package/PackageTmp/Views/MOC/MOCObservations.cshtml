@@ -1,0 +1,422 @@
+﻿
+@model MonitPro.Models.MOC.MOCObservationViewModel
+
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<style>
+    .tableFixHead {
+        overflow-y: auto;
+        height: 250px;
+    }
+
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
+
+    .pad {
+        padding-left: 50px;
+    }
+
+    html {
+        overflow: scroll;
+    }
+</style>
+<style type="text/css">
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+</style>
+
+@section scripts
+{
+
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+    <script type="text/javascript">
+
+         function SaveMOCObservations() {
+
+            var ValidationMessage = '';
+            var ControlToFocus = '';
+
+            var SaveURL = '../MOC/SaveMOCObservations';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var ObservationMod = @Html.Raw(Json.Encode(Model.MOCObservation));
+
+            //Temp Code
+            var CompletedUser = $("#MOCObservation_UserID").val();
+
+            if (isNaN(CompletedUser)) {
+                CompletedUser = 0;
+             }
+             if (status == 1) {
+
+                 ObservationMod.CompletedDate = $("#CompletedDate").val();
+             }
+
+
+
+             ObservationMod.Recommendation = $("#Recommendation").val();
+             ObservationMod.RecomPriorityID= $("#Priority").val();
+             ObservationMod.CategoryID = $("#Category").val();
+            ObservationMod.ActionTaken = $("#ActionTaken").val();
+            ObservationMod.TargetDate = $("#TargetDate").val();
+            ObservationMod.ObservationID = $("#ObservationID").val();
+            ObservationMod.CompletedDate = $("#CompletedDate").val();
+            ObservationMod.UserID = $("#ActionBy").val();
+            ObservationMod.Remarks = $("#Remarks").val();
+
+
+            if (ObservationMod.Recommendation == '') {
+                ValidationMessage = ValidationMessage + '\n Recommendation';
+
+                if (ControlToFocus == '') {
+                    ControlToFocus = "#Recommendation"
+                }
+             }
+
+
+             if (ObservationMod.RecomPriorityID == '') {
+                 ValidationMessage = ValidationMessage + '\n Priority';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = "#Priority"
+                 }
+             }
+
+
+             if (ObservationMod.CategoryID == '') {
+                 ValidationMessage = ValidationMessage + '\n Category';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = "#Category"
+                 }
+             }
+
+
+             if (ObservationMod.UserID == '') {
+                 ValidationMessage = ValidationMessage + '\n ActionBy';
+
+                 if (ControlToFocus == '') {
+                     ControlToFocus = "#ActionBy"
+                 }
+             }
+
+
+
+            if (ValidationMessage != '') {
+                alert('Please provide the following field(s) ' + ValidationMessage);
+                $(ControlToFocus).focus();
+            }
+            else {
+                $.ajax({
+                    method: "POST",
+                    url: SaveURL,
+                    data: ObservationMod,
+
+         })
+               .done(function (msg) {
+            alert("Data Saved Successfully " + msg);
+        });
+
+                alert('Data Saved Successfully');
+                location.reload(true);
+
+            }
+
+        }
+
+
+        function EditMOCObservation(ObsID) {
+            var response;
+            var EditURL = '../MOC/EditMOCObservation';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var saveData = $.ajax({
+                type: "POST",
+                url: EditURL,
+                data: '{observationID: ' + ObsID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (resultdata) {
+
+                    $("#ObservationID").val(resultdata.mcobservation.mocobservation.ObservationID);
+                    $("#Recommendation").val(resultdata.mcobservation.mocobservation.Recommendation);
+                    $("#ActionTaken").val(resultdata.mcobservation.mocobservation.ActionTaken);
+                    $("#Category").val(resultdata.mcobservation.mocobservation.CategoryID);
+                    $("#Priority").val(resultdata.mcobservation.mocobservation.RecomPriorityID);
+                    $("#TargetDate").val(resultdata.mcobservation.mocobservation.TargetDate);
+                    $("#CompletedDate").val(resultdata.mcobservation.mocobservation.CompletedDate);
+                    $("#ActionBy").val(resultdata.mcobservation.mocobservation.CompletedBy);
+                    $("#ActionBy").select2();
+                    $("#Remarks").val(resultdata.mcobservation.mocobservation.Remarks);
+                    var actionby = resultdata.mcobservation.mocobservation.CompletedBy;
+                    var curuser = @Model.CurrentUser;
+
+                    if (actionby != curuser) {
+                        $("#btnSave").show();
+                        $("#btnCompleted").hide();
+                    }
+                    else {
+
+                        $("#btnSave").hide();
+                        $("#btnCompleted").removeAttr("disabled");
+                    }
+                },
+
+                error: function (errdata) {
+                    //alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function EnabledHSE(ObservationID) {
+
+            $("#Title").prop("disabled", false);
+            $("#Recommendation").prop("disabled", false);
+            $("#ActionTaken").prop("disabled", true);
+            $("#Category").prop("disabled", false);
+            $("#Priority").prop("disabled", false);
+            $("#TargetDate").prop("disabled", false);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", true);
+            $("#Remarks").prop("disabled", false);
+
+        }
+
+
+        function DisabledActioner(ObsID) {
+
+            $("#Title").prop("disabled", true);
+            $("#Recommendation").prop("disabled", true);
+            $("#ActionTaken").prop("disabled", false);
+            $("#Category").prop("disabled", true);
+            $("#Priority").prop("disabled", true);
+            $("#TargetDate").prop("disabled", true);
+            $("#ActionBy").prop("disabled", true);
+            $("#CompletedDate").prop("disabled", true);
+            $("#DeptManager").prop("disabled", true);
+            $("#Remarks").prop("disabled", false);
+
+        }
+        function ClearRecord() {
+
+            $("#Recommendation").val('');
+            $("#ActionTaken").val('');
+            $("#ActionBy").val('');
+            $("#Category").val('');
+            $("#Priority").val('');
+            $("#Remarks").val('');
+
+        }
+
+        $(function () {
+            $("#TargetDate").datepicker({
+                dateFormat: 'dd/mm/yy', minDate:0, autoclose: true
+            });
+            $("#CompletedDate").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
+
+
+    </script>
+    @*<script type="text/javascript">
+        $(document).ready(function () {
+            $("#ActionBy").select2();
+        })
+    </script>*@
+}
+
+
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h1 class="panel-title">Section 5 : Implementation Action List</h1>
+    </div>
+    <table id="fixTable" style="width:100%" align="center" class="table-borderless table-responsive">
+        @Html.HiddenFor(model => model.MOCObservation.ObservationID)
+        @Html.HiddenFor(model => model.MOCObservation.UserID)
+        @Html.HiddenFor(model => model.MOCObservation.MOCID)
+        <tr>
+            <td colspan="4">
+                <table style="width:95%" align="center" border="1">
+                    <tr>
+                        <td style="font-weight:bold;font-size: 15px;">MOC Number</td>
+
+                        <td style="font-weight:bold;font-size: 15px;">Description</td>
+                        <td style="font-weight:bold;font-size: 15px;">Plant/Area</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.MOCObservation.MOCNo)</td>
+                        <td>@Html.DisplayFor(model => model.MOCObservation.MOCDescription)</td>
+                        <td>@Html.DisplayFor(model => model.MOCObservation.MOCPlant)</td>
+
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><br />
+    <div class="container-lg container-md container-sm">
+        <div class="row">
+            <label for="RecommendationID" class="col-sm-2 pad control-label">Recommendation ID</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+                @Html.TextBoxFor(model => model.MOCObservation.ObservationID, new { @id = "ObservationID", @class = "form-control input-sm", @disabled = "disabled", style = "width:300px" })
+            </div>
+            <label for="Recommendation" class="col-sm-2 pad control-label">Actions / Deliverables </label>
+            <div class="form-group col-sm-4 co-lg-4">
+
+                @Html.TextAreaFor(model => model.MOCObservation.Recommendation, new { @id = "Recommendation", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;", maxlength = 1000 })
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="Recomm Category" class="col-sm-2 pad control-label">Recomm Category</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+
+                @Html.DropDownListFor(model => model.MOCObservation.CategoryID,
+                                                 new SelectList(Model.MOCObservation.Recomcategory, "ID", "Name"), "-- Select --", new { @class = "form-control input-sm", @id = "Category", @style = "width:300px" })
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="Priority" class="col-sm-2 pad control-label">Priority</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+                @Html.DropDownListFor(model => model.MOCObservation.RecomPriorityID,
+                                                 new SelectList(Model.MOCObservation.Recompriority, "ID", "Name"), "-- Select --", new { @class = "form-control input-sm", @id = "Priority", @style = "width:300px" })
+            </div>
+            <label for="Target Date" class="col-sm-2 pad control-label">Target Date</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+                @Html.EditorFor(model => model.MOCObservation.TargetDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "TargetDate", style = "width: 300px"} })
+
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="Action By" class="col-sm-2 pad control-label">Action By</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+
+                @Html.DropDownListFor(m => m.MOCObservation.UserID, new SelectList(Model.MOCObservation.ActionList, "UserID", "DisplayUserName", Model.MOCObservation.UserID), "--Select--",new { @id = "ActionBy", @class = "form-control input-sm", style = "width: 280px;" })
+                @Html.ValidationMessageFor(m => m.UserID, null, new { @class = "label label-danger" })
+            </div>
+            <label for="Completed Date" class="col-sm-2 pad control-label">Completed Date</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+                @Html.EditorFor(model => model.MOCObservation.CompletedDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "CompletedDate", @disabled = "disabled", style = "width: 300px;" } })
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <label for="Action Taken" class="col-sm-2 pad control-label">Action Taken</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+
+                @Html.TextAreaFor(model => model.MOCObservation.ActionTaken, new { @id = "ActionTaken", @disabled = "disabled", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;", maxlength = 1000 })
+            </div>
+            <label for=" Remarks" class="col-sm-2 pad control-label"> Remarks</label>
+            <div class="form-group col-sm-4 co-lg-4 ">
+
+                @Html.TextAreaFor(model => model.MOCObservation.Remarks, new { @class = "form-control input-sm", @id = "Remarks", style = "width: 500px; height: 60px;  max-width: 80%;", maxlength = 500 })
+                @Html.ValidationMessageFor(model => model.MOCObservation.Remarks, "", new { @class = "label label-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div colspan="4" align="center">
+                <input type="button" id="btnSave" class="btn btn-primary" onclick="javascript: SaveMOCObservations();" value="Save" />
+                @if (Model.MOCObservation.CompletedBy == Model.CurrentUser)
+                {
+                    <input type="button" id="btnCompleted" class="btn btn-primary" onclick="javascript:SaveMOCObservations(1);" value="Complete Task" disabled="disabled" />
+                }
+                <input type="button" class="btn btn-primary" value="MOC List" onclick="location.href='@Url.Action("MOCList", "MOC")'" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container-fluid ">
+        <div class="div-border">
+            <h1 class="div-h1"><span class="div-h1-span">Recommendations List</span></h1>
+            <div class="tableFixHead">
+                <table class="table table-hover" id="SearchResults">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>MOC Number</th>
+                            <th>Recom ID</th>
+                            <th>Priority</th>
+                            <th width="40%">Actions/Deliverables</th>
+                            <th>Action By</th>
+                            <th>Target Date</th>
+                            <th>Completed Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.ObservationViewModelListMOC1)
+                        {
+                            if (item.Observation != "")
+                            {
+                                <tr>
+                                    <td>@item.SNo</td>
+                                    <td>@item.MOCNo</td>
+                                    <td>@item.ObservationID</td>
+                                    <td>@item.PriorityName</td>
+                                    <td>@item.Recommendation</td>
+                                    <td>@item.CompletedUser</td>
+                                    <td>@item.TargetDate</td>
+                                    <td>@item.CompletedDate</td>
+                                    <td>
+                                        @if (item.ActionBy == Model.CurrentUser)
+                                        {
+                                            <a href="javascript:EditMOCObservation(@item.ObservationID);" onclick="DisabledActioner(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                        }
+
+                                        else if ((Model.Roles.Find(a => a.RoleName == "HSE Manager") != null) || (Model.Roles.Find(a => a.RoleName == "MOC Coordinator") != null))
+                                        {
+                                            <a href="javascript:EditMOCObservation(@item.ObservationID);" onclick="EnabledHSE(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                        }
+                                    </td>
+
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitPro.BLL", "MonitPro.BLL\MonitPro.BLL.csproj", "{67B47613-070A-4577-8E46-2299079AE068}"
+	ProjectSection(ProjectDependencies) = postProject
+		{51DCE4C5-A382-48AC-A871-78C9E06E58C0} = {51DCE4C5-A382-48AC-A871-78C9E06E58C0}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitPro.Common.Library", "MonitPro.Common.Library\MonitPro.Common.Library.csproj", "{51DCE4C5-A382-48AC-A871-78C9E06E58C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitPro.DAL", "MonitPro.DAL\MonitPro.DAL.csproj", "{1B479E72-F013-428F-AAC3-DF08E1E51D0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitPro.Models", "MonitPro.Models\MonitPro.Models.csproj", "{FC319096-3BB7-452E-84D3-0D8642C0E665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitPro.Security", "MonitPro.Security\MonitPro.Security.csproj", "{6BB88C52-455B-4F15-9EEC-3D7340051C9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SASAProject", "IncidentReportSystem\SASAProject.csproj", "{80A270F2-2642-4117-945C-BE982308965E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{51DCE4C5-A382-48AC-A871-78C9E06E58C0} = {51DCE4C5-A382-48AC-A871-78C9E06E58C0}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67B47613-070A-4577-8E46-2299079AE068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67B47613-070A-4577-8E46-2299079AE068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67B47613-070A-4577-8E46-2299079AE068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67B47613-070A-4577-8E46-2299079AE068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51DCE4C5-A382-48AC-A871-78C9E06E58C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51DCE4C5-A382-48AC-A871-78C9E06E58C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51DCE4C5-A382-48AC-A871-78C9E06E58C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51DCE4C5-A382-48AC-A871-78C9E06E58C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B479E72-F013-428F-AAC3-DF08E1E51D0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B479E72-F013-428F-AAC3-DF08E1E51D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B479E72-F013-428F-AAC3-DF08E1E51D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B479E72-F013-428F-AAC3-DF08E1E51D0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC319096-3BB7-452E-84D3-0D8642C0E665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC319096-3BB7-452E-84D3-0D8642C0E665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC319096-3BB7-452E-84D3-0D8642C0E665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC319096-3BB7-452E-84D3-0D8642C0E665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BB88C52-455B-4F15-9EEC-3D7340051C9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BB88C52-455B-4F15-9EEC-3D7340051C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BB88C52-455B-4F15-9EEC-3D7340051C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BB88C52-455B-4F15-9EEC-3D7340051C9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A270F2-2642-4117-945C-BE982308965E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A270F2-2642-4117-945C-BE982308965E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A270F2-2642-4117-945C-BE982308965E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A270F2-2642-4117-945C-BE982308965E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7C2BF17-7FA2-4B63-B678-DD6B52D9E194}
+	EndGlobalSection
+EndGlobal

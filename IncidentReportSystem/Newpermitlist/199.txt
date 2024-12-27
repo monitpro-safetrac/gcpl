@@ -1,0 +1,5 @@
+FTP CREDENTIAL
+
+Host : 52.37.44.199
+Username : Administrator
+Password : monitpro20!6

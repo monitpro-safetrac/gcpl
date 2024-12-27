@@ -1,0 +1,297 @@
+﻿<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+@model MonitPro.Models.MOC.NewMOCModel
+
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+
+
+@using (Html.BeginForm("CreateMOC", "MOC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel bg panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Section 1 : Change Initiation</h1>
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.moca.MOCID)
+        @Html.HiddenFor(m => m.moca.FileName)
+        @Html.HiddenFor(m => m.moca.ImageFile)
+        @Html.HiddenFor(Model => Model.moca.MOCStatusID)
+        @Html.HiddenFor(m => m.CurrentUserID)
+        @Html.HiddenFor(Model => Model.moca.MOCStatusIdentify)
+        @Html.Hidden("mocrequired", Model.moca.MOCRequiredOrNot)
+
+
+        <div id="fixTable" class="container-fluid">
+
+            @Html.Partial("CreateMOCPage", Model)
+            <div align="center" colspan="4">
+
+                @if ((Model.moca.MOCFunCMgrID == Model.CurrentUserID) && (Model.moca.MOCStatusID == 2))
+                {
+
+
+                }
+                else
+                {
+                    <button class="btn btn-primary" type="submit" id="save" title="Submit">Save</button>
+                    <button class="btn btn-primary" type="submit" id="submit" title="Submit">Submit</button>
+                }
+            </div>
+            <br />
+
+        </div>
+        @if ((Model.moca.MOCFunCMgrID == Model.CurrentUserID) && (Model.moca.MOCStatusID == 2))
+        {
+            <div align="center" colspan="4" width="100%">
+                <br />
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Section 2: Decision Team/ Line Manager&nbsp;</span></h1>
+
+                @if ((Model.moca.MOCStatusID == 2) && (Model.moca.MOCFunCMgrID == Model.CurrentUserID))
+                {<div class="row">
+                        <br />
+                        <div class="form-group col-sm-5 col-lg-1 col-md-1 "></div>
+                        <div class="form-group col-sm-5 col-lg-1 col-md-1 ">
+                            @Html.CheckBoxFor(m => m.moca.VerifyRiskAssessment, htmlAttributes: new { @class = "big-checkbox" })
+                            @Html.ValidationMessageFor(model => model.moca.Emergency, "", new { @class = "label label-danger" })
+                        </div>
+
+                        <label for="risk Assessement" class="col-sm-1 col-lg-2 col-md-2 control-label ">Verified idea, practicality and risk assessment </label>
+                        <div class="form-group col-sm-5 col-lg-1 col-md-1">
+                            @Html.CheckBoxFor(m => m.moca.CrossBussinessIdea, htmlAttributes: new { @class = "big-checkbox" })
+                            @Html.ValidationMessageFor(model => model.moca.Emergency, "", new { @class = "label label-danger" })
+                        </div>
+                        <label for="risk Assessement" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Cross business review   / Cross business team completed </label>
+
+                        <label for="Instrument" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Line Manager Comment<span style="color:red"> *</span></label>
+                        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+                            @Html.TextAreaFor(model => model.moca.FunMgrComment, new { @class = "form-control input-sm", @style = "width: 400px;   max-width: 100%;" })
+                            @Html.ValidationMessageFor(model => model.moca.FunMgrComment, "", new { @class = "label label-danger" })
+
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="row">
+                        <div align="center" colspan="4">
+                            <button class="btn btn-primary" type="submit" id="Approve" title="Submit">Approve</button>
+                            <button class="btn btn-primary" type="submit" id="Reject" title="Submit">Reject</button>
+                            <button class="btn btn-primary" type="submit" id="Reprocess" title="Submit">Reprocess</button><br /><br />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div></div>
+                    <div></div>
+                }
+            </div>
+
+
+        }
+    </div>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Message");
+                window.location.href = "../MOC/MOCList";
+        };
+
+    </script>
+}
+
+
+@if (ViewBag.Submit != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Submit");
+                window.location.href = "../MOC/MOCList";
+        };
+
+    </script>
+}
+@if (ViewBag.FunctionalApprove != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.FunctionalApprove");
+                window.location.href = "../MOC/MOCList";
+        };
+
+    </script>
+}
+@if (ViewBag.FunctionalReject != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.FunctionalReject");
+                window.location.href = "../MOC/MOCList";
+        };
+
+    </script>
+}
+@if (ViewBag.Reprocess != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Reprocess");
+                window.location.href = "../MOC/MOCList";
+        };
+
+    </script>
+}
+
+
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+        jQuery('#moca_EffectiveDate').datetimepicker({
+            format: 'd/m/Y',
+            lang: 'ru',
+            timepicker:false,
+            minDate: new Date(),
+        });
+
+        jQuery('#moca_ExpiryDate').datetimepicker({
+            format: 'd/m/Y',
+            lang: 'ru',
+            timepicker: false,
+            minDate: new Date(),
+        });
+
+
+        $("#save").click(function (event) {
+           $('#moca_MOCStatusIdentify').val(20);
+
+           $('#moca_MOCStatusID').val(1);
+
+            $('#moca_PlantID').attr('required', true);
+            $('#moca_MOCClassificationID').attr('required', true);
+            $('#moca_MOCTypeID').attr('required', true);
+            $('#moca_MOCFunCMgrID').attr('required', true);
+
+            var type = $("#Category input[type=checkbox]:checked");
+
+            if (type.length == 0) {
+                $(".MOCCategoryError").show();
+
+                return false;
+            }
+
+            else {
+                $(".MOCCategoryError").hide();
+            }
+        });
+        $("#Reprocess").click(function (event) {
+            $('#moca_MOCStatusID').val(1);
+
+            $('#moca_MOCStatusIdentify').val(40);
+        });
+        $("#submit").click(function (event) {
+            $('#moca_MOCStatusIdentify').val(30);
+
+            $('#moca_MOCStatusID').val(2);
+            //$('#moca_MOCRequiredOrNot').attr('required',true)
+            //$('#fixTable *').attr('required', true);
+            $('#moca_Emergency').attr('required', false);
+            $('#attach').attr('required', false);
+            // var type = $("#Category input[type=checkbox]:checked");
+            //var type2 = $("#SecondaryCategory input[type=checkbox]:checked");
+
+            //if (type.length == 0) {
+            //    $(".MOCCategoryError").show();
+
+            //    return false;
+            //}
+
+            //else {
+            //    $(".MOCCategoryError").hide();
+            //}
+            //if (type2.length == 0) {
+            //    $(".SecondaryMOCCategoryError").show();
+
+            //    return false;
+            //}
+            //else {
+            //    $(".SecondaryMOCCategoryError").hide();
+            //}
+
+            $('#Category * ').attr('required', false);
+            $('#SecondaryCategory *').attr('required', false);
+            $('#moca_DRCost').attr('required', true);
+        });
+    $("#Approve").click(function (event) {
+        $('#moca_MOCStatusIdentify').val(40);
+        $("#moca_MOCFunCMgrID").removeAttr('disabled');
+        $("#moca_FunMgrComment").attr('required', true);
+            $('#moca_MOCStatusID').val(3);
+
+        });
+    $("#Reject").click(function (event) {
+        $('#moca_MOCStatusIdentify').val(50);
+        $("#moca_MOCFunCMgrID").removeAttr('disabled');
+        $("#moca_FunMgrComment").attr('required', true);
+        $('#moca_MOCStatusID').val(8);
+
+    });
+
+        function UploadImages(MOCID) {
+           if(@Model.moca.MOCID == 0)
+           {
+               alert('Save and Then Attach ' );
+
+             }
+             else
+             {
+                 window.location.href = '../MOC/UploadAttachments?MOCID=' + MOCID;
+             }
+
+        };
+
+        $(document).ready(function () {
+
+            if (@Model.moca.MOCStatusID == 1) {
+                if (@Model.moca.MOCFunCMgrID==@Model.CurrentUserID ) {
+                    $("#moca_MOCFunCMgrID").attr("disabled", "disabled");
+                }
+                else {
+                    $("#moca_MOCFunCMgrID").attr("disabled", false);
+                }
+            }
+                $("#moca_CreatedDate").attr("disabled", "disabled");
+
+        })
+    function Required(select) {
+        if (select.value == "Yes") {
+            $('#RequiredYes').attr('disabled', false);
+        }
+        else {
+            $('#RequiredYes').attr('disabled', true);
+        }
+    }
+    window.onload = function () {
+        if (document.getElementById('mocrequired').value == 'No') {
+            $("#RequiredYes").prop("disabled", true);
+        }
+
+    };
+    </script>
+
+}
+
+

@@ -1,0 +1,6 @@
+sp find coding
+SELECT OBJECT_NAME(id) 
+    FROM SYSCOMMENTS 
+    WHERE [text] LIKE '%valspardev%' 
+    AND OBJECTPROPERTY(id, 'IsProcedure') = 1 
+    GROUP BY OBJECT_NAME(id)

@@ -1,0 +1,104 @@
+﻿@model IncidentReportSystem.Models.AttachmentsViewModel
+@{
+    Layout = null;
+}
+
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel"><b>Add Attachments</b></h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="100%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="100%" align="center">
+                        <tr>
+                            <td>Image Upload</td>
+                            <td>
+                                <input name="FileName" id="FileName" type="file" /><br />
+                                &nbsp;&nbsp;<input type="button" id="btnAdd" class="btn btn-primary" onclick="javascript:AddAttachment();" value="Add" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="div-border" id="ImageListDiv">
+                                    <div class="table-responsive">
+                                        <table class="table" id="SearchResults">
+                                            <thead>
+                                                <tr>
+                                                    <th>S.No</th>
+                                                    <th>File Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.attachments)
+                                                {
+                                                <tr>
+                                                    <td>@item.SNo</td>
+                                                    <td>@item.FileName</td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr><td colspan="2"> </td></tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                @*<input type="button" id="btnSave" class="btn btn-primary" onclick="javascript:UploadImages();" value="Save" />*@
+                                &nbsp;&nbsp;<input type="button" id="btnClose" class="btn btn-primary" onclick="javascript:CloseModel();" value="Close" />
+                            </td>
+                        </tr>
+                        <tr><td colspan="2"> </td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <br />
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function AddAttachment() {
+        var CurrentURL = '/Incident/AddAttachments';
+        var FilePath = $("#FileName").val();
+
+        if (FilePath == '') {
+            alert('Please select the file to add');
+            $("#FileName").focus();
+        }
+        else {        
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: { FilePath: FilePath },
+                success: function (response) {
+                    alert('file added');
+                    $('#container').html(response);
+                    $("#FileName").val('');
+                },
+                error: function (errmessage) {
+                    alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                    $('#myModal').modal('hide');
+                }
+            });
+        }
+    }
+        
+    function ClearSearch() {
+        $("#Incident_Comments").val('');
+    }
+
+    function CloseModel() {
+        $('#myModal').modal('hide');
+    }
+
+</script>

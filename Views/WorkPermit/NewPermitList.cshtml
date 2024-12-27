@@ -1,0 +1,128 @@
+﻿@model ValsparApp.Models.WorkPermitList
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+
+    input[readonly] {
+        background-color: white !important;
+        cursor: text !important;
+    }
+</style>
+<script>
+    function FileChange(id) {
+        $("#Remove" + id).show();
+    }
+
+    function RemoveAttachment(id) {
+        document.getElementById("Attachment" + id).value = "";
+        document.getElementById("Remove" + id).style.display = 'none';
+        return false;
+    }
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm("NewPermitList", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+//@using (Html.BeginForm("NewPermitList", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Open/Saved List</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            <table id="WorkPermitList" class="table-bordered table-responsive" cellpadding="2" cellspacing="2" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNo</th>
+                        <th>Work Permit</th>
+                        <th>Work Type</th>
+                        <th>Description</th>
+                        <th>Validity From</th>
+                        <th>Validity To</th>
+                        <th>Approver Comment</th>
+                        <th>Status</th>
+                        <th>Attachment</th>
+                        <th>Download Checklist</th>
+                        <th>Action</th>
+                        <th>Submit</th>
+                    </tr>
+                </thead>
+                @for (var i = 0; i < Model.WorkPermit.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.WorkPermit[i].SNO@Html.HiddenFor(x => x.WorkPermit[i].SNO)@Html.HiddenFor(x => x.WorkPermit[i].PermitIssuerID)@Html.HiddenFor(x => x.WorkPermit[i].ApproverID) @Html.HiddenFor(x => x.WorkPermit[i].AdjacentAreaOwenerID)</td>
+                        <td>@Model.WorkPermit[i].WorkPermitID@Html.HiddenFor(x => x.WorkPermit[i].WorkPermitID)</td>
+                       <td>@Model.WorkPermit[i].WorkTypeName@Html.HiddenFor(x => x.WorkPermit[i].WorkTypeName)</td>
+                        <td>@Model.WorkPermit[i].WorkDescription@Html.HiddenFor(x => x.WorkPermit[i].WorkDescription)</td> 
+                        <td>@Model.WorkPermit[i].ValidityFrom@Html.HiddenFor(x => x.WorkPermit[i].ValidityFrom)</td>
+                        <td>@Model.WorkPermit[i].ValidityTo@Html.HiddenFor(x => x.WorkPermit[i].ValidityTo)</td> 
+                         <td>@Model.WorkPermit[i].ApproverComment@Html.HiddenFor(x => x.WorkPermit[i].ApproverComment)</td> 
+                        <td>@Model.WorkPermit[i].Status@Html.HiddenFor(x => x.WorkPermit[i].Status)</td>
+                      
+                        <td>
+                            @if (Model.WorkPermit[i].Attachment != "")
+                            {
+                                @*<a href="../Newpermitlist/@Model.WorkPermit[i].Attachment" download>
+                                  @*  <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                </a>*@
+                            }
+                            <span class="file-input btn btn-primary btn-file">
+                                Attach&hellip; <input type="file" onchange="return FileChange(@(i));" name="Attachment" id=@("Attachment" + i)>
+                            </span>
+                            <a href="#" style="display:none" id="@("Remove" + i)" onclick="return RemoveAttachment(@(i));"><img src="~/Images/remove.png" /></a>
+                        </td>
+
+                        <td>@Html.ActionLink("Pdf", "PrintPermit", new { id = Model.WorkPermit[i].WorkPermitID })</td>
+                        <td>@Html.ActionLink("Edit", "UpdatePermit", new { id = Model.WorkPermit[i].WorkPermitID })</td>
+                        <td align="center"><input type="submit" class="btn btn-primary" name="submitbutton1" value="submit"id="SubmitForApproval" onclick="SubmitForm(@Model.WorkPermit[i].SNO)" /></td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+    </div>
+    <input type="hidden" id="row" name="Sno" />
+}
+<script>
+    function SubmitForm(id) {
+        document.getElementById("row").value = id;
+        document.forms[0].submit();
+    }
+    $("#SubmitForApproval").click(function (event) {
+        $('#Status').val("S");
+    }
+    );
+</script>
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+}
+
+
+<script>
+    $(document).ready(function () {
+        $("#WorkPermitList").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>

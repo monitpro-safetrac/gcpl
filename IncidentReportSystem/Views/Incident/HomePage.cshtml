@@ -1,0 +1,150 @@
+﻿@model IncidentReportSystem.Models.NewIncidentViewModel
+@{
+    Layout = null;
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<style>
+    .row {
+        text-align: center;
+    }
+
+    body {
+      background-image: url('../Images/Home screen icon.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+    }
+    .dropbtn {
+        font-size: 16px;
+        text-align: center;
+        border: none;
+        outline: none;
+        color: white; /*layout text color*/
+        /*font-weight: bold;*/
+        padding: 4px 10px;
+        background-color: #428bca;
+        font-family: inherit;
+        margin: 3px;
+        border-radius: 5px;
+    }
+    .dropbtn {
+        /*background-color: #1f77b4;*/
+        color: white;
+    }
+</style>
+<!DOCTYPE html>
+
+<html>
+<body style="overflow-x:hidden;overflow-y:hidden;">
+    <div style="background-color:white;">
+        <table width="100%">
+            <tr>
+                <td>
+                    <img width="150" height="50" src="~/Images/gcpl_logo2.png">
+                </td>
+                <td>
+                    <button class="dropbtn " style="align-content:start;align-items:start;align-self:start;padding-left:-400px">
+                        <a href="@Url.Action("MyActionStatus", "CAPA")" style="color: white">My Dashboard</a>
+                    </button>
+                </td>
+                <td align="center"><h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SAFEOWL</h2></td>
+                <td>
+                    <div class="btn-group pull-right">
+                        @if (Model.ProfileImage != null && Model.ProfileImage != "")
+                        {
+                            <a href="~/Account/Myprofile"><img class="" src="~/Users/@Model.ProfileImage" title="@Model.UserFullName" height="32" width="32" /></a>
+                        }
+                        else
+                        {
+                            <a href="~/Account/Myprofile"><img class="" src="~/Users/profile icon.jpg" title="@Model.UserFullName" height="32" width="32" /></a>
+                        }
+                        
+                        &nbsp;&nbsp;
+                        <span class="label label-success">@Model.UserFullName</span>&nbsp;<a class="label label-danger" title="Logout" href="~/Account/Logout"><i class="glyphicon glyphicon-off"></i></a> <img width="140" height="30" src="~/Images/monitpro-logo.png">
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="row" style="padding-top:10%;">
+
+            <div class="col-lg-4">
+                <h3><strong>&nbsp;&nbsp;&nbsp;Incident Management</strong></h3>
+                <a href='@Url.Action("Index", "Incident")'>
+                    <img src="~/Images/Incident.png"
+                         title="Go To Dashboard" alt="Change Status" style="height: calc(100vh - 70vh); width: 60%;" />
+                </a>
+            </div>
+            <div class="col-lg-4">
+                <h3><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AUDIT/CAPA</strong></h3>
+                <a href='@Url.Action("CAPAIndex", "CAPA")'>
+                    <img src="~/Images/CAPA.png"
+                         title="Go To Dashboard" alt="Change Status" style="height: calc(100vh - 70vh); width: 60%;" />
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <h3><strong>&nbsp;&nbsp;&nbsp;MOC</strong></h3>
+                <a href='@Url.Action("MOCList", "MOC")'>
+                    <img src="~/Images/MOCIcon.png"
+                         title="Go To Dashboard" alt="Change Status" style="height: calc(100vh - 70vh); width: 60%;" />
+                </a>
+            </div>
+           
+        </div>
+        @*<div class="row" style="padding-top:1%;">
+            <div class="col-lg-4">
+                <h3><strong>&nbsp;&nbsp;&nbsp;Work Permit</strong></h3>
+                <a href='@Url.Action("Newchartwps", "Chart")'>
+                    <img src="~/Images/Permit.png"
+                         title="Go To Dashboard" alt="Change Status" style="height: calc(100vh - 70vh); width: 60%;" />
+                </a>
+            </div>
+            <div class="col-lg-4">
+                <h3><strong>&nbsp;&nbsp;&nbsp;Contractor Management</strong></h3>
+                <a href='@Url.Action("ContractList", "WorkPermit")'>
+                    <img src="~/Images/Contractor.png"
+                         title="Go To Dashboard" alt="Change Status" style="height: calc(100vh - 70vh); width: 60%;" />
+                </a>
+            </div>
+            <div class="col-lg-4">
+                <h3><strong>&nbsp;&nbsp;&nbsp;PSSR</strong></h3>
+                <a href='@Url.Action("PSSRList", "PSSR")'>
+                    <img src="~/Images/PSSRIcon.png"
+                         title="Go To Dashboard" alt="Change Status" style="height: calc(100vh - 70vh); width: 60%;" />
+                </a>
+            </div>
+
+        </div>*@
+
+        <div class="row" style="padding-top:1%;">
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}

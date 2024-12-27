@@ -1,0 +1,82 @@
+﻿
+@model MonitPro.Models.AssignEquipments
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+
+                    <h1 class="panel-title">Assign TypeofWork <strong>-</strong>  ApproverName <strong>:</strong> @Html.DropDownListFor(model => Model.SelectedUserID, new SelectList(Model.Users, "UserID", "FullName"), "-- Select User --", new { onchange = "document.getElementById('GetEquipmentList').value = '1';this.form.submit();", @class = "form-control input-sm" })</h1>
+                    @Html.HiddenFor(m => m.GetEquipmentList)
+                    @Html.HiddenFor(m => m.SaveUserEquipments)
+
+                </div>
+                <br />
+                <div class="table-responsive pre-scrollable">
+                    <table class="table table-bordered table-responsive">
+                        <thead>
+                            <tr><td>SNO</td><td>Type of Work</td></tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Equipments != null)
+                            {
+                                for (int i = 0; i < Model.Equipments.Count; i++)
+                                {
+                                    <tr>
+                                        <td width="3%">@(i + 1)</td>
+                                        <td width="97%">
+                                            @Html.HiddenFor(m => m.Equipments[i].EquipmentID)
+                                            @Html.CheckBoxFor(m => m.Equipments[i].Assigned, new { onclick = "IsUserSelected(this);" })
+                                            @Html.DisplayFor(m => m.Equipments[i].EquipmentName)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (Model.Equipments.Count > 0)
+                {
+                    <br />
+                    if (ViewBag.IsInsertSuccessful != null && ViewBag.IsInsertSuccessful)
+                    {
+
+                        <div class="alert alert-success alert-dismissible text-center" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <strong>Record has been updated successfully.</strong>
+                        </div>
+                    }
+                    if (ViewBag.IsServerSideError != null && ViewBag.IsServerSideError == true)
+                    {
+                        <div class="alert alert-danger alert-dismissible  text-center" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <strong>@Html.ValidationMessage("ServerSideError")</strong>
+                        </div>
+                    }
+                    <div class="text-center">
+                        <input type="submit" style="width:100px" class="btn btn-primary" value="Save" onclick="document.getElementById('SaveUserEquipments').value = '1';" />
+                        &nbsp;&nbsp;<input type="reset" value="Cancel" style="width:100px" class="btn btn-primary" />
+                    </div>
+                }
+                <br />
+            </div>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+}
+<script>
+    function IsUserSelected(chkBox)
+    {
+        if ($("#SelectedUserID").val() == "") {
+            alert("Please select a User to assign equipment.")
+            chkBox.checked = false;
+        }
+    }
+</script>
+
+
+
+

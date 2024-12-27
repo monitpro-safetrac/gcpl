@@ -1,0 +1,70 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+<table class="table table-responsive table-bordered">
+    <thead><h3>Confined Space Entry Permit Check List</h3></thead>
+    <tr><td style="font-weight:bold">Hazard Information</td></tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.ChemicalExposures) Chemical Exposures</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Noise) Noise</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Electrical) Electrical</td>
+        <td>
+            @Html.CheckBoxFor(m => m.HazardInformation.HotWork) Hot Work (Metal Cutting,
+            Welding, Sanding, Grinding)
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.FlammableVaporsGases) Flammable Vapors/Gases</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.SlipsTripsFalls) Slips,Trips,Falls</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Mechanical) Mechanical</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.CompressedGases) Compressed Gases</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.SolventsCleaners) Solvents / Cleaners</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Engulfment) Engulfment</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Pnuematic) Pnuematic</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Hydraulic) Hydraulic</td>
+    </tr>
+     <tr>
+        <td>Others</td>
+        <td colspan="2">@Html.TextAreaFor(m => m.HazardInformation.Others)</td>
+    </tr>
+</table>
+<table class="table table-responsive table-bordered">
+    <tr><td style="font-weight:bold">Hazard Control Method</td></tr>
+  <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.PreEntryRescueBriefing) Pre-Entry & Rescue Briefing</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.VentilationAirChanges) Ventilation Air Changes/Hr</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FlushPurgeDrainClean) Flush/Purge/Drain/Clean</td>
+   <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePiping) Isolate Piping (specify)</td>
+       
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.GroundFaultCircuitInterrupter) Ground Fault Circuit Interrupter</td>
+      <td>@Html.CheckBoxFor(m => m.HazardControlMethod.CommunicationVerbal) Communication Verbal
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LockoutProceduresInitiated) Lockout Procedures Initiated</td>
+       
+       <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDoubleBlock) Double Block/Bleed Pipe</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.NonSparkingTools) Non Sparking Tools</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LineBreakingProceduresInitiated) Line Breaking Procedures Initiated</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExplosionProofLighting) Explosion Proof Lighting </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingBlankBlindPipe) Blank/Blind Pipe</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.HotWorkProceduresInitiated) Hot Work Procedures Initiated </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.MSDSChemicalInfoAvailable) MSDS/Chemical Info Available</td>
+       
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExternalBarricades)External Barricades/Barrier Tape</td>
+	 <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDisconnect) Disconnect</td>
+    </tr>
+     <tr>
+         <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FireExtinguisher) Fire Extinguisher </td>
+        <td>Others</td>
+        <td colspan="2">@Html.TextAreaFor(m => m.HazardControlMethod.Others)</td>
+    </tr>
+
+</table>

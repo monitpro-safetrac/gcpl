@@ -1,0 +1,33 @@
+﻿@model MonitPro.Models.WorkPermitList
+<div class="row">
+    <div class="responsive-table">
+        <table id="WorkPermitList" class="table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th>S.NO</th>
+                    <th>WorkPermitID</th>
+                    <th>Type Of Work</th>
+                    <th>ExtensionFrom</th>
+                    <th>ExtensionTo</th>
+                    <th>Permit Issuer</th>
+                    <th>Extension Approver</th>
+                </tr>
+            </thead>
+           
+            @for (var n = 0; n < Model.WorkPermit[i].ExtensionDetails.Count; n++)
+            {
+                var i = 0;
+                <tr>
+                    <td>@(n + 1)</td>
+
+                    <td>@Model.WorkPermit[i].ExtensionDetails[n].WorkPermitID</td>
+                    <td>@Model.WorkPermit[i].ExtensionDetails[n].WorkTypeName</td>
+                    <td>@Model.WorkPermit[i].ExtensionDetails[n].ExtensionFrom</td>
+                    <td>@Model.WorkPermit[i].ExtensionDetails[n].ExtensionTo</td>
+                    <td>@Model.WorkPermit[i].ExtensionDetails[n].ExtensionPermitIssuer</td>
+                    <td>@Model.WorkPermit[i].ExtensionDetails[n].ExtensionApprover</td>
+                </tr>
+            }
+        </table>
+</div>
+</div>

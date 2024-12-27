@@ -1,0 +1,106 @@
+﻿@model ValsparApp.Models.HistoryReviewes
+  
+@using PagedList.Mvc;
+@using MonitPro.Common.Library;
+@Styles.Render("~/bundles/jqueryuicss")
+    @Scripts.Render("~/bundles/jqueryui")
+<link href="/MonitPro/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="/MonitPro/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="/MonitPro/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="/MonitPro/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="/MonitPro/Scripts/JQueryUI/jquery-ui.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken();
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">History Review</h1>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                From Date @Html.TextBoxFor(m => m.FromDate, new { style = "width: 100px;", @class = "form-control input-sm" })
+                To Date  @Html.TextBoxFor(m => m.EndDate, new { style = "width: 100px;", @class = "form-control input-sm" })
+                @*Equipment @Html.DropDownListFor(m => m.EquipmentID, new SelectList(Model.Equipment, "EquipmentID", "EquipmentName"), "--Select Equipment--", new { style = "width: 200px;", @class = "form-control input-sm" })*@
+                User @Html.DropDownListFor(m => m.UserID, new SelectList(Model.User, "UserID", "FullName"), "--Select User--", new { style = "width: 200px;", @class = "form-control input-sm" })
+                <input type="submit" value="search" class="btn btn-primary" /> &nbsp;&nbsp;
+                @if (Model.Reviews.Count > 0)
+                {
+                    @Html.ActionLink("Export To Excel", "ExportToExcel", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate,currentUserID = ViewBag.FilterUserID, @class = "btn btn-primary" })
+                }
+            </div>
+            <div class="table-responsive">
+                @if (Model.Reviews.Count > 0)
+                {
+                    <table class="table-bordered table-responsive" cellpadding="2" cellspacing="2" width="100%">
+                        <thead>
+                            <tr>
+                                <th>SNo</th>
+                                <th>Status</th>
+                                <th>Completed Date Time</th>
+                                <th>Frequency</th>
+                                <th>Description</th>
+                                <th>Action Comments</th>
+                                <th>Completed By</th>
+                                <th>Attachment</th>
+                                
+                            </tr>
+                        </thead>
+
+                   @for (var i = 0; i < Model.Reviews.Count; i++)
+                   {
+                    <tr>
+                        <td width="2%">@(i + 1)</td>
+                        
+                        <td align="center">
+                            @if (@Model.Reviews[i].Status == "R         ")
+                            {
+                                <img src="~/Images/red.png" />
+                            }
+                            @if (@Model.Reviews[i].Status == "G         ")
+                               
+                                {
+                                    <img src="~/Images/green.png" />
+                                }
+
+                            </td>
+                            <td>@Model.Reviews[i].ActionTakenDateTime</td>
+                            <td>@Model.Reviews[i].Frequency</td>
+                            <td>@Model.Reviews[i].Description</td>
+                            <td width="350px"> @Model.Reviews[i].Comments</td>
+                            <td> @Model.Reviews[i].CompletedBy</td>
+                            <td class="text-center">
+                                @if (@Model.Reviews[i].Attachment != "")
+                                {
+                                    <a href="../HistoryReview/@Model.Reviews[i].Attachment" download>
+                                        <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                    </a>
+                                }
+                        </tr>
+                       }
+
+                            <tfoot>
+                                <tr class="pagination-lg">
+                                    <td colspan="12">@Html.PagedListPager(Model.Reviews, page => Url.Action("HistoryReviewPage", new { page, currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentUserID = ViewBag.FilterUserID }))</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                     }
+
+                    @if (ViewBag.IsRecordFound == false)
+                    {
+                        <center><span class="label label-danger">No record found for the given search criteria.</span></center>
+                    }
+                </div>
+            </div>
+
+        </div>
+    }
+
+    <script>
+            $(function () {
+                $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' });
+                $("#EndDate").datepicker({ dateFormat: 'dd/mm/yy' });
+            });
+    </script>
+
+

@@ -1,0 +1,8 @@
+ec2-34-212-226-252.us-west-2.compute.amazonaws.com
+
+When prompted, connect to your instance using the following details:
+Public DNS	ec2-34-212-226-252.us-west-2.compute.amazonaws.com
+User name	Administrator
+Password	
+uy=r-CXsA2m
+If you'

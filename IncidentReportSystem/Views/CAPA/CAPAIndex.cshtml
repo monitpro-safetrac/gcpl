@@ -1,0 +1,1040 @@
+﻿@model IncidentReportSystem.Models.CAPAListViewModel
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<link rel="stylesheet" href="~/Content/jquery.datetimepicker.min.css" />
+<script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Content/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2.min.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.form-control').select2();
+    });
+</script>
+
+<style type="text/css">
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+        height: 40px;
+    }
+
+
+    #SearchResults thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    html {
+        overflow: scroll;
+    }
+
+    .padr {
+        padding-right: 40px;
+    }
+
+    .col1 {
+        padding-left: 70px;
+    }
+
+    .col2 {
+        padding-left: 90px;
+    }
+
+    .col3 {
+        padding-left: 90px;
+    }
+
+    .pre-scrollable {
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+</style>
+@section scripts
+{
+
+    <script type="text/javascript">
+
+    function EditCAPA(CAPAID) {
+
+        window.location.href = '../CAPA/CreateCAPANew?capaID=' + CAPAID;
+
+        }
+
+        $(document).ready(function () {
+            $("#CAPASearch_AuditType").change(function () {
+                var select = $("#CAPASearch_CAPASource");
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                var selectedAuditTypeID = $(this).val();
+                if (selectedAuditTypeID != "") {
+                    $.getJSON("../CAPA/GetAuditCAPAsource", { AuditID: selectedAuditTypeID }, function (data) {
+                        $.each(data, function (index, itemData) {
+                            select.append($('<option/>', {
+                                value: itemData.Value,
+                                text: itemData.Text
+                            }));
+
+                        });
+                    });
+                }
+            });
+        });
+        function MailCAPA(CAPAID) {
+            $.ajax({
+                url: '../CAPA/MailCAPA', // Adjust the URL if necessary
+                type: 'GET',
+                data: { capaID: CAPAID },
+                success: function (response) {
+                    if (response.success) {
+                        // Display success message in popup
+                        alert(response.message);  // You can customize the popup here
+                    } else {
+                        // Display error message in popup
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    // In case of AJAX failure
+                    alert('An error occurred while sending the email.');
+                }
+            });
+        }
+
+
+
+
+         $(document).ready(function () {
+        var SourceIndex = 0;
+             var select = $("#CAPASearch_CAPASource");
+            select.empty();
+            select.append($('<option/>', {
+                value: "",
+                text: "--Select CAPA Source--"
+            }));
+             var selectedAuditTypeID = $("#CAPASearch_AuditType").val();
+            if (selectedAuditTypeID!= "") {
+                $.getJSON("../CAPA/GetAuditCAPAsource", { AuditID: selectedAuditTypeID }, function (data) {
+                    $.each(data, function (index, itemData) {
+                        if (itemData.Value=='@Model.CAPASearch.CAPASource')
+                        {
+                            SourceIndex = index + 1;
+                        }
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+
+                        }));
+                    });
+
+                    document.getElementById('CAPASearch_CAPASource').selectedIndex = SourceIndex;
+                });
+            }
+     });
+
+
+
+    function UpdateStatus(capaID) {
+        var CurrentURL = '../CAPA/CAPAUpdateStatus';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: '{capaID: ' +capaID+ ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+    }
+
+    function Observations(CAPAID) {
+        window.location.href = '../CAPA/CAPAObservations?capaID=' + CAPAID;
+    }
+
+    function UploadImages(IncID) {
+        window.location.href = '../Incident/UploadImages?incidentID=' + IncID;
+    }
+
+
+     function SearchCAPA(){
+        var response = null;
+        var CurrentURL = '../CAPA/CAPAIndex';
+        var options = { "backdrop": "static", keyboard: true };
+
+        var CAPAMod = @Html.Raw(Json.Encode(Model.CAPASearch));
+
+        CAPAMod.CAPAPlant = $("#CAPASearch_CAPAPlant").val();
+        CAPAMod.CAPAStatus = $("#CAPASearch_CAPAStatus").val();
+        CAPAMod.CAPAFromDate = $("#CAPASearch_CAPAFromDate").val();
+        CAPAMod.CAPAToDate = $("#CAPASearch_CAPAToDate").val();
+        CAPAMod.AuditType = $("#CAPASearch_AuditType").val();
+        CAPAMod.CAPASource = $("#CAPASearch_CAPASource").val();
+
+        $.ajax({
+            method: "POST",
+            url: "../CAPA/CAPAIndex",
+            data: CAPAMod,
+            success: function (response) {
+                document.open();
+                document.write(response);
+           /*     $('#MainBody').html(response);*/
+
+                //assign the values back to control
+                $("#CAPASearch_CAPAPlant").val(CAPAMod.CAPAPlant);
+                $("#CAPASearch_CAPAStatus").val(CAPAMod.CAPAStatus);
+                $("#CAPASearch_CAPAFromDate").val(CAPAMod.CAPAFromDate);
+                $("#CAPASearch_CAPAToDate").val(CAPAMod.CAPAToDate);
+                $("#CAPASearch_AuditType").val(CAPAMod.AuditType);
+                $("#CAPASearch_CAPASource ").val(CAPAMod.CAPASource);
+                document.close();
+
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    function OpenIncidentView(IncidentId) {
+
+        var IncidentURL = '../Incident/DetailedIncident';
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "POST",
+            url: IncidentURL,
+            data: { IncidentID: IncidentId },
+            success: function (data) {
+                document.open();
+                document.write(response);
+                $('#myModalContent').html(data);
+                $('#myModal').modal(options);
+                $('#myModal').modal('show');
+                document.close();
+
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    function ClearSearch() {
+        $("#CAPASearch_CAPAPlant").val('');
+        $("#CAPASearch_CAPAPlant").select2('');
+        $("#CAPASearch_CAPAStatus").val(0);
+        $("#CAPASearch_CAPAFromDate").val('');
+        $("#CAPASearch_CAPAToDate").val('');
+        $("#CAPASearch_AuditType").val(0);
+        $("#CAPASearch_CAPASource").val(0);
+        $("#CAPASearch_CAPASource").select2('');
+    }
+
+    function CloseModel() {
+        $('#myModal').modal('hide');
+    }
+
+
+        jQuery('#CAPASearch_CAPAFromDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery('#CAPASearch_CAPAToDate').datetimepicker({
+           format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            document.getElementById('container').style.height = window.innerHeight - 280 + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+        $(function () {
+
+            $("#CAPASearch_CAPAPlant").select2();
+            $("#CAPASearch_CAPASource").select2('');
+        });
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.date-time-picker').datetimepicker({
+                format: 'd/m/Y H:i',
+                step: 30
+            });
+        });
+    </script>
+
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+}
+
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+        /**/</script>
+}
+
+<div class="container-fluid">
+    <form>
+        <div id="contentdiv" class="py-4">
+            <div class="div-border">
+                <h1 class="div-h1">
+                    <span class="div-h1-span">CAPA LIST&nbsp;</span>
+                </h1>
+                <br />
+
+                <div class="container-fluid">
+                    <!-- Row 1: CAPA From Date, CAPA To Date, and Audit Type -->
+                    <div class="row mb-3">
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <label for="CAPAFromDate" class="form-label">&nbsp;&nbsp;CAPA From Date</label>
+                            @Html.EditorFor(model => model.CAPASearch.CAPAFromDate, new
+                            {
+                                htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @autocomplete = "off" }
+                            })
+                        </div>
+
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <label for="CAPAToDate" class="form-label">CAPA To Date</label>
+                            @Html.EditorFor(model => model.CAPASearch.CAPAToDate, new
+                            {
+                                htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @autocomplete = "off" }
+                            })
+                        </div>
+
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <label for="AuditType" class="form-label">Audit Type</label>
+                            @Html.DropDownListFor(
+                                model => Model.CAPASearch.AuditType,
+                                ViewBag.AuditType as SelectList,
+                                new
+                                    {
+                                    @class = "form-control",
+                                    @maxlength = "100",
+                                    @style = "width: 100%; height: 40px;"
+                                })
+                        </div>
+
+                        <div class="col-lg-2 col-md-4 col-sm-12">
+                            <label for="CAPASource" class="form-label">CAPA Source</label>
+                            @Html.DropDownListFor(
+                                model => Model.CAPASearch.CAPASource,
+                                ViewBag.CAPASource as SelectList,
+                                new
+                                    {
+                                    @class = "form-control",
+                                    @maxlength = "100",
+                                    @style = "width: 100%; height: 40px;"  /* Match height with Audit Type */
+                                })
+                        </div>
+
+                        
+
+                        <!-- Search Button -->
+                        <div class="col-lg-1 col-md-4 col-sm-12">
+                            <img src="~/Images/searchIcon.png" onclick="SearchCAPA()" alt="Search Button" style="cursor: pointer; height: 30px; width: 30px;" title="Search" />
+                        </div>
+
+                        <!-- Export Button -->
+                        @if (Model.CapaList.Count > 0)
+                        {
+                            <div class="col-lg-1col-md-4 col-sm-12">
+                                <a href="@Url.Action("ExportCapaList", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, IncidentPlantID = ViewBag.PlantID, audittype = ViewBag.Audit, capasourceID = ViewBag.Source, capastatusID = ViewBag.Status })">
+                                    <img src="~/Images/ms-excel-icon.png" alt="Export All Recommendations List" style="width: 30px; height: 30px; cursor: pointer;" title="Export All Recommendations List" />
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Custom CSS for Improved UI -->
+<style>
+    .div-border {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .div-h1 {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .div-h1-span {
+        color: #007bff;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-control {
+        height: 40px;
+        font-size: 14px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        width: 100%;
+    }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+
+    .d-flex img {
+        transition: transform 0.3s ease;
+    }
+
+        .d-flex img:hover {
+            transform: scale(1.1);
+        }
+
+    .row {
+        margin-bottom: 15px;
+    }
+
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Ensure equal input field width */
+    .form-control, .dropdown, .date-time-picker {
+        max-width: 100% !important;
+    }
+
+    /* Adjusting the search/export buttons */
+    .d-flex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .col-lg-1, .col-md-2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+
+<br />
+@*<div class="row text-center">
+        <input type="button" class="btn btn-primary" onclick="SearchCAPA()" name="btnSearch" id="btnSearch" value="Search" />
+        <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+    </div>*@
+@*@if (Model.CapaList.Count > 0)
+    {
+        @Html.ActionLink("Export CAPA List", "ExportCapaList", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, IncidentPlantID = ViewBag.PlantID, audittype = ViewBag.Audit, capasourceID = ViewBag.Source, capastatusID = ViewBag.Status, @class = "btn btn-primary" })
+
+    }*@
+<br />
+<div class="container-fluid">
+    <div class="container-lg header-fixed pre-scrollable" style="max-height: 67vh;">
+        @if (Model.CapaList.Count > 0)
+        {
+            <table class="table table-hover table-striped table-bordered" id="SearchResults" width="100%">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            S.No
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownSNo" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownSNo">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('SNo')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('SNo')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('SNo')">Toggle Visibility</a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>
+                            CAPA ID
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownCAPAID" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownCAPAID">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('CAPANumber')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('CAPANumber')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('CAPANumber')">Toggle Visibility</a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>
+                            Audit Date
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownAuditDate" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownAuditDate">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('AuditTime')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('AuditTime')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('AuditTime')">Toggle Visibility</a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>
+                            Audit Type
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownAuditType" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownAuditType">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('AuditType')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('AuditType')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('AuditType')">Toggle Visibility</a></li>
+                                    <!-- Filter by Audit Type Dropdown -->
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <select class="form-select" id="auditTypeFilter" onchange="filterAuditType()">
+                                            <option value="">Select Audit Type</option>
+                                            <!-- Dynamic Audit Type Options will be added here -->
+                                        </select>
+                                    </li>
+                                </ul>
+                            </div>
+                        </th>
+
+
+                        <th>
+                            CAPA Source
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownCAPASource" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownCAPASource">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('CAPASource')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('CAPASource')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('CAPASource')">Toggle Visibility</a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>
+                            Created By
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownCreatedBy" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownCreatedBy">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('CreatedByName')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('CreatedByName')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('CreatedByName')">Toggle Visibility</a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>
+                            Status
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownStatus" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownStatus">
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="sortColumn('CurrentStatus')">Sort</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="filterColumn('CurrentStatus')">Filter</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="toggleColumnVisibility('CurrentStatus')">Toggle Visibility</a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>Action</th>
+                    
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CapaList)
+                    {
+                        // Role-based rendering logic
+                        bool isHSEManager = Model.Roles.Any(a => a.RoleName == "HSE Manager");
+                        bool isCAPAAdvisor = Model.Roles.Any(a => a.RoleName == "Functional Manager/ CAPA Advisor");
+                        bool isOtherUser = Model.Roles.Any(a => a.RoleName != "HSE Manager" && a.RoleName != "Functional Manager/ CAPA Advisor");
+
+                        // Render the table row based on role checks
+                        if (isHSEManager || isCAPAAdvisor || isOtherUser)
+                        {
+                            <tr>
+                                <td>@item.SNo</td>
+                                <td>@item.CAPANumber</td>
+                                <td>@item.AuditTime.ToString("dd/MM/yyyy")</td>
+                                <td>@item.AuditType</td>
+                                <td>@item.CAPASource</td>
+                                <td>@item.CreatedByName</td>
+                                <td>@item.CurrentStatus</td>
+
+                                <td>
+                                    <div class="image triggerPopup">
+                                        <img src="~/Users/application.png" alt="Click to open popup" width="30" height="30">
+                                    </div>
+                                    <div class="overlay" style="display: none;"></div>
+                                    <div class="popup" style="display: none;">
+                                        <ul>
+                                            <li>
+                                                @if (isHSEManager || isCAPAAdvisor)
+                                                {
+                                                    <a href="javascript:EditCAPA(@item.CAPAID);" title="Edit CAPA" class="action-icon">
+                                                        <img src="~/Images/Edit.png" alt="Edit" />
+                                                    </a>
+                                                    <a href="javascript:Observations(@item.CAPAID);" title="Observations" class="action-icon">
+                                                        <img src="~/Images/Recommendation.jpg" alt="Observations" />
+                                                    </a>
+                                                    if (string.IsNullOrEmpty(item.ActionTaken))
+                                                    {
+                                                        <a href="javascript:UpdateStatus(@item.CAPAID);" class="action-icon" title="Update Status">
+                                                            <img src="~/Images/StatusChange.png" alt="Update Status" />
+                                                        </a>
+                                                    }
+                                                }
+                                                else if (isOtherUser)
+                                                {
+                                                    foreach (var item1 in Model.actionermodel)
+                                                    {
+                                                        if ((item1.CompletedBy == Model.CurrentUser && item1.CAPAID == item.CAPAID) ||
+                                                            (item1.DeptManager == Model.CurrentUser && item1.CAPAID == item.CAPAID))
+                                                        {
+                                                            <a href="javascript:Observations(@item.CAPAID);" title="Observations" class="action-icon">
+                                                                <img src="~/Images/Recommendation.jpg" alt="Observations" />
+                                                            </a>
+                                                            break;
+                                                        }
+                                                        else if (item.CreatedBy == Model.CurrentUser)
+                                                        {
+                                                            <a href="javascript:EditCAPA(@item.CAPAID);" class="action-icon" title="Edit CAPA">
+                                                                <img src="~/Images/Edit.png" alt="Edit" />
+                                                            </a>
+                                                            <a href="javascript:Observations(@item.CAPAID);" class="action-icon" title="Observations">
+                                                                <img src="~/Images/Recommendation.jpg" alt="Observations" />
+                                                            </a>
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            </li>
+                                        </ul>
+                                        <ul>
+                                            <li>
+                                                <a href="../CAPA/CAPAPrintPDF/@item.CAPAID" target="_blank" title="Download PDF" class="download-icon">
+                                                    <img src="~/Images/pdficon.jpg" alt="Download PDF" />
+                                                </a>
+                                                @if (!string.IsNullOrEmpty(item.FileName))
+                                                {
+                                                    <a href="~/CAPAAttachments/@item.FileName" download class="download-icon">
+                                                        <img src="~/images/download.png" alt="Download" />
+                                                    </a>
+                                                }
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    @*<a href="javascript:MailCAPA(@item.CAPAID);" title="Mail CAPA" class="action-icon">
+                                            <img src="~/Users/message.png" alt="Mail" />
+                                        </a>*@
+                                </td>
+
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No CAPA Found</p>
+        }
+    </div>
+</div>
+
+
+<!-- Custom CSS for Table Styling -->
+<style>
+    /* Table Styles */
+
+    /* Style the dropdown menu inside the header */
+    .dropdown-menu {
+        min-width: 160px;
+        padding: 10px;
+    }
+
+    /* Style for the filter select input */
+    #auditTypeFilter {
+        width: 100%;
+        margin-top: 5px;
+        padding: 5px;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-collapse: collapse;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    /* Action Icons */
+    .action-icon img {
+        width: 25px;
+        height: 25px;
+        margin: 0 5px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+        .action-icon img:hover {
+            transform: scale(1.1);
+        }
+
+    /* Download Icons */
+    .download-icon img {
+        width: 30px;
+        height: 30px;
+        margin: 0 5px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+        .download-icon img:hover {
+            transform: scale(1.1);
+        }
+
+    /* Table Responsiveness */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    /* Add some extra spacing for readability */
+    .container-lg {
+        padding: 0 20px;
+    }
+
+    /* Style the dropdown button */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        z-index: 1;
+    }
+
+    /* Style the dropdown items */
+    .dropdown-item {
+        padding: 8px 16px;
+        cursor: pointer;
+    }
+
+        .dropdown-item:hover {
+            background-color: #ddd;
+        }
+</style>
+<style>
+
+
+    /*.container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }*/
+
+    .image {
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+        .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* Popup styles */
+    .popup {
+        position: fixed;
+        top: 50%;
+        left: 90%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 10px;
+        z-index: 1000;
+        display: none;
+    }
+
+        .popup h2 {
+            margin-top: 0;
+        }
+
+        .popup ul {
+            list-style: none;
+            padding: 0;
+        }
+
+            .popup ul li {
+                margin: 10px 0;
+            }
+
+                .popup ul li a {
+                    text-decoration: none;
+                    color: #007bff;
+                    transition: color 0.3s;
+                }
+
+                    .popup ul li a:hover {
+                        color: #0056b3;
+                    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.triggerPopup').forEach(function (triggerPopup) {
+            triggerPopup.addEventListener('click', function (event) {
+                // Get the current row's popup and overlay
+                var popup = triggerPopup.nextElementSibling.nextElementSibling; // The next two siblings are the overlay and the popup
+                var overlay = triggerPopup.nextElementSibling;
+
+                // Get the position of the clicked image
+                var rect = triggerPopup.getBoundingClientRect();
+                var offsetX = rect.left + window.scrollX;
+                var offsetY = rect.top + window.scrollY;
+
+                // Display the overlay and popup
+                overlay.style.display = 'block';
+                popup.style.display = 'block';
+
+                // Position the popup near the clicked image
+                popup.style.position = 'absolute';
+                popup.style.left = (offsetX - 50) + 'px'; // Horizontal position near the image
+
+                // Calculate space remaining in the viewport
+                var windowHeight = window.innerHeight;
+                var spaceBelow = windowHeight - (offsetY + triggerPopup.offsetHeight);
+                var popupHeight = popup.offsetHeight;
+
+                // If there is not enough space below, position the popup above
+                if (spaceBelow < popupHeight) {
+                    popup.style.top = offsetY - popupHeight - 5 + 'px'; // Position above the image
+                } else {
+                    popup.style.top = offsetY + triggerPopup.offsetHeight + 5 + 'px'; // Position below the image
+                }
+
+                // Optional: Adjust the popup's maximum width or other styling
+                popup.style.maxWidth = '300px'; // Set the max width for the popup
+            });
+        });
+
+        // Event listener for clicking on the overlay to close the popup
+        document.querySelectorAll('.overlay').forEach(function (overlay) {
+            overlay.addEventListener('click', function () {
+                var popup = overlay.nextElementSibling; // The popup is the next sibling of the overlay
+                overlay.style.display = 'none';
+                popup.style.display = 'none';
+            });
+        });
+    });
+</script>
+<script>
+    // Function to sort column
+    function sortColumn(columnName) {
+        console.log('Sorting by column:', columnName);
+        // Implement sorting logic here
+    }
+
+    // Function to filter column
+    function filterColumn(columnName) {
+        console.log('Filtering by column:', columnName);
+        // Implement filtering logic here (e.g., show input box for filter)
+    }
+
+    // Function to toggle column visibility
+    function toggleColumnVisibility(columnName) {
+        var columnIndex = getColumnIndex(columnName);
+        var table = document.getElementById('SearchResults');
+        var columnCells = table.querySelectorAll('tr td:nth-child(' + (columnIndex + 1) + '), tr th:nth-child(' + (columnIndex + 1) + ')');
+
+        columnCells.forEach(function (cell) {
+            cell.style.display = cell.style.display === 'none' ? '' : 'none';
+        });
+    }
+
+    // Helper function to get the index of the column
+    function getColumnIndex(columnName) {
+        var headers = document.querySelectorAll('#SearchResults thead th');
+        for (var i = 0; i < headers.length; i++) {
+            if (headers[i].textContent.trim() === columnName) {
+                return i;
+            }
+        }
+        return -1; // Column not found
+    }
+    function filterAuditType() {
+        var selectedAuditType = document.getElementById("auditTypeFilter").value.toLowerCase();
+        console.log("Selected Audit Type: ", selectedAuditType);  // Debugging
+        var table = document.getElementById('SearchResults');
+        var rows = table.querySelectorAll('tbody tr');
+
+        rows.forEach(function (row) {
+            var auditTypeCell = row.cells[3]; // The "Audit Type" column is the 4th (index 3)
+            if (auditTypeCell) {
+                var auditTypeText = auditTypeCell.textContent || auditTypeCell.innerText;
+                if (selectedAuditType === "" || auditTypeText.toLowerCase().includes(selectedAuditType)) {
+                    row.style.display = '';  // Show row
+                } else {
+                    row.style.display = 'none';  // Hide row
+                }
+            }
+        });
+    }
+
+</script>
+<script>
+    // Assuming 'Model.CapaList' contains the list of CAPAs (this will be populated by the server-side code).
+// Assuming 'Model.CapaList' contains the list of CAPAs (this will be populated by the server-side code).
+var auditTypes = @Html.Raw(Json.Encode(Model.CapaList.Select(item => item.AuditType).Distinct().ToList()));
+
+console.log("Audit Types: ", auditTypes);  // Check if this is correctly populated
+
+// Populate the dropdown dynamically with unique Audit Types
+function populateAuditTypeDropdown() {
+    var dropdown = document.getElementById("auditTypeFilter");
+    dropdown.innerHTML = '<option value="">Select Audit Type</option>'; // Reset the dropdown options
+
+    // Loop through the auditTypes and add them as options
+    auditTypes.forEach(function(auditType) {
+        var option = document.createElement("option");
+        option.value = auditType;
+        option.text = auditType;
+        dropdown.appendChild(option);
+    });
+}
+
+// Call this function on page load to populate the dropdown
+window.onload = function() {
+    populateAuditTypeDropdown();
+};
+
+// Function to filter rows based on selected Audit Type
+function filterAuditType() {
+    var selectedAuditType = document.getElementById("auditTypeFilter").value.toLowerCase();
+    var table = document.getElementById('SearchResults');
+    var rows = table.querySelectorAll('tbody tr');
+
+    rows.forEach(function(row) {
+        var auditTypeCell = row.cells[3]; // The "Audit Type" column is the 4th (index 3)
+        if (auditTypeCell) {
+            var auditTypeText = auditTypeCell.textContent || auditTypeCell.innerText;
+            if (selectedAuditType === "" || auditTypeText.toLowerCase().includes(selectedAuditType)) {
+                row.style.display = '';  // Show row
+            } else {
+                row.style.display = 'none';  // Hide row
+            }
+        }
+    });
+}
+
+</script>
+
+
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,13 @@
+﻿
+@model MonitPro.Models.MOC.MonthlyMOCStatusChart
+
+@{
+    var mychart1 = new Chart(width: 400, height: 400, themePath: "customthemePlant.xml")
+        .AddTitle("Plant Wise Break up", "main")
+        .AddSeries(name: "serie", chartType: "pie",
+
+        xValue: Model.plantwisechart, xField: "PlantName",
+        yValues: Model.plantwisechart, yFields: "TotalCount")
+        .AddLegend()
+        .Write();
+}

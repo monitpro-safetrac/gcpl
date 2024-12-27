@@ -1,0 +1,14 @@
+﻿
+@model MonitPro.Models.MOC.MonthlyMOCStatusChart
+
+@{ 
+    var mychart1 = new Chart(width: 400, height: 400, themePath: "customthemeMocCategory.xml")
+        .AddTitle("MOC Category of Change", "main")
+        .AddSeries(name: "serie", chartType: "pie",
+        xValue: Model.categorychart, xField: "CategoryName",
+        yValues: Model.categorychart, yFields: "TotalCount")
+        .AddLegend()
+        .Write();
+
+
+}

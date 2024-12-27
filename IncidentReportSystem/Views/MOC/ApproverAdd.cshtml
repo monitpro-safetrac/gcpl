@@ -1,0 +1,79 @@
+﻿@model  MonitPro.Models.MOC.MOCApproverList
+@{
+    /**/
+
+    Layout = null;
+}
+
+    <table>
+
+        <tr id="NewRow">
+
+
+            <td>
+                @Html.DropDownListFor(model => model.Approver,
+                 new SelectList(Model.ApprovalList, "ID", "ApprovalName"), "Select", new { @class = "form-control input-sm", @id = "NewApprovalName", style = "width: 300px;" })
+            </td>
+
+            <td>
+                @Html.DropDownListFor(model => model.UserID,
+                  new SelectList(Model.EmployeeList, "ID", "FullName"), "Select", new { @class = "form-control input-sm", @id = "NewEmployee", style = "width: 300px;" })
+            </td>
+            @*<td><input type="text" style="width:100px" class="form-control input-sm" id="Action"></td>*@
+
+            <td>
+                @Html.EditorFor(model => model.TargetDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "NewTargetDate", style = "width: 200px" } })
+
+            </td>
+         
+
+
+        </tr>
+    </table>
+
+
+
+
+
+@section scripts
+  {
+    <script type="text/javascript">
+                
+
+         function Add() {
+
+
+         var MOCID = @Html.Raw(Json.Encode(Model.MOCID));
+
+         vApproverStagesID = $("#NewApprovalName").val();
+         vEmployeeID = $("#NewEmployee").val();
+         vTargetDate = $("#NewTargetDate").val();
+
+
+          {
+            $.ajax({
+                 method: "POST",
+                url: "../MOC/ApproverAdd",
+                data: { MOCID: MOCID, ApproverStagesID: vApproverStagesID, EmployeeID: vEmployeeID, TargetDate: vTargetDate },
+                success: function (resultdata) {
+                     alert(JSON.stringify('Investigation Team Assigned'));
+                     location.reload(true);
+                 },
+                error: function (errdata) {
+                     alert(JSON.stringify(errdata));
+                     alert("Dynamic content load failed.");
+                 }
+             });
+         }
+
+
+     }
+
+                $(function () {
+                    $("#TargetDate").datepicker({ dateFormat: 'dd/mm/yy' });
+
+                });
+
+
+    </script>
+}

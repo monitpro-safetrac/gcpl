@@ -1,0 +1,19 @@
+﻿@model IncidentReportSystem.Models.RootCauseChartViewModel
+
+@{
+
+    var myChart1 = new Chart(width:380, height: 330, themePath: "customtheme3.xml")
+
+        .AddTitle("Root Cause Categories", "main")   
+        .SetXAxis(title: "RootCause Name")
+        .SetYAxis(title: "Number of Counts")
+        .AddSeries(name: "RootCause Count", chartType: "DoughNut",
+
+            xValue: Model.rootCauseCounts, xField: "RootCauseName",
+            yValues: Model.rootCauseCounts, yFields: "TotalCount")
+                .AddLegend()
+        .Write();
+
+}
+
+

@@ -1,0 +1,19 @@
+﻿@model IncidentReportSystem.Models.IncidentClassificationCount
+
+@{
+
+    var myChart1 = new Chart(width: 380, height: 330, themePath: "customtheme4.xml")
+        .AddTitle("Incident Classification", "main")
+       
+        .SetYAxis(title: "Number of Counts")
+        .AddSeries(name: "classification", chartType: "Column",
+
+            xValue: Model.classificationCounts, xField: "ClassificationName",
+            yValues: Model.classificationCounts, yFields: "TotalCount")
+              .AddLegend()
+        .Write();
+
+
+
+}
+

@@ -1,0 +1,19 @@
+﻿
+@model MonitPro.Models.MOC.MonthlyMOCStatusChart
+@{
+    var mychart = new Chart(width: 400, height: 400, themePath: "customthemeMocPriority.xml")
+        .AddTitle("MOC Priority Status", "main")
+        .SetXAxis(title: "Priority")
+        .SetYAxis(title: "TotalCount")
+
+        .AddSeries(name: "Open", chartType: "Column",
+        xValue: Model.mocpriority, xField: "Priority",
+        yValues: Model.mocpriority, yFields: "StatusOpen")
+
+        .AddSeries(name: "Close", chartType: "Column",
+        xValue: Model.mocpriority, xField: "Priority",
+        yValues: Model.mocpriority, yFields: "StatusClose")
+        .AddLegend()
+        .Write();
+
+}

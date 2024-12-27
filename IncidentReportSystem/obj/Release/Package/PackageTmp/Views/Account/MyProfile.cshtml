@@ -1,0 +1,153 @@
+﻿
+@model MonitPro.Models.UserProfile
+@using (Html.BeginForm("MyProfile", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <!DOCTYPE html>
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">Edit Profile</h1>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-responsive">
+                        <tr>
+                            <td rowspan="11" width="30%" class="text-center" style="vertical-align:middle">
+                                @Html.HiddenFor(m => m.UserImage)
+                                @if (Model.UserImage != "")
+                                {
+                                    <img id="ProfilePicture" class="img-rounded" src="../Users/@Model.UserImage" title="@Model.UserFullName" height="200" width="200">
+                                }
+                                else
+                                {
+                                    <img class="img-rounded" src="../Users/notfound.jpg" title="Profile image not found" height="200" width="200">
+                                }
+                            </td>
+                            <td width="20%" class="text-right">First Name :</td>
+                            <td>@Html.HiddenFor(m => m.UserID)@Html.TextBoxFor(m => m.FirstName, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Last Name :</td>
+                            <td>@Html.TextBoxFor(m => m.LastName, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "label label-danger" })</td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right">Employee ID :</td>
+                            <td>@Html.TextBoxFor(m => m.EmployeeID, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.EmployeeID, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Email Address :</td>
+                            <td>@Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control input-sm", @style = "width:500px", @disabled = "disabled" }) @Html.ValidationMessageFor(m => m.EmailAddress, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Mobile Number :</td>
+                            <td>@Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control input-sm", @style = "width:500px", @disabled = "disabled" }) @Html.ValidationMessageFor(m => m.MobileNo, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">User Name :</td>
+                            <td>@Html.TextBoxFor(m => m.UserName, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.UserName, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">PassWord :</td>
+                            <td>@Html.EditorFor(m => m.Password, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.Password, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right" nowrap>Change Profile Picture : </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.UserProfileImage, new { type = "file", accept = "image/*", onchange = "loadFile(event)" }) <span class="label-warning">Please select JPEG file within 100KB</span>
+                        <tr class="hidden">
+                            <td class="text-right">Designation :</td>
+                            <td>@Html.TextBoxFor(m => m.Designation, new { @class = "form-control input-sm", @style = "width:500px" }) @Html.ValidationMessageFor(m => m.Designation, null, new { @class = "label label-danger" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Role : </td>
+                            <td>
+                                @for (var i = 0; i < Model.RoleList.Count; i++)
+                                {
+                                    <div class="col-md-4 col-sm-4 col-xs-4 ">
+                                        @Html.HiddenFor(m => Model.RoleList[i].RoleID)
+                                        @Html.HiddenFor(m => Model.RoleList[i].RoleName)
+                                        @Html.CheckBoxFor(m => Model.RoleList[i].IsRole, htmlAttributes: new { @class = "big-checkbox" })
+                                        @Model.RoleList[i].RoleName
+
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Department : </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.DepartID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @disabled = "disabled", @id = "dept", @style = "width:300px" }) @Html.ValidationMessageFor(m => m.DepartID, null, new { @class = "label label-danger" })
+                            </td>
+                        </tr>
+                        <tr class="hidden">
+                            <td class="text-right">Active :</td>
+                            <td>@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-control input-sm" })</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"> IIR Facilitator:</td>
+                            <td>@Html.CheckBoxFor(m => m.IsInvestigate, new { @class = "form-control input-sm", @disabled = "disabled", @id = "Facilitator" })</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" align="center">
+                                <input type="submit" class="btn btn-primary" value="Update" onclick="remove()" style="width:100px" />&nbsp;&nbsp;
+                                <input type="button" class="btn btn-primary" value="Cancel" style="width:100px" id="Cancel" />
+                            </td>
+                        </tr>
+                        <tfoot>
+                            @if (ViewBag.IsValidationFailed == true)
+                            {
+                                <tr>
+                                    <td colspan=3 class="text-danger text-center">
+                                        <strong>@Html.ValidationMessage("ValidationError")</strong>
+                                    </td>
+                                </tr>
+                            }
+                            @if (ViewBag.UpdateStatus == true)
+                            {
+                                <tr>
+                                    <td colspan=3 class="text-success text-center">
+                                        <strong>Profile has been updated successfully.</strong>
+                                    </td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#Cancel").click(function (event) {
+            window.location.replace("../CAPA/MyActionStatus");
+        });
+
+        var loadFile = function (event) {
+            var ProfilePicture = document.getElementById('ProfilePicture');
+            ProfilePicture.src = URL.createObjectURL(event.target.files[0]);
+        };
+        function remove() {
+            $('#role').prop("disabled", false);
+            $('#dept').prop("disabled", false);
+            $('#Facilitator').prop("disabled", false);
+        }
+    </script>
+
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "/Account/Login";
+        };
+
+    </script>
+}

@@ -1,0 +1,29 @@
+﻿
+@model MonitPro.Models.WorkPermit
+
+@{
+    Layout = null;
+}
+
+
+<table id="Generaltbl" class="table table-responsive table-borderedless">
+    <tr>
+        <td>
+
+            @*<h5><b>General Check List</b></h5>*@
+            @for (var i = 0; i < Model.GeneralList.Count; i++)
+            {
+                <div class="col-md-3 col-sm-3 col-xs-3">
+
+                    @Html.HiddenFor(m => m.GeneralList[i].GenID)@Html.HiddenFor(m => m.GeneralList[i].GenName)
+                    @Html.CheckBoxFor(m => m.GeneralList[i].Gencheck, htmlAttributes: new { @class = "big-checkbox" })
+                    @Model.GeneralList[i].GenName
+                </div>
+
+            }
+            <span class="Generalerror label label-danger" style="display:none;">Please select at-least one check list.</span>
+
+        </td>
+    </tr>
+</table>
+

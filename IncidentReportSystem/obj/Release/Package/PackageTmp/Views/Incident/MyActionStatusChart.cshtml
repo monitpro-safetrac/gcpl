@@ -1,0 +1,18 @@
+﻿
+@model IncidentReportSystem.Models.ActionsStatusChartViewModel
+
+    @{
+
+        var myChart1 = new Chart(width: 400, height: 300, themePath: "customtheme7.xml")
+
+            .AddTitle("My Action Status", "main")
+            .AddSeries(name: "serie", chartType: "Pie",
+
+                xValue: Model.ActionCounts, xField: "StatusName",
+                yValues: Model.ActionCounts, yFields: "TotalCount")
+                    .AddLegend()
+            .Write();
+
+}
+
+      

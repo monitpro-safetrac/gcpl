@@ -1,0 +1,34 @@
+﻿@model ValsparApp.Models.Contract
+@{
+    Layout = null;
+}
+
+<table id="fixTable" class="table table-responsive table-bordered">
+
+    <tr>
+        <td width="25%">@Html.CheckBoxFor(m =>m.TypeofWork.Lotoelectrical) LOTO (electrical)</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWork.Lotononelectrical) LOTO (non-electrical)</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWork.Mechanical) Mechanical work</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWork.Hvac) HVAC</td>
+    </tr>
+    <tr>
+
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Hotwork) Hot work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.LoadingUnloading) Loading / Unloading </td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Excavation) Excavation work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.HeightFragileroof) Working at height or fragile roof</td>
+    </tr>
+
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Civilwork) Civil work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.CSEntry) Confined Space Entry</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Paintingwork) Painting work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Firehydrant) Work on Fire hydrant</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Plumbingwork) Plumbing work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWork.Shitingmaterial) Shifting of material</td>
+        <td colspan="2">Others :@Html.TextAreaFor(m => m.TypeofWork.others, new { maxlength = "1000", @class = "form-control input-sm", @style = "width:100%", @cols = "500" })</td></tr>
+    
+</table>
+

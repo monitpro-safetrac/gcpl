@@ -1,0 +1,1219 @@
+﻿
+@model IncidentReportSystem.Models.AllCAPAObservationListModel
+
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<link href="~/Content/style.css" rel="stylesheet" />
+<link href="~/Content/materialdesignicons.min.css" rel="stylesheet" />
+<link href="~/Content/flag-icon.min.css" rel="stylesheet" />
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+<script src="~/Scripts/jquery-3.1.1.min.js"></script>
+<script src="~/Scripts/c3.min.js"></script>
+<script src="~/Scripts/d3.min.js"></script>
+<link href="~/Content/c3.css" rel="stylesheet" />
+<style>
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+
+    html {
+        overflow: scroll;
+    }
+
+
+    #list thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    .box-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    .box {
+        width: 18%;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        text-align: center;
+        padding: 10px;
+    }
+
+
+    .count {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+
+    .label {
+        font-size: 16px;
+    }
+
+
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 10px; /* Rounded corners */
+        padding: 10px;
+        margin: 30px;
+        align-items: center;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Add a shadow effect */
+        transition: transform 0.3s; /* Add a smooth hover effect */
+    }
+
+
+        /* Hover effect */
+        .card:hover {
+            transform: scale(1.05); /* Enlarge the card on hover */
+        }
+
+
+    .table-container {
+        display: flex;
+        justify-content: center;
+        padding: 5px; /* Optional padding for spacing */
+    }
+
+
+    .table-space {
+        margin-left: 60px; /* Adjust the margin as needed */
+    }
+
+
+    .centered-card {
+        background-color: #428BCA; /* Set background color */
+        color: white;
+        text-align: center; /* Center text horizontally */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center content vertically */
+        justify-content: center;
+        height: 100%; /* Make the card fill the height of its parent container */
+    }
+
+
+    .empty-space {
+        height: 30px; /* Adjust the height as needed */
+    }
+
+
+    .pgfit {
+        height: 100px;
+        width: 230px;
+        text-align: center;
+        display: inline-block;
+        max-height: 500px;
+        max-width: 500px;
+    }
+
+
+    .my-dashboard-card {
+        max-height: 330px; /* Adjust the value as needed */
+        /*overflow: auto; Add scrollbars if content exceeds max height */
+    }
+
+
+    .action-card,
+    .approval-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+
+        .action-card .mdc-card,
+        .approval-card .mdc-card {
+            flex: 1;
+        }
+
+
+    #IncidentChart text, #Priority text, #RecomStatusChart text, #pssrpriorityCount text {
+        fill: transparent;
+    }
+
+    #SearchResult {
+        max-width: 100%;
+    }
+    .card-title{
+        font-weight:bold;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        function formatDate(date) {
+            var d = new Date(date);
+            var month = '' + (d.getMonth() + 1);
+            var day = '' + d.getDate();
+            var year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            console.log(year, month, day);
+            return [year, month, day].join('-');
+        }
+
+        function setDefaultDates() {
+            var endDate = new Date();
+            var currentYear = endDate.getFullYear();
+            var startDate;
+
+            endDate.setDate(endDate.getDate());
+
+            // If the current month is before April, set start date to April 1st of the previous year
+            if (endDate.getMonth() < 3) {
+                startDate = new Date(currentYear - 1, 3, 1); // April 1st of previous year
+            } else {
+                // Otherwise, set start date to April 1st of the current year
+                startDate = new Date(currentYear, 3, 1); // April 1st of current year
+            }
+
+            $('#startDate').val(formatDate(startDate));
+            $('#endDate').val(formatDate(endDate));
+        }
+
+        function loadData(startDate, endDate) {
+            $('#loading').show();
+
+            function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error: ', textStatus, errorThrown);
+                alert('Error loading data. Please try again later.');
+            }
+
+            var ajaxCalls = [
+                $.ajax({
+                    type: "GET",
+                    url: "../Home/IncidentSummary",
+                    data: {},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        successFunc(response);
+                    },
+                    error: ajaxError
+                }),
+                $.ajax({
+                    type: "GET",
+                    url: "../Home/MOCRecomStatusCount",
+                    data: {},
+                    dataType: "json",
+                    success: function (response) {
+                        successRecomStatus(response);
+                    },
+                    error: ajaxError
+                }),
+                $.ajax({
+                    type: "GET",
+                    url: "../Home/RecommendationChart",
+                    data: {},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        //console.log(response);
+                        //console.log(response.RecommendationModel);
+                        successFuncrr(response.RecommendationModel);
+                    },
+                    error: ajaxError
+                }),
+                $.ajax({
+                    type: "GET",
+                    url: "../Home/CapaPriorityCount",
+                    data: {},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        successpriority(response);
+                    },
+                    error: ajaxError
+                }),
+                $.ajax({
+                    type: "GET",
+                    url: "../Home/CAPAPlantCount",
+                    data: {},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        PriorityCount(response);
+                    },
+                    error: ajaxError
+                }),
+            ];
+
+            $.when.apply($, ajaxCalls).always(function () {
+                $('#loading').hide();
+            });
+        }
+
+        setDefaultDates();
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+        loadData(startDate, endDate);
+    });
+
+    function successFunc(jsondata) {
+        console.log(jsondata);
+        var data = {};
+        var summaryNames = [];
+        var count = [];
+        var month = [];
+        jsondata.forEach(function (e) {
+            summaryNames.push(e.MonthName);
+            count.push(e.TotalCount);
+            month.push(e.MonthlyCounts);
+
+        });
+        // The variable name chart will automatically bind itself to an id = chart
+        var chart = c3.generate({
+            bindto: '#IncidentChart',
+            data: {
+                columns: [
+
+                    ['Incident'].concat(count),
+                    ['CAPA'].concat(month)
+                ],
+                type: 'line', // Change type to 'line'
+            },
+            color: {
+                pattern: ['#d62728', '#2ca02c']
+            },
+            zoom: {
+                enabled: true
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: summaryNames,
+                    tick: {
+
+                        culling: true,
+                        rotate: -25,
+                        multiline: false
+                    },
+                    height: 10
+                }
+            },
+            legend: {
+                show: false // Hide the legend
+            },
+            bar: {
+                width: {
+                    ratio: 0.5
+                }
+            }
+        });
+    }
+
+    function successRecomStatus(jsondata) {
+        var RecomStatusName = [];
+        var overdue = [];
+        var pending = [];
+        var Completed = [];
+
+        jsondata.forEach(function (e) {
+            RecomStatusName.push(e.RecomStatusName);
+            overdue.push(e.Overdue);
+            pending.push(e.Pending);
+            Completed.push(e.Completed);
+        });
+
+        var chart = c3.generate({
+            bindto: '#RecomStatusChart',
+            data: {
+                columns: [
+                    ['Overdue'].concat(overdue),
+                    ['Pending'].concat(pending),
+                    ['Completed'].concat(Completed)
+                ],
+                type: 'bar',
+                groups: [['Overdue', 'Pending', 'Completed']]
+            },
+            color: {
+                pattern: ['#FFA500', '#de2336', '#1aa130']
+            },
+            bar: {
+                width: { ratio: 0.2 }
+            },
+            legend: {
+                show: false
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: RecomStatusName,
+                    tick: {
+                        rotate: -25,
+                        multiline: true
+                    },
+                    height: 10
+                }
+            }
+        });
+    }
+
+    function successFuncrr(jsondata) {
+        var data = {};
+        var countryNames = [];
+        jsondata.forEach(function (e) {
+            countryNames.push(e.CategoryName);
+            data[e.CategoryName] = e.TotalCount;
+        });
+        console.log(countryNames);
+        console.log(data);
+        var chart = c3.generate({
+            bindto: '#RecommendationChart',
+            data: {
+                json: [data],
+                keys: {
+                    value: countryNames,
+                },
+                type: 'pie'
+            },
+            color: {
+                pattern: ['#d62728', '#2ca02c', '#ff7f0e']
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value + ', ' + Math.round(ratio * 100) + '%';
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+            pie: {
+                label: {
+                    format: function (value, ratio, id) {
+                        return Math.round(ratio * 100) + '%';
+                    }
+                }
+            }
+        });
+    }
+
+    function successpriority(jsondata) {
+        var PriorityNames = [];
+        var Overdue = [];
+        var open = [];
+        var close = [];
+        var New = [];
+
+        jsondata.forEach(function (e) {
+            PriorityNames.push(e.PriorityName);
+            Overdue.push(e.Overdue);
+            open.push(e.Opened);
+            close.push(e.Closed);
+            New.push(e.New);
+        });
+
+        var chart = c3.generate({
+            bindto: '#Priority',
+            data: {
+                columns: [
+                    ['Overdue'].concat(Overdue),
+                    ['Pending'].concat(open),
+                    ['Completed'].concat(close),
+                    ['New'].concat(New)
+                ],
+                type: 'bar',
+                groups: [['Overdue', 'Pending', 'Completed', 'New']]
+            },
+            color: {
+                pattern: ['#d62728', '#ff7f0e', '#2ca02c', '#1f77b4']
+            },
+            legend: {
+                show: false
+            },
+            bar: {
+                width: {
+                    ratio: 0.5
+                }
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: PriorityNames,
+                    tick: {
+                        rotate: -25,
+                        multiline: true
+                    },
+                    height: 15
+                }
+            }
+        });
+    }
+
+    function PriorityCount(jsondata) {
+        console.log(jsondata);
+        var plantname = [];
+        var data = {};
+            jsondata.forEach(function (e) {
+                plantname.push(e.Plantname);
+                data[e.Plantname] = e.TotalCount;
+            });
+        console.log(plantname);
+            console.log(data);
+            var chart = c3.generate({
+                bindto: '#pssrpriorityCount',
+                data: {
+                    json: [data],
+                    keys: {
+                        value: plantname,
+                    },
+                    type: 'pie'
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id) {
+                            return value + ', ' + Math.round(ratio * 100) + '%';
+                        }
+                    }
+                },
+                legend: {
+                    show: false
+                },
+                pie: {
+                    label: {
+                        format: function (value, ratio, id) {
+                            return Math.round(ratio * 100) + '%';
+                        }
+                    }
+                }
+            });
+    }
+
+
+</script>
+
+
+
+@section scripts
+{
+
+    <script type="text/javascript">
+
+        function MyCAPAObservation(ObservationID, capaid) {
+            window.location.href = '../CAPA/CAPAObservations?OBID=' + ObservationID + '&capaID=' + capaid;
+        }
+
+        function MyInciObservation(ObservationID, InciID) {
+            window.location.href = '../Incident/Observations?ObservationID=' + ObservationID + '&incidentID=' + InciID;
+        }
+        function MyPSSRObservation(ObservationID, pssir) {
+            window.location.href = '../PSSR/PSSRObservation?OBID=' + ObservationID + '&PSSRID=' + pssir;
+        }
+        function MyMOCObservation(ObservationID, mocid) {
+            window.location.href = '../MOC/MOCObservations?ObservID=' + ObservationID + '&MOCID=' + mocid;
+        }
+
+
+
+
+        $(document).ready(function () {
+            var MSiteName = [];
+            var MasterJson;
+            $.ajax({
+                type: "GET",
+                url: "../Home/RootCauseCount",
+                data: {},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    successFunc44(response);
+                },
+            });
+
+            function successFunc44(jsondata) {
+                var data = {};
+                var countryNames = [];
+                jsondata.forEach(function (e) {
+                    countryNames.push(e.RootCauseName);
+                    data[e.RootCauseName] = e.TotalCount;
+                })
+                var chart = c3.generate({
+                    bindto: '#rootcauseChart',
+                    data: {
+                        json: [data],
+                        keys: {
+                            value: countryNames,
+                        },
+                        type: 'donut',
+                    },
+                    tooltip: {
+                        format: {
+
+                            value: function (value, ratio, id) {
+
+                                return value + ', ' + Math.round(ratio * 100) + '%';
+                            }
+
+                        }
+                    },
+                    bar: {
+                        label: {
+                            format: function (value, ratio, id) {
+                                return Math.round(ratio * 100) + '%';
+                            }
+                        }
+                    },
+                    color: {
+                        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+                    },
+                    legend: {
+                        show: false
+                    }
+                });
+            }
+        });
+
+    </script>
+
+
+
+    <script>
+        function PSSRRedirection() {
+            $.ajax({
+                method: "POST",
+                url: "../PSSR/PSSRList",
+                data: {
+                    Status: 3
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        function IncidentRedirection() {
+            $.ajax({
+                method: "POST",
+                url: "../Incident/Index",
+                data: {
+                    IncidentStatus: 4
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function MOCRedirection() {
+            var ID = @Model.CurrentUser;
+            $.ajax({
+                method: "POST",
+                url: "../MOC/MOCList",
+                data: {
+                    Approver:ID
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        function WPSRedirection() {
+            window.location.href = "../WorkPermit/NewPermitList";
+        }
+        function CMSRedirection() {
+            var ID = @Model.CurrentUser;
+            $.ajax({
+                method: "POST",
+                url: "../WorkPermit/ContractList",
+                data: {
+                    ContactID:ID
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function CAPAOverdueRedirection() {
+            $.ajax({
+                method: "POST",
+                url: "../CAPA/AllCAPAObservation",
+                data: {
+                    CAPAStatus: 3
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function PSSRScheduledRedirection() {
+            $.ajax({
+                method: "POST",
+                url: "../Incident/AllIncidentObservation",
+                data: {
+                    Status: 3
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function PSSRCategoryARedirection() {
+            $.ajax({
+                method: "POST",
+                url: "../MOC/TrackActions",
+                data: {
+                    Priority: 1
+                },
+                success: function (data) {
+                    document.write(data);
+
+
+                },
+                error: function (errdata) {
+                    alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function TodayIncidentRedirection() {
+            window.location.href = "../Incident/Index";
+        }
+        function WPSCountRedirection() {
+            window.location.href = "../WorkPermit/NewPermitList";
+        }
+        function MOCOverallRedirection() {
+            window.location.href = "../MOC/MOCList";
+        }
+    </script>
+}
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+
+
+
+<div class="container-lg container-sm container-md container-xl" style="padding-top: 10px;">
+
+
+
+    <div class="mdc-layout-grid" style="margin-top:-5px">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card info-card info-card--success">
+                    <div class="card-inner">
+                        <h5 class="card-title" style="white-space: nowrap; font-weight: bold">Today’s Incident</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Plant/Area : @Model.GetDashboardOVerallStatusCount.InciPlant</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Incident Classification : @Model.GetDashboardOVerallStatusCount.InciClassfication</h5>
+                        <div class="card-icon-wrapper">
+                            @if (Model.GetDashboardOVerallStatusCount.IncidentCount > 0)
+                            {
+                                <a href="#"> <i class="material-icons" onclick="TodayIncidentRedirection()">@Model.GetDashboardOVerallStatusCount.IncidentCount</i></a>
+                            }
+                            else
+                            {
+                                <i class="material-icons">@Model.GetDashboardOVerallStatusCount.IncidentCount</i>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card info-card info-card--primary">
+                    <div class="card-inner">
+                        <h5 class="card-title" style="white-space: nowrap; font-weight: bold">CAPA Overdue</h5>
+                        <div class="card-icon-wrapper">
+                            @if (Model.GetDashboardOVerallStatusCount.CapaOVerdueCount > 0)
+                            {
+                                <a href="#"><i class="material-icons" onclick="CAPAOverdueRedirection()">@Model.GetDashboardOVerallStatusCount.CapaOVerdueCount</i></a>
+
+                            }
+                            else
+                            {
+                                <i class="material-icons">@Model.GetDashboardOVerallStatusCount.CapaOVerdueCount</i>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card info-card info-card--danger">
+                    <div class="card-inner">
+                        <h5 class="card-title" style="white-space: nowrap; font-weight: bold">Incident Category</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Tier 1 : @Model.GetDashboardOVerallStatusCount.T1</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Tier 2 : @Model.GetDashboardOVerallStatusCount.T2</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Tier 3 : @Model.GetDashboardOVerallStatusCount.T3</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Tier 4 : @Model.GetDashboardOVerallStatusCount.T4</h5>
+                        <div class="card-icon-wrapper">
+                            @if (Model.GetDashboardOVerallStatusCount.TotalIncident > 0)
+                            {
+                                <a href="#"> <i class="material-icons" onclick="TodayIncidentRedirection()">@Model.GetDashboardOVerallStatusCount.TotalIncident</i></a>
+                            }
+                            else
+                            {
+                                <i class="material-icons">0</i>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card info-card info-card--info">
+                    <div class="card-inner">
+                        <h5 class="card-title" style="white-space: nowrap; font-weight: bold">MOC</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Permanent : @Model.GetDashboardOVerallStatusCount.PermanentCount</h5>
+                        <h5 class="font-weight-light pb-2 mb-1 border-bottom">Temporary : @Model.GetDashboardOVerallStatusCount.TemporaryCount</h5>
+                        <div class="card-icon-wrapper">
+                            @if (Model.GetDashboardOVerallStatusCount.MOCTotalCount > 0)
+                            {
+                                <a href="#"> <i class="material-icons" onclick="MOCOverallRedirection()">@Model.GetDashboardOVerallStatusCount.MOCTotalCount</i></a>
+                            }
+                            else
+                            {
+                                <i class="material-icons">@Model.GetDashboardOVerallStatusCount.MOCTotalCount</i>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card info-card info-card--warning">
+                    <div class="card-inner">
+                        <h5 class="card-title" style="white-space: nowrap; font-weight: bold">Incident <br />Recommendation<br/> Overdue</h5>
+                        <div class="card-icon-wrapper">
+                            @if (Model.GetDashboardOVerallStatusCount.PSSRScheduledCount >= 0)
+                            {
+                                <a href="#"><i class="material-icons" onclick="PSSRScheduledRedirection()">@Model.GetDashboardOVerallStatusCount.PSSRScheduledCount</i></a>
+
+                            }
+                            else
+                            {
+                                <i class="material-icons">@Model.GetDashboardOVerallStatusCount.PSSRScheduledCount</i>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card info-card info-card--primary">
+                    <div class="card-inner">
+                        <h5 class="card-title" style="white-space: nowrap; font-weight: bold">MOC<br /> Recommendation <br />Overdue</h5>
+                        <div class="card-icon-wrapper">
+                            @if (Model.GetDashboardOVerallStatusCount.PSSRCategoryACount >= 0)
+                            {
+                                <a href="#"> <i class="material-icons" onclick="PSSRCategoryARedirection()">@Model.GetDashboardOVerallStatusCount.PSSRCategoryACount</i></a>
+
+                            }
+                            else
+                            {
+                                <i class="material-icons">@Model.GetDashboardOVerallStatusCount.PSSRCategoryACount</i>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mdc-layout-grid" style="margin-top:-15px">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-10-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card my-dashboard-card">
+
+
+
+
+
+                    <div class="mdc-layout-grid__inner align-items-center">
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-3-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4">
+                                <h2 style="white-space: nowrap;">Leading (Vs) Lagging Indicators</h2>
+                                <div id="IncidentChart" class="pgfit"></div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-5-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4">
+                                <h2 style="white-space: nowrap;">MOC Recommend Status</h2>
+                                <div class="pgfit" id="RecomStatusChart"></div>
+                            </div>
+
+
+                        </div>
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-5-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4">
+                                <h2 style="white-space: nowrap;text-align:center;">CAPA Plant</h2>
+                                <div id="pssrpriorityCount" class="pgfit"></div>
+                            </div>
+
+
+                        </div>
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-5-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4">
+                                <h2 style="white-space: nowrap;">CAPA Priority</h2>
+                                <div id="Priority" class="pgfit"></div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="mdc-layout-grid__inner align-items-center">
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-3-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4">
+                                <h2 style="white-space: nowrap;">Incident Recommendation Status</h2>
+                                <div id="RecommendationChart" class="pgfit"></div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-3-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4">
+                                <h2 style="white-space: nowrap;">Incident Root Cause Categories</h2>
+                                <div id="rootcauseChart" class="pgfit"></div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop mdc-layout-grid__cell--span-3-tablet mdc-layout-grid__cell--span-2-phone">
+
+
+
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+
+                                        <th style="text-align: left;">Status</th>
+                                        <th style="text-align: left;">My Action Status</th>
+                                        <th style="text-align: left;">IIR</th>
+                                        <th style="text-align: left;">CAPA</th>
+                                        @*<th style="text-align: left;">PSSR</th>*@
+                                        <th style="text-align: left;">MOC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ActionCounts)
+                                    {
+                                        <tr>
+                                            <td style="text-align: left;">
+                                                @if (item.StatusName == "Overdue")
+                                                {
+                                                    <img src="~/Images/red.png" />
+                                                }
+                                                @if (item.StatusName == "Pending")
+                                                {
+                                                    <img src="~/Images/yellow.png" />
+                                                }
+                                            </td>
+                                            <td style="text-align: left;">@item.StatusName</td>
+                                            <td style="font-weight: bold; text-align: left;">@item.IIR</td>
+                                            <td style="font-weight: bold; text-align: left;">@item.CAPA</td>
+                                            @*<td style="font-weight: bold; text-align: left;">@item.PSSRID</td>*@
+                                            <td style="font-weight: bold; text-align: left;">@item.MOCID</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-4-tablet">
+                <div class="mdc-card my-dashboard-card">
+
+                    <table class="table table-hover ">
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2"><h7 style="white-space: nowrap;">Pending Approvals</h7></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: bold; text-align: left;">IIR</td>
+                                @if (Model.GetMyApprovalCount.IncidentApprovalCount > 0)
+                                {
+
+                                    <td style="font-weight:bold;cursor:  pointer; text-align: left;" onclick="IncidentRedirection()">@Model.GetMyApprovalCount.IncidentApprovalCount</td>
+                                }
+                                else
+                                {
+                                    <td style="font-weight:bold; text-align: left;">@Model.GetMyApprovalCount.IncidentApprovalCount</td>
+
+                                }
+                            </tr>
+                            @*<tr>
+                                <td style="font-weight:bold; text-align: left;">PSSR</td>
+                                @if (@Model.GetMyApprovalCount.PSSRApprovalCount > 0)
+                                {
+
+                                    <td style="font-weight: bold; cursor: pointer; text-align: left;" onclick="PSSRRedirection()"> @Model.GetMyApprovalCount.PSSRApprovalCount</td>
+
+                                }
+                                else
+                                {
+                                    <td style="font-weight:bold; text-align: left;">@Model.GetMyApprovalCount.PSSRApprovalCount</td>
+
+                                }
+                            </tr>*@
+                            <tr>
+                                <td style="font-weight:bold; text-align: left;">MOC</td>
+                                @if (@Model.GetMyApprovalCount.MOCApprovalCount > 0)
+                                {
+                                    <td style="font-weight: bold; cursor: pointer; text-align: left;" onclick="MOCRedirection()">@Model.GetMyApprovalCount.MOCApprovalCount</td>
+                                }
+                                else
+                                {
+                                    <td style="font-weight:bold; text-align: left;">@Model.GetMyApprovalCount.MOCApprovalCount</td>
+
+                                }
+                            </tr>
+                            @*<tr>
+                                <td style="font-weight:bold; text-align: left;">WPS</td>
+                                @if (Model.GetMyApprovalCount.PermitApprovalCount > 0)
+                                {
+                                    <td style="font-weight: bold; cursor: pointer; text-align: left;" onclick="WPSRedirection()">@Model.GetMyApprovalCount.PermitApprovalCount</td>
+                                }
+                                else
+                                {
+                                    <td style="font-weight:bold; text-align: left;">@Model.GetMyApprovalCount.PermitApprovalCount</td>
+
+                                }
+                            </tr>*@
+                            @*<tr>
+                                <td style="font-weight:bold; text-align: left;">CMS</td>
+                                @if (Model.GetMyApprovalCount.CMSApprovalCount > 0)
+                                {
+                                    <td style="font-weight: bold; cursor: pointer; text-align: left;" onclick="CMSRedirection()">@Model.GetMyApprovalCount.CMSApprovalCount</td>
+                                }
+                                else
+                                {
+                                    <td style="font-weight:bold; text-align: left;">@Model.GetMyApprovalCount.CMSApprovalCount</td>
+
+                                }
+                            </tr>*@
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mdc-layout-grid" style="margin-top:-15px">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card">
+
+                    @if (Model.ObservationViewModelList1.Count != 0)
+                    {
+                        <table class="table table-hover" id="SearchResult">
+                            <thead>
+                                <tr>
+
+                                    <th style="text-align: left;">S.No</th>
+                                    <th style="text-align: left;">Status</th>
+                                    <th style="text-align: left;">Target Date</th>
+                                    <th style="text-align: left;">Source</th>
+                                    <th style="text-align: left;">Recom ID</th>
+                                    <th style="text-align: left;">Recommendation</th>
+                                    <th style="text-align: left;">Priority</th>
+                                    <th style="text-align: left;">Action</th>
+                                    <th style="text-align: left;">Edit</th>
+                                    @*<th style="text-align: left;">PDF</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.ObservationViewModelList1)
+                                {
+
+                                    <tr>
+                                        <td style="text-align: left;">@item.SNo</td>
+                                        <td style="text-align: left;">
+                                            @if (item.GetStatus == "R")
+                                            {
+                                                <img src="~/Images/red.png" />
+                                            }
+                                            @if (item.GetStatus == "Y")
+
+                                            {
+                                                <img src="~/Images/yellow.png" />
+                                            }
+
+                                        </td>
+
+                                        <td style="text-align: left;">@item.TargetDate</td>
+                                        <td style="text-align: left;">@item.CAPASourceName</td>
+                                        <td style="text-align: left;">@item.ObservationID</td>
+                                        <td style="word-break: break-all; text-align: left; white-space: pre-wrap;">@item.Recommendation</td>
+                                        <td style="text-align: left;">@item.PriorityName</td>
+                                        <td style="word-break:break-all; text-align: left;">@item.ActionTaken</td>
+                                        @if (item.CAPAID != 0)
+                                        {
+                                            <td style="text-align: left;">
+                                                <a href="javascript:MyCAPAObservation(@item.OBID,@item.CAPAID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                            </td>
+
+
+                                        }
+                                        @if (item.InciID != 0 && item.InciStatusID != 3)
+
+                                        {
+                                            <td style="text-align: left;">
+                                                <a href="javascript:MyInciObservation(@item.OBID,@item.InciID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                            </td>
+
+                                        }
+                                        @if (item.PSSRID != 0 && item.InciStatusID != 5)
+
+                                        {
+                                            <td style="text-align: left;">
+                                                <a href="javascript:MyPSSRObservation(@item.OBID,@item.PSSRID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                            </td>
+
+
+                                        }
+                                        @if (item.MOCID != 0 && item.InciStatusID != 11)
+
+                                        {
+                                            <td style="text-align: left;">
+                                                <a href="javascript:MyMOCObservation(@item.OBID,@item.MOCID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                            </td>
+
+
+                                        }
+                                    </tr>
+
+                                }
+
+
+                            </tbody>
+
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p align="center"><strong>No Action Pending</strong> </p>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+<br />
+
+
+
+
+
+
+
+
+
+
+
+
+
+

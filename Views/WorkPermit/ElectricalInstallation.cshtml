@@ -1,0 +1,41 @@
+﻿@model ValsparApp.Models.WorkPermit
+
+@{
+    Layout = null;
+}
+
+<table class="table-bordered table-responsive" width="100%">
+    <thead>
+   
+        
+    </thead>
+       <tr style="font-weight:bold">
+            <td width="80%" class="text-left">Electrical Installation CheckList</td>
+            <td width="20%" class="text-left">Yes</td>
+            <td>N/A</td>
+        </tr>
+    <tr><td width="80%" class="text-left">1) Isolation of power to the area by opening MCB (Miniature Circuit Breaker) Or  ACB (Air Circuit Breaker) / SFU ensured</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.MCBorACBorSFU, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.MCBorACBorSFU, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.MCBorACBorSFU, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">2) VCB (vacuum circuit breaker), AB (air break switch) isolated.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.VCBorABIsolated, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.VCBorABIsolated, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.VCBorABIsolated, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">3) Concerned equipment fuses removed</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.EquipmentFusesRemoved, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.EquipmentFusesRemoved, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.EquipmentFusesRemoved, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">4) All possible back feeding supplies disconnected.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.SuppliesDisconnected, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.SuppliesDisconnected, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.SuppliesDisconnected, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">5) Equipment disconnected Electrical/ mechanically</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.EquipmentDisconnected, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.EquipmentDisconnected, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.EquipmentDisconnected, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">6) Equipment earthing ensured.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.EarthingEnsured, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.EarthingEnsured, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.EarthingEnsured, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">7) Danger signs / cautionary tags / placards displayed.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.DangerSymbolDisplayed, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.DangerSymbolDisplayed, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.DangerSymbolDisplayed, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">8) Suitable rubber mats provided</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.RuberMatsProvided, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.RuberMatsProvided, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.RuberMatsProvided, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">9) Capacitors discharged & disconnected.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.CapacitorsDischarged, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.CapacitorsDischarged, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.CapacitorsDischarged, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">10) Suitable gloves issued.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.GlovesIssued, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.GlovesIssued, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.GlovesIssued, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">11) Adequate lighting and ventilation provided.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.LightingAndVentilationProvided, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.LightingAndVentilationProvided, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.LightingAndVentilationProvided, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">12) Area people where power is going to be isolated are informed..</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.PowerIsolationInformed, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.PowerIsolationInformed, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.PowerIsolationInformed, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">13) Safety belts for working at heights on poles / structures provided.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.SafetyBeltsProvided, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.SafetyBeltsProvided, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.SafetyBeltsProvided, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">14) Suitable ladder / scaffolding   provided for carrying the work at heights.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.LadderProvided, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.LadderProvided, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.LadderProvided, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">15) Area of the work barricaded to restrict the un authorized personal entry.</td><td width="20%" class="text-left">@Html.RadioButtonFor(m => m.ElectricalInstallation.BarricadedPlaced, "1") </td><td>@Html.RadioButtonFor(m => m.ElectricalInstallation.BarricadedPlaced, "0") @Html.ValidationMessageFor(m => m.ElectricalInstallation.BarricadedPlaced, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">16) Others</td><td width="20%" class="text-left">@Html.TextBoxFor(m => m.ElectricalInstallation.Others) </td> @Html.ValidationMessageFor(m => m.ElectricalInstallation.Others, null, new { @class = "label label-danger" })</td></tr>
+    <tr><td width="80%" class="text-left">17) Specify safety recommendations, if any:</td><td width="20%" class="text-left">@Html.TextBoxFor(m => m.ElectricalInstallation.SafetyRecommentations) </td> @Html.ValidationMessageFor(m => m.ElectricalInstallation.SafetyRecommentations, null, new { @class = "label label-danger" })</td></tr>
+</table>
+
+
+
+
+
+
+

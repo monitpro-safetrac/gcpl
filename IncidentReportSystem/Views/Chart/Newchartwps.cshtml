@@ -1,0 +1,829 @@
+﻿
+
+@model MonitPro.Models.WorkPermit
+
+@{
+    ViewBag.Title = "DashboardWPS";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+
+<style type="text/css">
+    .cssHoverTableRow:hover {
+        background: #ccc;
+    }
+</style>
+<style>
+    .form-inline-custom {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+
+        .form-inline-custom label {
+            margin-right: 10px;
+        }
+
+        .form-inline-custom input[type="date"] {
+            margin-right: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .form-inline-custom button, .form-inline-custom a {
+            margin-right: 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-inline-custom a {
+            background-color: blueviolet;
+        }
+
+            .form-inline-custom button:hover, .form-inline-custom a:hover {
+                background-color: #0056b3;
+            }
+</style>
+<style>
+    html {
+        overflow: auto;
+    }
+
+    .pgfit {
+        height: 250px;
+        width: 300px;
+        text-align: center;
+        display: inline-block;
+        max-height: 500px;
+        max-width: 500px;
+    }
+
+    #tblEquipmentpermit thead th {
+        position: sticky;
+    }
+
+    #tblEquipmentpermit {
+        overflow: scroll;
+        display: block;
+        overflow-x: hidden;
+        height: 170px;
+    }
+
+    #tblStatuspermit {
+        height: 180px;
+    }
+
+        #tblStatuspermit td {
+            height: 20px;
+        }
+
+    .cstbody1, .cstbody2 td {
+        text-align: left;
+    }
+
+    thead tr th {
+        position: sticky;
+        top: 0;
+        background: #2A94D6
+    }
+
+        thead tr th:first-child {
+            width: 360px;
+            line-height: 20px;
+            */
+            /*width: 200px,200px;*/
+        }
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Newchartwps</title>
+    <script src="~/Scripts/c3.min.js"></script>
+    <script src="~/Scripts/d3.min.js"></script>
+    <link href="~/Content/c3.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+
+                url: "../Chart/StatusPermit",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess,
+                failure: function (response) {
+                    alert(response.d);
+                },
+                error: function (response) {
+                    alert(response.d);
+                }
+            });
+        });
+        function OnSuccess(response) {
+            $("#tblStatuspermit").DataTable(
+                {
+                    bInfo: false,
+                    bFilter: false,
+                    bSort: true,
+                    bPaginate: false,
+                    data: response,
+                    columns: [{ 'data': 'Name' },
+                    { 'data': 'TotalCount' }]
+                });
+        };
+        function AsDownload() {
+            //window.open(pathString, target);
+            window.open("../WorkPermit/ApprovedPermitList", "_blank");
+        };
+    </script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+
+</head>
+
+<body>
+    <div class="row">
+        <center>
+            <div class="form-inline-custom">
+                <label for="startDate">From Date:</label>
+                <input type="date" id="startDate" />
+                <label for="endDate">To Date:</label>
+                <input type="date" id="endDate" />
+                <button id="loadDataButton">Generate Chart</button>
+            </div>
+        </center>
+    </div>
+    <div id="List">
+        <div>
+            <table width="95%" align="center" cellpadding="2">
+                <tr>
+                    <td>
+                        <div class="col-xl-4 col-xl-4 col-md-4 col-sm-4 col-lg-4 col-sm-4 col-lg-4" style="text-align:center">
+                            <h4> <strong>Type of Work Permits in Progress(Today)</strong></h4>
+                            <div id="typeofpermits" class="pgfit"></div>
+                        </div>
+
+
+
+
+                        <div class="col-xl-4 col-xl-4 col-md-4 col-sm-4 col-lg-4 col-sm-4 col-lg-4" style="text-align:center">
+                            <h4><strong>Equipment/Area – Work in progress</strong></h4>
+
+                            <div>
+                                <table id="tblEquipmentpermit" class="pgfit scrolldown" style="border: 5px solid #808080;right: 10%;left: 5%;" cellpadding="0" cellspacing="0" border="1">
+                                    <thead style="background-color:#2A94D6;color:#fff" class="csthead">
+                                        <tr>
+                                            <th>Equipment/Area Name</th>
+                                            <th>Counts</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="cstbody1"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-xl-4 col-xl-4 col-md-4 col-sm-4 col-lg-4 col-sm-4 col-lg-4" style="text-align:center">
+                            <h4><strong> Work done by VS Number of Permits (Today)</strong></h4>
+                            <div id="numberofpermits" class="pgfit"></div>
+                        </div>
+                    </td>
+
+
+                </tr>
+
+                <tr>
+                    <td>
+
+
+                        <div class="col-xl-4 col-xl-4 col-md-4 col-sm-4 col-lg-4 col-sm-4 col-lg-4" style="text-align:center">
+                            <h4> <strong id="Dates">Cumulative type of  work permits  <br />(From: {{From}} - To: {{To}})</strong></h4>
+                            <div id="Cummulativetypeofpermits" class="pgfit"></div>
+                        </div>
+
+                        <div class="col-xl-4 col-xl-4 col-md-4 col-sm-4 col-lg-4 col-sm-4 col-lg-4" style="text-align:center">
+                            <h4><strong>Status of Work Permits</strong></h4>
+                            <div>
+                                <table id="tblStatuspermit" class="pgfit scrolldown1" style="border: 5px solid #808080;right: 10%;left: 5%;" cellpadding="0" cellspacing="0" border="1">
+                                    <thead style="background-color:#2A94D6;color:#fff" class="csthead">
+                                        <tr>
+                                            <th>Status of  Permits</th>
+                                            <th>Counts</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="cstbody2"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-xl-4 col-md-4 col-sm-4 col-lg-4 col-sm-4 col-lg-4" style="text-align:center">
+                            <h4><strong id="Dates2">Cumulative work permits <br />(From: {{From}} - To: {{To}})</strong></h4>
+                            <div id="permitprogress" class="pgfit"></div>
+                        </div>
+
+                    </td>
+
+
+
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+@*Type of Permits in Progress drawChart2*@
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        document.getElementById('List').style.height = window.innerHeight - 90 + "px";
+        document.getElementById('List').style.width = window.innerWidth - 10 + "px";
+    });
+
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "../Chart/Typeofpermit",
+            data: {},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                WorkPermitFunc(response);
+            },
+        });
+
+        function WorkPermitFunc(jsondata) {
+            var data = {};
+            var WorktypeNames = [];
+
+            jsondata.forEach(function (e) {
+                WorktypeNames.push(e.WorkType);
+                data[e.WorkType] = e.PermitCount; 0
+
+            })
+            var chart = c3.generate({
+                bindto: '#typeofpermits',
+                data: {
+                    json: [data],
+                    keys: {
+                        value: WorktypeNames,
+                    },
+
+                    type: 'pie'
+                },
+                color: {
+                    pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#3c763d', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#3c763d', '#3c763d', '#17becf', '#9edae5']
+                },
+                tooltip: {
+                    format: {
+
+                        value: function (value, ratio, id) {
+
+                            return value + ', ' + Math.round(ratio * 100) + '%';
+                        }
+
+                    }
+                },
+                pie: {
+                    label: {
+                        format: function (value, ratio, id) {
+                            return Math.round(ratio * 100) + '%';
+                        }
+                    }
+                },
+            });
+        }
+    })
+</script>
+
+
+@* Contractors Vs Number of Permits(Today )*@
+<script type="text/javascript">
+
+    $.ajax({
+        type: "GET",
+        url: "../Chart/ContractorPermits",
+        data: {},
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            permitfunc(response);
+        },
+    });
+
+
+    function permitfunc(jsondata) {
+        var data = {};
+        var ContractorName = [];
+        var count = [];
+
+        jsondata.forEach(function (e) {
+            ContractorName.push(e.ContractorName);
+
+            count.push(e.CountOfCon);
+        })
+
+        //// The variable name chart will automatically bind itself to an id = chart
+        var chart = c3.generate({
+            bindto: '#numberofpermits',
+
+            data: {
+                columns: [
+                    ['PermitCount'].concat(count)
+                ],
+                type: 'bar'
+            },
+            color: {
+                pattern: ['#ff7f0e']
+            },
+            bar: {
+                width: {
+                    ratio: 0.2 // this makes bar width 50% of length between ticks
+                }
+
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: ContractorName,
+                    tick: {
+                        rotate: -25,
+                        multiline: false
+                    },
+                    height: 55
+                }
+            },
+        });
+
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+
+            url: "../Chart/EquipmentPermitCount",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccessEquipment,
+            failure: function (response) {
+                alert(response.d);
+            },
+            error: function (response) {
+                alert(response.d);
+            }
+        });
+    });
+    function OnSuccessEquipment(response) {
+        $("#tblEquipmentpermit").DataTable(
+            {
+                bInfo: false,
+                bFilter: false,
+                bSort: true,
+                bPaginate: false,
+                data: response,
+                columns: [{ 'data': 'EquipmentName' },
+                { 'data': 'TotalCount' }]
+            });
+    };
+</script>
+@*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+<script>
+    $(document).ready(function () {
+        function formatDate(date) {
+            var d = new Date(date);
+            var month = '' + (d.getMonth() + 1);
+            var day = '' + d.getDate();
+            var year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+        function formatDate2(date) {
+            var d = new Date(date);
+            var month = '' + (d.getMonth() + 1);
+            var day = '' + d.getDate();
+            var year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            console.log([day, month, year].join('-'));
+            return [day, month, year].join('-');
+        }
+
+        function setDefaultDates() {
+            var currentDate = new Date();
+            var currentYear = currentDate.getFullYear();
+            var startDate;
+            currentDate.setDate(currentDate.getDate());
+            // If the current month is before April, set start date to April 1st of the previous year
+            if (currentDate.getMonth() < 3) {
+                startDate = new Date(currentYear - 1, 3, 1); // April 1st of previous year
+            } else {
+                // Otherwise, set start date to April 1st of the current year
+                startDate = new Date(currentYear, 3, 1); // April 1st of current year
+            }
+
+            $('#startDate').val(formatDate(startDate));
+            $('#endDate').val(formatDate(currentDate));
+            startDate2 = new Date(currentYear, 3, 1); // April 1st
+            endDate2 = new Date(currentYear + 1, 2, 31); // March 31st of next year
+            $('#startDate').val(formatDate(startDate));
+            $('#endDate').val(formatDate(currentDate));
+        }
+
+        function loadData(startDate, endDate) {
+            $('#loading').show();
+
+            function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error: ', textStatus, errorThrown);
+                alert('Error loading data. Please try again later.');
+            }
+
+            var ajaxCalls = [
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetData2", "Chart")",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        progressfunc(response);
+                    },
+                }),
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("CummulativeTypeofpermit", "Chart")",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        CummulativeTypeofpermit(response);
+                    },
+                })
+            ];
+
+            function progressfunc(jsondata) {
+                var data = {};
+                var PermitMonth = [];
+
+                var approved = [];
+                var closed = [];
+                var extend = [];
+                var cancel = [];
+
+
+                jsondata.forEach(function (e) {
+                    PermitMonth.push(e.PermitMonth);
+                    approved.push(e.approved);
+                    closed.push(e.closed);
+                    extend.push(e.extend);
+                    cancel.push(e.cancel);
+
+
+
+                });
+
+                //// The variable name chart will automatically bind itself to an id = chart
+                var chart = c3.generate({
+                    bindto: '#permitprogress',
+
+                    data: {
+
+                        columns: [
+
+                            ['Approved'].concat(approved), ['Closed'].concat(closed), ['Extend'].concat(extend), ['Cancel'].concat(cancel)
+                        ],
+                        type: 'bar',
+
+                        groups: [
+                            ['Approved', 'Closed', 'Extend', 'Cancel']
+                        ]
+                    },
+                    color: {
+                        pattern: ['#d62728', '#ff7f0e', '#2ca02c', '#1f77b4']
+                    },
+                    bar: {
+                        width: {
+                            ratio: 0.2 // this makes bar width 50% of length between ticks
+                        }
+
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            categories: PermitMonth,
+                            tick: {
+                                rotate: -25,
+                                multiline: false
+                            },
+                            height: 55
+                        }
+                    },
+                });
+
+
+            }
+            // Load recommendation chart
+            function CummulativeTypeofpermit(jsondata) {
+                var data = {};
+                var WorktypeNames = [];
+
+                jsondata.forEach(function (e) {
+                    WorktypeNames.push(e.WorkType);
+                    data[e.WorkType] = e.PermitCount;
+
+                })
+                var chart = c3.generate({
+                    bindto: '#Cummulativetypeofpermits',
+                    data: {
+                        json: [data],
+                        keys: {
+                            value: WorktypeNames,
+                        },
+                        type: 'pie'
+                    },
+                    color: {
+                        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#3c763d', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#3c763d', '#3c763d', '#17becf', '#9edae5']
+                    },
+                    tooltip: {
+                        format: {
+
+                            value: function (value, ratio, id) {
+
+                                return value + ', ' + Math.round(ratio * 100) + '%';
+                            }
+
+                        }
+                    },
+                    pie: {
+                        label: {
+                            format: function (value, ratio, id) {
+                                return Math.round(ratio * 100) + '%';
+                            }
+                        }
+                    },
+                });
+            }
+
+
+
+
+            $.when.apply($, ajaxCalls).always(function () {
+                $('#loading').hide();
+            });
+        }
+
+        setDefaultDates();
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+        loadData(startDate, endDate);
+        startDate2 = reformatDate(startDate); console.log(startDate2);
+        endDate2 = reformatDate(endDate); console.log(endDate2);
+        var Dates = { "From": startDate2, "To": endDate2 };
+        w3.displayObject("Dates", Dates);
+        w3.displayObject("Dates2", Dates);
+
+        function reformatDate(dateString) {
+            // Split the input date string into components
+            var parts = dateString.split('-');
+            var year = parts[0];
+            var month = parts[1];
+            var day = parts[2];
+
+            // Ensure month and day are two digits
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            // Merge the components into the new format
+            return day + '/' + month + '/' + year;
+        }
+
+        $('#loadDataButton').click(function () {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            loadData(startDate, endDate);
+            startDate2 = reformatDate(startDate); console.log(startDate2);
+            endDate2 = reformatDate(endDate); console.log(endDate2);
+            var Dates = { "From": startDate2, "To": endDate2 };
+            w3.displayObject("Dates", Dates);
+            w3.displayObject("Dates2", Dates);
+        });
+    });
+
+    function generateBarChart(count, elementId, chartTitle) {
+        if (!count) {
+            console.error('Data is null or undefined:', count);
+            return;
+        }
+
+        if (Array.isArray(count)) {
+            console.log('Data is an array:');
+            console.log(count);
+        }
+
+        var categories = [];
+        var values = [];
+
+        // Process data if it's an array
+        count.forEach(function (entry) {
+            // Check if entry has CategoryName and TotalCount properties
+            if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                categories.push(entry.CategoryName);
+                values.push(entry.TotalCount);
+
+            } else {
+                console.warn('Skipping invalid entry:', entry);
+            }
+
+        });
+        console.log(categories);
+        console.log(values);
+        // Generate the bar chart using C3.js
+        c3.generate({
+            bindto: elementId,
+            title: {
+                text: chartTitle
+            },
+            data: {
+                x: 'x',
+                columns: [
+                    ['x'].concat(categories),
+                    ['count'].concat(values)
+                ],
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'category'
+                }
+            },
+            zoom: {
+                enabled: true
+            },
+            color: {
+                pattern: ['#538DFF']
+            },
+            legend: {
+                show: false
+            },
+            bar: {
+                width: {
+                    ratio: 0.8
+                }
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+
+        });
+    }
+
+    // Function to generate pie chart using C3.js
+    function generatePieChart(data, elementId, chartTitle) {
+        if (!data) {
+            console.error('Data is null or undefined:', data);
+            return;
+        }
+
+        if (Array.isArray(data)) {
+            console.log('Data is an array:');
+            console.log(data);
+        }
+
+        var chartData = [];
+        var categories = [];
+        var values = [];
+
+        // Process each entry in the array
+        data.forEach(function (entry) {
+            // Ensure entry has necessary properties
+            if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                chartData.push([entry.CategoryName, entry.TotalCount]);
+
+            } else {
+                console.warn('Skipping invalid entry:', entry);
+            }
+
+        });
+        console.log(categories);
+        console.log(values);
+        c3.generate({
+            bindto: elementId,
+            title: {
+                text: chartTitle
+            },
+            data: {
+                columns: chartData,
+                type: 'pie',
+                colors: {
+                    pattern: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                }
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+
+        });
+    }
+    function generateDonetChart(data, elementId, chartTitle) {
+        if (!data) {
+            console.error('Data is null or undefined:', data);
+            return;
+        }
+
+        if (Array.isArray(data)) {
+            console.log('Data is an array:');
+            console.log(data);
+        }
+
+        var chartData = [];
+        var categories = [];
+        var values = [];
+
+        // Process each entry in the array
+        data.forEach(function (entry) {
+            // Ensure entry has necessary properties
+            if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                chartData.push([entry.CategoryName, entry.TotalCount]);
+
+            } else {
+                console.warn('Skipping invalid entry:', entry);
+            }
+
+        });
+        console.log(categories);
+        console.log(values);
+        c3.generate({
+            bindto: elementId,
+            data: {
+                columns: chartData,
+                title: {
+                    text: chartTitle
+                },
+                type: 'donut',
+                colors: {
+                    pattern: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                }
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+        });
+    }
+</script>
+
+
+
+
+

@@ -1,0 +1,99 @@
+﻿@model MonitPro.Models.UserRegister
+<style>
+    html {
+        overflow: scroll;
+    }
+</style>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">Create New User</h1>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-responsive">
+                        <tr><td width="40%" class="text-right">First Name : </td><td>@Html.HiddenFor(m => m.UserID) @Html.TextBoxFor(m => m.FirstName, new { maxlength = "50", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "label label-danger" })</td></tr>
+                        <tr><td class="text-right">Last Name : </td><td>@Html.TextBoxFor(m => m.LastName, new { maxlength = "50", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "label label-danger" })</td></tr>
+                        <tr><td class="text-right">Employee ID: </td><td>@Html.TextBoxFor(m => m.EmployeeID, new { maxlength = "50", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.EmployeeID, null, new { @class = "label label-danger" })</td></tr>
+                        <tr><td class="text-right">Email Address : </td><td>@Html.TextBoxFor(m => m.EmailAddress, new { maxlength = "50", @class = "form-control input-sm", @style = "width:300px" }) </td></tr>
+                        <tr><td class="text-right">User Name: </td><td>@Html.TextBoxFor(m => m.UserName, new { maxlength = "25", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.UserName, null, new { @class = "label label-danger" })</td></tr>
+                        <tr><td class="text-right">Password : </td><td>@Html.PasswordFor(m => m.Password, new { maxlength = "15", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.Password, null, new { @class = "label label-danger" })</td></tr>
+                        <tr>
+                            <td class="text-right">Role : </td>
+                            <td>
+                                @for (var i = 0; i < Model.RoleList.Count; i++)
+                                {
+                                    <div class="col-md-4 col-sm-4 col-xs-4 ">
+                                        @Html.HiddenFor(m => Model.RoleList[i].RoleID)
+                                        @Html.HiddenFor(m => Model.RoleList[i].RoleName)
+                                        @Html.CheckBoxFor(m => Model.RoleList[i].IsRole, htmlAttributes: new { @class = "big-checkbox" })
+                                        @Model.RoleList[i].RoleName
+
+                                    </div>
+                                }
+                                
+                            </td>
+                        </tr>
+                        <tr><td class="text-right">Mobile Number : </td><td>@Html.TextBoxFor(m => m.MobileNumber, new { maxlength = "15", @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.MobileNumber, null, new { @class = "label label-danger" })</td></tr>
+                        <tr><td class="text-right">Designation : </td><td>@Html.DropDownListFor(m => m.DesigID, new SelectList(Model.DesignationList, "DesigID", "DesigName"), "-- Select Designation --", new { @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.DesigID, null, new { @class = "label label-danger" })</td></tr>
+                        <tr><td class="text-right">Department : </td><td>@Html.DropDownListFor(m => m.DepartID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @style = "width:300px" })  @Html.ValidationMessageFor(m => m.DepartID, null, new { @class = "label label-danger" })</td></tr>
+                        <tr>
+                            <td class="text-right">MOC:</td>
+                            <td>@Html.CheckBoxFor(m => m.RestrictAccess, new { @class = "form-control input-sm" })</td>
+                        </tr>
+                        <tfoot>
+                            <tr>
+                                <td colspan=2 class="text-center">
+                                    @if (ViewBag.IsInsertSuccessful != null && ViewBag.IsInsertSuccessful)
+                                    {
+                                        <div class="alert alert-success alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <strong>New User has been created successfully.</strong>
+                                        </div>
+                                    }
+                                    <input type="submit" class="btn btn-primary" value="Save" style="width:100px" />&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-primary" id="Reset" style="width:100px">Clear</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                        <thead>
+                            <tr><td colspan="2" class="text-danger text-center"><strong>@Html.ValidationMessage("ValidationError")</strong></td></tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#Reset").click(function (event) {
+            $(".field-validation-error").empty();
+            $("#FirstName").val("");
+            $("#LastName").val("");
+            $("#EmailAddress").val("");
+            $("#UserName").val("");
+            $("#Password").val("");
+            $("#MobileNumber").val("");
+            $("#Designation").val("");
+        });
+    </script>
+}

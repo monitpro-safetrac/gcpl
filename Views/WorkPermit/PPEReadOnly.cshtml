@@ -1,0 +1,54 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+ 
+    <table id="fixTable" class="table table-responsive table-bordered">
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.HelmetWithChinStrip,new { @disabled = "true" }) Helmet with Chin strip</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.SplashGoggles, new { @disabled = "true" }) Splash Goggles</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.EarPlugsMuff, new { @disabled = "true" }) Ear plugs/Muff</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.CottonHandGloves, new { @disabled = "true" }) Cotton hand gloves</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.NitrileHandGloves, new { @disabled = "true" }) Nitrile hand gloves</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.HeatResistantHandGloves, new { @disabled = "true" }) Heat resistant hand gloves</td>
+        </tr>
+
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.ElectricalGloves, new { @disabled = "true" }) Electrical Gloves</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.DustMask, new { @disabled = "true" }) Dust Mask</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.SolventMask, new { @disabled = "true" }) Solvent Mask</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.FaceShield, new { @disabled = "true" }) Face Shield</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.FullBodyHarness, new { @disabled = "true" }) Full Body Harness</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.LifelineWithRatchet, new { @disabled = "true" }) Lifeline With Ratchet</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.GumBoot, new { @disabled = "true" }) Gum Boot</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.ShoesWithNonConductiveSole, new { @disabled = "true" }) Shoes With Non ConductiveSole</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.RespiratoryProtection, new { @disabled = "true" })Respiratory Protection (Circle type) SCBA/Supplied Air/Air Purifying Cartridge Type</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.ChemicalProtectiveClothing, new { @disabled = "true" }) Chemical Protective Clothing</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.Coveralls, new { @disabled = "true" }) Coveralls</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.RescueEquipment, new { @disabled = "true" }) Rescue Equipment</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.TripodHoist, new { @disabled = "true" }) TripodHoist</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.Wristlets, new { @disabled = "true" }) Wristlets</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.Scaffolding, new { @disabled = "true" }) Scaffolding</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.FallArrester, new { @disabled = "true" }) Fall Arrester</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.SafetyBelt, new { @disabled = "true" }) Safety Belt</td>
+            <td>@Html.CheckBoxFor(m => m.PPE.LadderCondition, new { @disabled = "true" }) Ladder Condition</td>
+        </tr>
+        <tr>
+            <td>@Html.CheckBoxFor(m => m.PPE.ESDRegular, new { @disabled = "true" }) ESD/Regular</td>
+             </tr>
+   <tr><td>Others</td>
+<td colspan="2">@Html.TextAreaFor(m => m.PPE.Others, new { @disabled = "true" })</td></tr>
+      </table>
+   

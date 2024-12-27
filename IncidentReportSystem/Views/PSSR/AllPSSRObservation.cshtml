@@ -1,0 +1,390 @@
+﻿
+@model MonitPro.Models.PSSR.PSSR_Observation
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+<style type="text/css">
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+</style>
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        function ALLIncidentObservation(pssid) {
+            window.location.href = '../PSSR/PSSRObservation?PSSRID=' + pssid;
+        }
+
+
+        function SearchALLOB() {
+
+
+            var response = null;
+            var options = { "backdrop": "static", keyboard: true };
+            var Search = @Html.Raw(Json.Encode(Model.searchOB));
+
+            Search.Plant = $("#searchOB_Plant").val();
+            Search.FromDate = $("#searchOB_FromDate").val();
+            Search.ToDate = $("#searchOB_ToDate").val();
+            Search.Priority = $("#searchOB_Priority").val();
+            Search.Category = $("#searchOB_Category").val();
+            Search.ActionBy = $("#searchOB_ActionBy").val();
+
+            $.ajax({
+
+                method: "POST",
+                url: "../PSSR/AllPSSRObservation",
+                data: Search,
+                success: function (response) {
+
+                    document.open();
+                    document.write(response);
+
+                    //assign the values back to control
+                    $("#searchOB_Plant").val(Search.Plant);
+                    $("#searchOB_FromDate").val(Search.FromDate);
+                    $("#searchOB_ToDate").val(Search.ToDate);
+                    $("#searchOB_Priority").val(Search.Priority);
+                    $("#searchOB_Category").val(Search.Category);
+                    $("#searchOB_ActionBy").val(Search.ActionBy);
+                    document.close();
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function ClearSearch() {
+            $("#searchOB_Plant").val(0);
+            $("#searchOB_FromDate").val(0);
+            $("#searchOB_ToDate").val(0);
+            $("#searchOB_Priority").val(0);
+            $("#searchOB_Category").val(0);
+            $("#searchOB_ActionBy").val(0);
+
+            window.location.href = "../PSSR/AllPSSRObservation";
+        }
+
+        jQuery('#searchOB_FromDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery('#searchOB_ToDate').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            lang: 'ru',
+            step: 30
+        });
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            document.getElementById('container').style.height = window.innerHeight -290 + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+         $(function () {
+
+            $("#IncidentSearchVM_IncidentPlant").select2();
+            $("#IncidentSearchVM_DeptManger").select2();
+            $("#IncidentSearchVM_ActionerID").select2();
+          });
+    </script>
+    <script type="text/javascript">
+        function ApproveRequestTargetDate(recomid) {
+            var URL = '../PSSR/PSSRTargetDateApprove';
+
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: URL,
+                data: { Recomid: recomid },
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+    </script>
+  
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+    </script>
+}
+
+
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+
+
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        #SearchResults thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        html {
+            overflow: scroll;
+        }
+
+        .leftpad {
+            padding-left: 20px;
+        }
+
+        .pad {
+            padding-left: 30px;
+        }
+
+        .txtpad {
+            position: relative;
+            left: -70px;
+        }
+
+        .pre-scrollable {
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+        .col1 {
+            padding-left: 60px;
+        }
+
+        .col2 {
+            padding-left: 60px;
+        }
+
+        .col3 {
+            padding-left: 70px;
+        }
+
+        .row {
+            padding-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-lg container-sm container-md container-xl">
+        <div class="container-fluid ">
+            <form role="form">
+
+                <div id="contentdiv">
+                    <div class="div-border" width="100%">
+                        <h1 class="div-h1"><span class="div-h1-span">&nbsp;Search PSSR&nbsp;</span></h1>
+
+                        <div class="container-lg container-sm container-md padr">
+                            <div class="row">
+                                <label for="Plant / Area" class="col-lg-2 col-sm-2 control-label col">Plant / Area</label>
+                                <div class="form-group col-lg-2 col-sm-2">
+
+                                    @Html.DropDownListFor(model => Model.searchOB.Plant,
+                                           new SelectList(Model.PlantList, "ID", "Name"), "-- Select --", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                                </div>
+                                <label for="MOC From Date" class="col-lg-2 col-sm-2 control-label col">PSSR From Date</label>
+                                <div class="form-group col-lg-2 col-sm-2">
+
+                                    @Html.EditorFor(model => model.searchOB.FromDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                                </div>
+                                <label for="MOC To Date" class="col-lg-2 col-sm-2 control-label col3">To Date</label>
+                                <div class="form-group col-lg-2 col-sm-2">
+
+                                    @Html.EditorFor(model => model.searchOB.ToDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <label for="Recomm Priority" class="col-lg-2 col-sm-2 control-label col">Recomm Priority</label>
+                                <div class="form-group col-lg-2 col-sm-2">
+
+
+                                    @Html.DropDownListFor(Model => Model.searchOB.Priority,
+                                              new SelectList(Model.PriorityList, "PriorityID", "PriorityName"), "-- Select --", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                                </div>
+                                <label for="Recomm Category" class="col-lg-2 col-sm-2 control-label col">Recomm Category</label>
+                                <div class="form-group col-lg-2 col-sm-2">
+
+                                    @Html.DropDownListFor(Model => Model.searchOB.Category,
+                                              new SelectList(Model.PSSRCategoryList, "CategoryID", "CategoryName"), "-- Select --", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+
+                                </div>
+                                <label for="Action By" class="col-lg-2 col-sm-2 control-label col3">Action By</label>
+                                <div class="form-group col-lg-2 col-sm-2">
+
+                                    @Html.DropDownListFor(Model => Model.searchOB.ActionBy,
+                                              new SelectList(Model.EmployeeList, "UserID", "FullName"), "-- Select --", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="text-center">
+                                <input type="button" class="btn btn-primary" onclick="SearchALLOB()" name="btnSearch" id="btnSearch" value="Search" />
+                                <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+                            </div>
+                        </div>
+
+                        <br />
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        @if (Model.OBlist.Count > 0)
+        {
+            @*@Html.ActionLink("Export All Recommendations List", "ExportAllObservation", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, ActionerID = ViewBag.Actioner, DeptID = ViewBag.DeptID, IncidentPlantID = ViewBag.PlantID, incidentstatus = ViewBag.IncidentStatus1, incidenttype = ViewBag.IncidentType, @class = "btn btn-primary" })*@
+
+        }
+
+        <div class="container-lg container-md container-sm container-xl">
+            <div class="div-border">
+                <h1 class="div-h1"><span class="div-h1-span">All PSSR Recommendations List</span></h1>
+                <div class="container-lg container-md container-sm container-xl pre-scrollable">
+
+                    <table class="table table-striped header-fixed table-hover" id="SearchResults">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Plant/Area</th>
+                                <th>PSSR ID</th>
+                                <th>Recom ID</th>
+                                <th>Recomm Priority</th>
+                                <th>Recomm Category</th>
+                                <th width="20%">Recommendations</th>
+                                <th width="10%">Action Taken</th>
+                                <th>Action By</th>
+                                <th>Target Date</th>
+                                <th>Completed Date</th>
+                                <th>Status</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.OBlist.Count > 0)
+                            {
+                                foreach (var item in Model.OBlist)
+                                {
+
+                                    <tr>
+                                        <td>@item.SNO</td>
+                                        <td>@item.PlantName</td>
+                                        <td>@item.PSSRID</td>
+                                        <td>@item.RecommID</td>
+                                        <td>@item.PriorityName</td>
+                                        <td>@item.CategoryName</td>
+                                        <td style="word-break:break-all;">@item.RecommText</td>
+                                        <td style="word-break:break-all;">@item.ActionTaken</td>
+                                        <td>@item.ActionByName</td>
+
+                                        <td>@item.TargetDate</td>
+                                        <td>@item.CompletedDate</td>
+                                        @*<td>
+                                                @if (item.InciStatusID == 5)
+                                                {
+                                                <a href="javascript:ALLIncidentObservation(@item.IncidentID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                                }
+                                            </td>*@
+                                        <td>@item.RecommStatusName</td>
+                                        <td>
+                                            @if (Model.Roles.Find(a => a.RoleName == "PSSR Advisor") != null)
+                                            {
+                                                <a href="javascript:ALLIncidentObservation(@item.PSSRID);" title="Observations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+
+
+                                            }
+                                            else if ((item.ActionByName == Model.UserFullName) && (item.RecommStatusName != "Completed"))
+                                            {
+                                                <a href="javascript:ALLIncidentObservation(@item.PSSRID);" title="Observations"><img src="~/Images/Recommendation.jpg" alt="Observations" style="height:25px;width:25px;" /></a>
+
+                                            }
+                                            @if (item.AttachmentName != " " && item.AttachmentName != null && item.AttachmentName != "")
+                                            {
+                                                <a href="~/IncidentRecomAttachment/@item.AttachmentName" download>
+                                                    <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                                </a>
+
+                                            }
+                                            @if (item.RequestIdentity == 1 && Model.Roles.Find(a => a.RoleName == "PSSR Advisor") != null)
+                                            {
+                                                <a href="javascript:ApproveRequestTargetDate(@item.RecommID);" title="Observations"><img src="~/Images/TickmarkIcon.png" alt="Observations" style="height:25px;width:25px;" /></a>
+
+                                            }
+                                        </td>
+                                    </tr>
+
+
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" style="text-align:center">NO Data Found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
+

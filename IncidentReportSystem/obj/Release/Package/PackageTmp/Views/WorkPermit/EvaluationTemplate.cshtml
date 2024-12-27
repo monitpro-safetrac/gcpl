@@ -1,0 +1,45 @@
+﻿@model MonitPro.Models.Evaluation
+@{
+    Layout = null;
+}
+<table class="table-bordered table-responsive" width="98%" align="center">
+    <tbody>
+        <tr>
+
+            <th width="50%">
+                Evaluation Criteria
+            </th>
+            <th>
+                Yes
+            </th>
+            <th>
+                No
+            </th>
+            <th>
+                NA
+            </th>
+            <th>Remarks</th>
+
+        </tr>
+        @for (var i = 0; i < Model.EvaluationCriteriaCheckList.Count; i++)
+        {
+
+            <tr>
+                @Html.HiddenFor(m => m.EvaluationCriteriaCheckList[i].EvaluationQuestionsID)
+                <td width="50%">@(i + 1))&nbsp;&nbsp;@Model.EvaluationCriteriaCheckList[i].EvaluationQuestions</td>
+
+                <td> @Html.RadioButtonFor(m => m.EvaluationCriteriaCheckList[i].Ischecked, "1")</td>
+                <td> @Html.RadioButtonFor(m => m.EvaluationCriteriaCheckList[i].Ischecked, "2")</td>
+
+                <td> @Html.RadioButtonFor(m => m.EvaluationCriteriaCheckList[i].Ischecked, "0") @Html.ValidationMessageFor(m => m.EvaluationCriteriaCheckList[i].Ischecked, null, new { @class = "label label-danger" })</td>
+
+                <td>@Html.TextAreaFor(m => m.EvaluationCriteriaCheckList[i].Remarks, new { @class = "form-control input-sm", @id = "remarks", maxlength = "75", @style = "width: 500px;   max-width: 100%;" })</td>
+            </tr>
+
+        }
+
+
+    </tbody>
+</table>
+
+

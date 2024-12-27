@@ -1,0 +1,20 @@
+﻿
+@model IncidentReportSystem.Models.ActionsStatusChartViewModel
+
+@{
+
+    var myChart1 = new Chart(width: 400, height: 300, themePath: "customtheme5.xml")
+        .AddTitle("CAPA Category", "main")
+
+        .AddSeries(name: "serie", chartType: "Pie",
+
+            xValue: Model.categorycount, xField: "SourceName",
+            yValues: Model.categorycount, yFields: "TotalCount")
+             .AddLegend()
+
+
+        .Write();
+
+
+}
+

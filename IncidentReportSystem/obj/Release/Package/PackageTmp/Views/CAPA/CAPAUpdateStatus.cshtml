@@ -1,0 +1,94 @@
+﻿
+@model IncidentReportSystem.Models.NewCAPAModel
+@{
+    Layout = null;
+}
+
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel"><b>Close CAPA</b></h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                        <tr>
+                            <td colspan="2">@Html.HiddenFor(m => m.CreateCAPA.CAPAID)
+                        </tr>
+
+                        <tr>
+                            <td> CAPA ID</td>
+                            <td>@Html.DisplayFor(model => model.CreateCAPA.CAPAID)</td>
+                        </tr>
+                        <tr>
+                            <td>Comment</td>
+                            <td>@Html.TextAreaFor(model => model.CreateCAPA.Comments)</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>
+                                Closed
+                                @*@Html.DropDownListFor(model => model.Incident.StatusID,
+                                    new SelectList(Model.statusList, "ID", "Name"))*@
+                            </td>
+                        </tr>
+                        <tr><td colspan="2">&nbsp;</td></tr>
+                        <tr>
+                            <td align="center" colspan="2">
+                                <input type="button" class="btn btn-primary" id="btnUpdate" onclick="javascript:UpdateCAPAStatus();" value="Close" />
+                                &nbsp;&nbsp;<input type="button" id="btnClear" class="btn btn-primary" onclick="javascript:ClearSearch();" value="Clear" />
+
+                            </td>
+                </td>
+            </tr>
+        </table>
+
+        </td>
+        </tr>
+
+        </table>
+        <br />
+    </div>
+    <br /><br />`
+</div>
+
+<script type="text/javascript">
+
+    function UpdateCAPAStatus() {
+        var CurrentURL = '../CAPA/UpdateCAPAStatus';
+        var capaID = $("#CreateCAPA_CAPAID").val();
+        var StatusID = "";
+        var Comments = $("#CreateCAPA_Comments").val();
+
+        $.ajax({
+            type: "POST",
+            url: CurrentURL,
+            data: {capaID: parseInt(capaID), StatusID: parseInt(3), Comments: Comments },
+            success: function (response) {
+                //alert(JSON.stringify(response));
+                alert('CAPA Closed Successfully');
+                $('#myModal').modal('hide');
+                location.reload(true);
+            },
+            error: function (errmessage) {
+                alert("Dynamic content load failed." + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    }
+
+    function ClearSearch() {
+        $("#CreateCAPA_Comments").val('');
+    }
+
+    //function CloseModel() {
+    //    $('#myModal').modal('hide');
+    //}
+
+</script>

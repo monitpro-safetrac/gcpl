@@ -1,0 +1,187 @@
+﻿@model MonitPro.Models.PSSR.CreatePSSRModel
+
+@{
+    Layout = null;
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+
+<style>
+    .PSSRtable td {
+        width: 100px;
+        height: 50px;
+    }
+
+    .pad {
+        padding-left: 30px;
+    }
+
+    .pad1 {
+        padding-left: 43px;
+    }
+
+    .txtpad {
+        position: relative;
+        left: -15px;
+    }
+
+    .txtpad1 {
+        position: relative;
+        left: -25px;
+    }
+</style>
+
+@Html.HiddenFor(Model => Model.PSSRID)
+
+<div class="row">
+    <div class="container-lg container-sm container-fluid ">
+        <br />
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label> Plant/Area</label>
+        </div>
+        <div class="col-4 col-lg-3 col-md-3  col-sm-3 ">
+            @Html.DropDownListFor(model => model.PlantID, new SelectList(Model.PSSRPlantList, "ID", "Name"),
+            "-- Select --", new
+            {
+                @class = "form-control input-sm",
+                @maxlength = "100",
+                @style = "width: 200px;  max-width: 100%;"
+            })
+            @Html.ValidationMessageFor(model => model.PlantID, "", new { @class = "label label-danger" })
+        </div>
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label> System Description </label>
+        </div>
+
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 txtpad">
+            @Html.TextAreaFor(model => model.SystemDesc, new
+            {
+                @class = "form-control input-sm",
+            @maxlength = "200",
+                @style = "width: 300px;   max-width: 100%;"
+            })
+            @Html.ValidationMessageFor(model => model.SystemDesc, "", new { @class = "label label-danger" })
+        </div>
+    </div>
+    <br /><br /><br />
+    <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+        <label>PSSR Category</label>
+    </div>
+    <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+        @Html.DropDownListFor(model => model.CategoryID, new SelectList(Model.PSSRCategoryList, "CategoryID", "CategoryName"),
+        "-- Select --", new
+        {
+            @class = "form-control input-sm",
+            @maxlength = "100",
+            @style = "width: 200px;  max-width: 100%;",
+            @Onchange = "category()"
+        })
+        @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "label label-danger" })
+    </div>
+    <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+        <label>If MOC, MOC No </label>
+    </div>
+    <div class="col-4 col-lg-3 col-md-3 col-sm-3 txtpad">
+        @Html.DropDownListFor(model => model.MOCNo, new SelectList(Model.MOCList, "ID", "MOCNo"),
+        "-- Select --", new
+        {
+            @class = "form-control input-sm",
+            @maxlength = "100",
+            @style = "width: 300px;  max-width: 100%;",
+            @disabled = "disabled"
+        })
+        @Html.ValidationMessageFor(model => model.MOCNo, "", new { @class = "label label-danger" })
+    </div>
+    <br /><br /><br />
+    <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+        <label>PSSR Scheduled Date </label>
+    </div>
+    <div class="col-4 col-lg-3 col-md-3 col-sm-3 ">
+        @Html.EditorFor(model => model.AssessmentDatetime, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control date-time-picker",
+                @maxlength = "100",
+                @style = "width: 200px;height:25px;   max-width: 100%;",
+                @autocomplete = "off"
+            }
+        })
+        @Html.ValidationMessageFor(model => model.AssessmentDatetime, "", new { @class = "label label-danger" })
+    </div>
+    @if (Model.PSSRID > 0)
+    {
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+            <label>Assign Team </label>
+        </div>
+
+        <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+            <a href="javascript:AssignObservers(@Model.PSSRID);" title="Assign Observers"><img src="~/Images/Observers.png" alt="Assign Observers" width="40" height="40" /></a>&nbsp;&nbsp;
+        </div>
+    }
+    else
+    {
+        <div class="col-2 col-lg-6 col-sm-2">
+
+        </div>
+    }
+    <br /><br /><br />
+    <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+        <label>Created By </label>
+    </div>
+    <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+        @Html.EditorFor(model => model.CreatedBy, new
+        {
+            @class = "form-control input-sm",
+            @maxlength = "220",
+            @style = "width: 300px;   max-width: 100%;"
+        })
+        @Html.ValidationMessageFor(model => model.CreatedBy, "", new
+        { @class = "label label-danger" })
+    </div>
+    <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad">
+        <label>Created Date Time</label>
+    </div>
+    <div class="col-4 col-lg-3 col-md-3 col-sm-3">
+        @Html.EditorFor(model => model.CreatedDateTime, new
+        {
+            @class = "form-control input-sm",
+            @maxlength = "200",
+            @style = "width: 300px;   max-width: 100%;"
+        })
+        @Html.ValidationMessageFor(model => model.CreatedDateTime, "", new
+        { @class = "label label-danger" })
+    </div>
+    <br /><br /><br />
+    @if (Model.PSSRID > 0)
+    {
+        <div class="col-2 col-lg-3 col-md-3 col-sm-3 pad" style="height:100px">
+            <label>Check List</label>
+        </div>
+        <div id="checklistitem">
+            @for (var i = 0; i < Model.GetCheckLists.Count; i++)
+            {
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                    @Html.HiddenFor(m => m.GetCheckLists[i].PCMID)
+                    @Html.HiddenFor(m => m.GetCheckLists[i].Category)
+                    @Html.CheckBoxFor(m => m.GetCheckLists[i].yesNo, htmlAttributes: new { @class = "big-checkbox" })
+                    @Model.GetCheckLists[i].Category
+
+                </div>
+            }
+
+            <span class="PSSRChecklisterror label label-danger" style="display:none;">Please select at-least one Check List Item.</span>
+        </div>
+
+    }
+
+
+
+
+
+</div>
+
+

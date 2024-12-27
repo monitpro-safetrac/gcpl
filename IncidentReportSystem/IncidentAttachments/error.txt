@@ -1,0 +1,12 @@
+SELECT  ca.ID,ca.AuditDate, ca.StatusID,ca.PlantID,ca.AuditTypeID,ca.CAPASourceID,ca.Attachments,
+P.Name AS PlantName,a.Name AS AuditName,cs.Name AS CAPASourceName,ca.CreatedBy,u.FirstName+' '+u.LastName as CreatedByName
+,STUFF((SELECT   iif(CO.ActionTaken='','NC','' ) FROM CAPAObservation CO WHERE CO.CAPAID=ca.ID  ORDER BY ',' + CO.ActionTaken FOR XML PATH('')), 1, 1, '') AS [ActionTaken]
+,STUFF((Select distinct iif(,, iif((cast(CO.DeptManager as varchar)=0),'New','Assigned')) from CAPAObservation co
+where co.CAPAID=ca.ID  FOR XML PATH('')),1,0,'' ) AS StatusName
+FROM CAPADetails ca
+
+  INNER JOIN Plants P ON P.ID = ca.PlantID
+  INNER JOIN AuditType a ON a.ID= ca.AuditTypeID
+  INNER JOIN CAPASource cs  ON cs.ID= ca.CAPASourceID
+  Left join UserMaster u on u.UserID=ca.CreatedBy
+   WHERE ca.StatusID IN (1,2) order by ca.ID desc

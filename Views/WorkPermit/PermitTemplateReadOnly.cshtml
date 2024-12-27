@@ -1,0 +1,64 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+<tbody>
+    <tr>
+        <td align="right">Validity From :</td>
+        <td>
+            @Html.TextBoxFor(m => m.ValidityFrom, new { style = "width: 150px;", @class = "form-control input-sm", @disabled = "true" })
+        </td>
+        <td align="right">Validity To:</td>
+        <td>
+            @Html.TextBoxFor(m => m.ValidityTo, new { style = "width: 150px;", @class = "form-control input-sm", @disabled = "true" })
+        </td>
+    </tr>
+    <tr>
+        <td class="text-right">Exact Location : </td>
+        <td>@Html.TextBoxFor(m => m.Location, new { maxlength = "100", @class = "form-control input-sm", @style = "width:300px", @disabled = "true" })</td>
+        <td class="text-right">Equipment : </td>
+        <td>@Html.TextBoxFor(m => m.EquipmentName, new { maxlength = "100", @class = "form-control input-sm", @style = "width:300px", @disabled = "true" })</td>
+    </tr>
+    <tr>
+        @*<td class="text-right">Type of Work : </td>
+        <td>@Html.DropDownListFor(m => m.WorkTypeID, new SelectList(Model.WorkType, "WorkTypeID", "WorkType"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "WorkType", @disabled = "true" })  @Html.ValidationMessageFor(m => m.WorkTypeID, null, new { @class = "label label-danger" })</td>*@
+        <td class="text-right">Contractor : </td>
+        <td>@Html.DropDownListFor(m => m.ContractorID, new SelectList(Model.ContractorList, "ContractorID", "ContractorName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "Contractor" })  @Html.ValidationMessageFor(m => m.ContractorID, null, new { @class = "label label-danger" })</td>
+        <td class="text-right">Contractor : </td>
+        <td>@Html.DropDownListFor(m => m.PermitHolderIdName, new SelectList(Model.ContractorList, "PermitHolderIdName", "ContractorName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "Contractor" , @disabled = "true" })  @Html.ValidationMessageFor(m => m.PermitHolderIdName, null, new { @class = "label label-danger", @disabled = "true" })</td>
+    </tr>
+    <tr>
+        <td class="text-right">Description of the Work : </td>
+        <td>@Html.TextAreaFor(m => m.WorkDescription, new { maxlength = "1000", @class = "form-control input-sm", @style = "width:300px", @cols = "500", @disabled = "true" })  @Html.ValidationMessageFor(m => m.WorkDescription, null, new { @class = "label label-danger" })</td>
+        <td class="text-right">Fire Watch Required : </td>
+        <td>
+            @Html.CheckBoxFor(m => m.FireWatchRequired, new { @class = "form-control input-sm", @disabled = "true" })
+        </td>
+    </tr>
+
+    <tr>
+        <td class="text-right" valign="top">Personal Protective Equipment :</td>
+        <td colspan="3">
+            @Html.Partial("PPEReadOnly", Model)
+            
+        </td>
+    </tr>
+    <tr>
+        <td class="text-right"> Permit Holder :</td>
+        <td>@Html.TextBoxFor(m => m.PermitHolderName, new { @class = "form-control input-sm", @style = "width:300px", @disabled = "true" })</td>
+        <td class="text-right">No of Person at Site</td>
+        <td> @Html.TextBoxFor(m => m.NoOfPersonAtSite, new { maxlength = "5", @class = "form-control input-sm", @type = "number", @start = "0", @min = "0", @style = "width:100px", @disabled = "true" })</td>
+    </tr>
+    <tr>
+        <td class="text-right">Permit Issuer : </td>
+        <td>@Model.PermitIssuerName @Html.HiddenFor(m => m.PermitIssuerID) </td>
+        <td class="text-right">Adjacent Area Owner : </td>
+        <td>@Html.DropDownListFor(m => m.AdjacentAreaOwenerID, new SelectList(Model.AdjacentAreaOwnerList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @disabled = "true" })</td>
+    </tr>
+    <tr>
+        <td class="text-right">Approver : </td>
+        <td>
+            @Html.DropDownListFor(m => m.ApproverID, new SelectList(Model.ApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @disabled = "true" })
+        </td>
+    </tr>
+</tbody>

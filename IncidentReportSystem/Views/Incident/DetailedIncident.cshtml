@@ -1,0 +1,128 @@
+﻿@model  MonitPro.Models.IncidentViewModels.DetailedIncidentViewModel
+@{
+    Layout = null;
+}
+
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        function CloseModel() {
+            $('#myModal').modal('hide');
+        }
+
+        $(document).ready(function () {
+            $("table#SearchResults1 tr:odd").css("background", "#fff");
+            $("table#SearchResults1 tr:even").css("background", "#ccc");
+        });
+
+    </script>
+}
+
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel">Incident Details</h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="100%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="100%" align="center">
+                        <tr>
+                            <td>Title</td>
+                            <td>@Html.Label(Model.incidentViewModel.Title)</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>@Html.Label(Model.incidentViewModel.Description)</td>
+                        </tr>
+                        <tr>
+                            <td>Incident Date</td>
+                            <td>@Html.Label(Model.incidentViewModel.IncidentTime.ToString())</td>
+                        </tr>
+                        <tr>
+                            <td>Current Status</td>
+                            <td>@Html.Label(Model.incidentViewModel.CurrentStatus)</td>
+                        </tr>
+                        <tr>
+                            <td>Plant Name</td>
+                            <td>@Html.Label(Model.incidentViewModel.PlantArea)</td>
+                        </tr>
+                        <tr>
+                            <td>Created By</td>
+                            <td>@Html.Label(Model.incidentViewModel.CreatedBy)</td>
+                        </tr>
+                        <tr>
+                            <td>Comments</td>
+                            <td>@Html.Label(Model.incidentViewModel.Comments)</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table class="table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Observer Name</th>
+                                <th>Designation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.incidentUsers)
+                            {
+                                <tr>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.Designation</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <br /><br />
+                    <table border="1" class="table" id="SearchResults1">
+                        <thead>
+                            <tr>
+                                <th>Observation</th>
+                                <th>Priorty</th>
+                                <th>Recommendation</th>
+                                <th>Action Taken</th>
+                                <th>Target Date</th>
+                                <th>Completed Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ObservationDetail)
+                            {
+                            <tr>
+                                <td>@item.Observation</td>
+                                <td>@item.PriorityName</td>
+                                <td>@item.Recommendation</td>
+                                <td>@item.ActionTaken</td>
+                                <td>@item.TargetDate</td>
+                                <td>@item.CompletedDate</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <br /><br />
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">                    
+                        <tr>
+                            <td colspan="2" align="center">&nbsp;<input type="button" id="btnClear" class="btn btn-primary" onclick="javascript:CloseModel();" value="Close" /></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <br />
+    </div>
+    <br /><br />`
+</div>

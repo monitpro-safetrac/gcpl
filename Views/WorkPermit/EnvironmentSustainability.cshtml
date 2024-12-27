@@ -1,0 +1,56 @@
+﻿@model ValsparApp.Models.Contract
+@{
+    Layout = null;
+}
+
+<tr>
+    <td colspan="2" style="font-weight:bold">Environment & Sustainability Requirement</td>
+    <td style="font-weight:bold">Yes</td>
+    <td style="font-weight:bold">N/A</td>
+</tr>
+
+<tr>
+    <td colspan="2" class="text-left">1) Environmental Policy Explanation: The contractor must have its own Environmental Policy or EHS policy, which could be the integral part of its Environmental Policy.</td>
+    <td width="10%" class="text-left">@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.EnvironmentalPolicy, "1") </td>
+    <td>@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.EnvironmentalPolicy, "0") @Html.ValidationMessageFor(m => m.EnvironmentSustainabilityRequirement.EnvironmentalPolicy, null, new { @class = "label label-danger" })</td>
+</tr>
+<tr>
+    <td colspan="2" class="text-left">
+        2) Environment Management System
+        Explanation: The contractor should maintain good EMS practice implemented in its organization. Is the supplier ISO 14001 certified?
+    </td>
+    <td width="10%" class="text-left">@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.EnvironmentManagementSystem, "1") </td>
+    <td>@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.EnvironmentManagementSystem, "0") @Html.ValidationMessageFor(m => m.EnvironmentSustainabilityRequirement.EnvironmentManagementSystem, null, new { @class = "label label-danger" })</td>
+</tr>
+<tr>
+    <td colspan="2" class="text-left">
+        3) Waste Disposal Facility
+        Explanation: The contractor should have procedures to dispose off all the hazardous wastes generated at the manufacturing site either in-house or off-site in secured manner as approved by the State Pollution Control Board.
+    </td>
+    <td width="10%" class="text-left">@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.WasteDisposalFacility, "1") </td>
+    <td>@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.WasteDisposalFacility, "0") @Html.ValidationMessageFor(m => m.EnvironmentSustainabilityRequirement.WasteDisposalFacility, null, new { @class = "label label-danger" })</td>
+</tr>
+<tr>
+    <td colspan="2" class="text-left">
+       4) Valid CFO and HW authorization from the State Pollution Control Board
+        Explanation: The contractor must have consent for operation for its manufacturing site authorized by the State Pollution Control Board. If any Hazardous waste/ Biomedical waste is generated, the supplier should get respective approval from the Board.
+    </td>
+    <td class="text-left">@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.ValidCFOandHWauthorization, "1") </td>
+    <td>@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.ValidCFOandHWauthorization, "0") @Html.ValidationMessageFor(m => m.EnvironmentSustainabilityRequirement.ValidCFOandHWauthorization, null, new { @class = "label label-danger" })</td>
+</tr>
+<tr>
+    <td colspan="2" class="text-left">
+        5) No Regulatory Notice
+        Explanation: Has the contractor received any notice for environmental non-compliance from any regulatory body in last one year? If so, what is the timely bound action plan for compliance? Attach the document.
+    </td>
+    <td class="text-left">@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.NoRegulatoryNotice, "1") </td>
+    <td>@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.NoRegulatoryNotice, "0") @Html.ValidationMessageFor(m => m.EnvironmentSustainabilityRequirement.NoRegulatoryNotice, null, new { @class = "label label-danger" })</td>
+</tr>
+<tr>
+    <td colspan="2" class="text-left">
+        6) No Public Complaint
+        Explanation: Any public compliant for discharging of effluent, emission or excessive noise or odour to the surroundings? If so, what is the timely bound action plan for compliance? Attach the document.
+    </td>
+    <td width="10%" class="text-left">@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.NoPublicComplaint, "1") </td>
+    <td>@Html.RadioButtonFor(m => m.EnvironmentSustainabilityRequirement.NoPublicComplaint, "0") @Html.ValidationMessageFor(m => m.EnvironmentSustainabilityRequirement.NoPublicComplaint, null, new { @class = "label label-danger" })</td>
+</tr>

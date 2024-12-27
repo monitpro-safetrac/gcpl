@@ -1,0 +1,53 @@
+﻿@model IncidentReportSystem.Models.NewIncidentViewModel
+@{
+    ViewBag.Title = "IncidentDetail";
+    
+}
+
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel">Remove Incident</h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                        <tr>
+                            <td colspan="2">Under Development</td>
+                        </tr>
+                        <tr>
+                            <td>Incident Title</td>
+                            <td>@Html.LabelFor(model => model.Incident.Title)</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>
+                                @Html.LabelFor(model => model.Incident.StatusID)
+                            </td>
+                        </tr>
+                        <tr>                            
+                            <td>&nbsp;<input type="button" id="btnClear" class="btn btn-primary" onclick="javascript: CloseModel();" value="Close" style="width: 75px;" /></td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+
+        </table>
+        <br />
+    </div>
+    <br /><br />`
+</div>
+
+<script type="text/javascript">
+    function CloseModel() {
+        $('#myModal').modal('hide');
+    }
+
+</script>

@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FC319096-3BB7-452E-84D3-0D8642C0E665}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MonitPro.Models</RootNamespace>
+    <AssemblyName>MonitPro.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonitPro.Common.Library">
+      <HintPath>..\IncidentReportSystem\App_Start\bin\MonitPro.Common.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Select.HtmlToPdf, Version=23.1.0.0, Culture=neutral, PublicKeyToken=e0ae9f6e27a97018, processorArchitecture=MSIL">
+      <HintPath>..\packages\Select.HtmlToPdf.23.1.0\lib\net40\Select.HtmlToPdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc, Version=11.8.18.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Doc.11.8.18\lib\net40\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountViewModels.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Account\Employee.cs" />
+    <Compile Include="AdminViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CAPAViewModel\ActionerModel.cs" />
+    <Compile Include="CAPAViewModel\ActionsCount.cs" />
+    <Compile Include="CAPAViewModel\CAPASearchViewModel.cs" />
+    <Compile Include="CAPAViewModel\CAPAViewModel.cs" />
+    <Compile Include="CAPAViewModel\closed.cs" />
+    <Compile Include="CAPAViewModel\cpObservationViewModel.cs" />
+    <Compile Include="CAPAViewModel\MyactionDashboardCount.cs" />
+    <Compile Include="CAPAViewModel\ObservationViewModelCapa.cs" />
+    <Compile Include="CAPAViewModel\opened.cs" />
+    <Compile Include="CAPAViewModel\overdue.cs" />
+    <Compile Include="CAPA\AuditType.cs" />
+    <Compile Include="CAPA\CAPACategory.cs" />
+    <Compile Include="CAPA\CAPAEmail.cs" />
+    <Compile Include="CAPA\CAPAMailer.cs" />
+    <Compile Include="CAPA\CAPAPlants.cs" />
+    <Compile Include="CAPA\CAPAObservation.cs" />
+    <Compile Include="CAPA\CAPAObservationStatus.cs" />
+    <Compile Include="CAPA\CAPAPriority.cs" />
+    <Compile Include="CAPA\CAPASource.cs" />
+    <Compile Include="CAPA\CreateCAPA.cs" />
+    <Compile Include="ChartViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\MonitProEmail.cs" />
+    <Compile Include="Common\MonitProMailer.cs" />
+    <Compile Include="DashboardViewModels.cs" />
+    <Compile Include="Dashboard\IncidentDashboard.cs" />
+    <Compile Include="IncidentViewModels\AttachmentsViewModel.cs" />
+    <Compile Include="IncidentViewModels\DetailedIncidentViewModel.cs" />
+    <Compile Include="IncidentViewModels\IncidentObserverViewModel .cs" />
+    <Compile Include="IncidentViewModels\IncidentSearchViewModel.cs" />
+    <Compile Include="IncidentViewModels\IncidentViewModel.cs" />
+    <Compile Include="IncidentViewModels\IncObservationViewModel.cs" />
+    <Compile Include="IncidentViewModels\MonthlyCount.cs" />
+    <Compile Include="IncidentViewModels\ObservationViewModel.cs" />
+    <Compile Include="IncidentViewModels\ObserverTeamModel.cs" />
+    <Compile Include="IncidentViewModels\PdfViewModel.cs" />
+    <Compile Include="Incident\Area.cs" />
+    <Compile Include="Incident\Attachment.cs" />
+    <Compile Include="Incident\ClassficationFactor.cs" />
+    <Compile Include="Incident\Contractor.cs" />
+    <Compile Include="Incident\ContractorEmp.cs" />
+    <Compile Include="Incident\FishBone.cs" />
+    <Compile Include="Incident\Gender.cs" />
+    <Compile Include="Incident\Incident.cs" />
+    <Compile Include="Incident\IncidentCategoryDecision.cs" />
+    <Compile Include="Incident\IncidentClassfication.cs" />
+    <Compile Include="Incident\IncidentEmail.cs" />
+    <Compile Include="Incident\IncidentImage.cs" />
+    <Compile Include="Incident\IncidentObservation.cs" />
+    <Compile Include="Incident\IncidentObserver.cs" />
+    <Compile Include="Incident\IncidentType.cs" />
+    <Compile Include="Incident\IncidentUser.cs" />
+    <Compile Include="Incident\InjuredPeoples.cs" />
+    <Compile Include="Incident\InjureList.cs" />
+    <Compile Include="Incident\InjuryClassfication.cs" />
+    <Compile Include="Incident\InjuryType.cs" />
+    <Compile Include="Incident\MyDateAttribute.cs" />
+    <Compile Include="Incident\Plants.cs" />
+    <Compile Include="Incident\Priority.cs" />
+    <Compile Include="Incident\RootCause.cs" />
+    <Compile Include="Incident\RootCauseMaster.cs" />
+    <Compile Include="Incident\RootCauseSubsection.cs" />
+    <Compile Include="Incident\RootCauseXML.cs" />
+    <Compile Include="Incident\Status.cs" />
+    <Compile Include="Incident\Tenets4.cs" />
+    <Compile Include="Incident\Tenets4XML.cs" />
+    <Compile Include="Incident\TenetsList.cs" />
+    <Compile Include="Incident\TenetsXML.cs" />
+    <Compile Include="Incident\WhyForm.cs" />
+    <Compile Include="MobileAppModel.cs" />
+    <Compile Include="MOC\AllMOCObservation.cs" />
+    <Compile Include="MOC\ApprovalList.cs" />
+    <Compile Include="MOC\ApproverModel.cs" />
+    <Compile Include="MOC\ApproverSaveXML.cs" />
+    <Compile Include="MOC\AttachmentViewModel.cs" />
+    <Compile Include="MOC\EmailModel.cs" />
+    <Compile Include="MOC\FuncationalManagerApprove.cs" />
+    <Compile Include="MOC\GetMOCClosureList.cs" />
+    <Compile Include="MOC\MCObservationViewModel.cs" />
+    <Compile Include="MOC\MOCa.cs" />
+    <Compile Include="MOC\MOCApproverList.cs" />
+    <Compile Include="MOC\MOCAttachment.cs" />
+    <Compile Include="MOC\MOCCategory.cs" />
+    <Compile Include="MOC\MOCChangeXML.cs" />
+    <Compile Include="MOC\MOCClassification.cs" />
+    <Compile Include="MOC\MOCClosureList.cs" />
+    <Compile Include="MOC\MOCClosureXML.cs" />
+    <Compile Include="MOC\MOCDashboard.cs" />
+    <Compile Include="MOC\MOCListViewModel.cs" />
+    <Compile Include="MOC\MOCMonthlyChart.cs" />
+    <Compile Include="MOC\MOCObservation.cs" />
+    <Compile Include="MOC\MOCObservationViewModel.cs" />
+    <Compile Include="MOC\MOCPriority.cs" />
+    <Compile Include="MOC\MOCReasonForChange.cs" />
+    <Compile Include="MOC\MOCRecomCategory.cs" />
+    <Compile Include="MOC\MOCRecomPriority.cs" />
+    <Compile Include="MOC\MOCSearchViewModel.cs" />
+    <Compile Include="MOC\MOCStatus.cs" />
+    <Compile Include="MOC\MOCType.cs" />
+    <Compile Include="MOC\MOCViewModel.cs" />
+    <Compile Include="MOC\MonthlyMOCStatusChart.cs" />
+    <Compile Include="MOC\NewMOCModel.cs" />
+    <Compile Include="MOC\ObservationViewModelMOC.cs" />
+    <Compile Include="MOC\TemporaryMOCList.cs" />
+    <Compile Include="MOC\TemporaryMOCModel.cs" />
+    <Compile Include="NewCAPAModel\NewCAPAModel.cs" />
+    <Compile Include="NewIncidentViewModel\NewIncidentViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PSSR\AssignTeamViewModel.cs" />
+    <Compile Include="PSSR\CheckList.cs" />
+    <Compile Include="PSSR\CheckListSaveXML.cs" />
+    <Compile Include="PSSR\CreatePSSRModel.cs" />
+    <Compile Include="PSSR\Employee.cs" />
+    <Compile Include="PSSR\MOCNumberListModel.cs" />
+    <Compile Include="PSSR\PSSRCategoryModel.cs" />
+    <Compile Include="PSSR\PSSRDashboard.cs" />
+    <Compile Include="PSSR\PSSREmailAddress.cs" />
+    <Compile Include="PSSR\PSSRHistoryViewModel.cs" />
+    <Compile Include="PSSR\PSSRListViewModel.cs" />
+    <Compile Include="PSSR\PSSRRequestTargetDate.cs" />
+    <Compile Include="PSSR\PSSRStatus.cs" />
+    <Compile Include="PSSR\PSSR_Observation.cs" />
+    <Compile Include="PSSR\UpdatePSSRStatus.cs" />
+    <Compile Include="TreeMapModels.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WorkPermitViewModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

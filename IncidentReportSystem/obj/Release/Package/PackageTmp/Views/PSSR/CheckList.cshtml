@@ -1,0 +1,167 @@
+﻿@model MonitPro.Models.PSSR.MainCheckListModel
+@{
+    ViewBag.Title = "CheckList";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+
+<style>
+    .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td, .table-bordered > tbody > tr > th {
+        border: 1px solid;
+    }
+</style>
+
+<style>
+    body {
+        margin: 0;
+        padding-bottom: 100px; /* Adjust this value to leave enough space for the footer */
+    }
+
+    .table-container {
+        margin: 20px auto; /* Adjust the margins as needed */
+    }
+
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100px; /* Adjust the height as needed */
+        background-color: #f5f5f5; /* Set your desired background color */
+        text-align: center;
+    }
+</style>
+@using (Html.BeginForm())
+{
+
+    <body>
+
+        <div class="panel panel-primary container-fluid">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    PSSR CheckList - @Model.PSSRID
+                </h1>
+            </div>
+            <div class="tab-container">
+
+                <ul class="nav nav-tabs">
+
+                    @foreach (var i in Model.checkListDD)
+                    {
+                        var list = Model.CheckCheckLists.Where(x => x.PCMID == i.PCMID).ToList();
+                        var count = list.Count;
+                        var temp = Model.CheckCheckLists.Where(x => x.PCMID == i.PCMID && x.Ischecked > 0).ToList();
+                        var savedcount = temp.Count;
+                        if (list.Count > 0 && count == savedcount)
+                        {
+
+
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#" onclick="GetChecklist('@i.PCMID',this)">@i.Category</a>
+                            </li>
+                        }
+                        else if (list.Count > 0 && count != savedcount)
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link halfactive" data-toggle="tab" href="#" onclick="GetChecklist('@i.PCMID',this)">@i.Category</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#" onclick="GetChecklist('@i.PCMID',this)">@i.Category</a>
+                            </li>
+                        }
+
+                    }
+
+
+                </ul>
+
+                <div id="getcheck">
+                    @Html.Partial("GetCheckList", Model)
+                </div>
+
+                <div style="text-align: center; width: 50%; margin: 0 auto;">
+                    @if (Model.PCMID > 0)
+                    {
+                        <button class="btn btn-primary" type="submit" id="save" title="Submit"
+                                style=" width: 80px;height:30px;">
+                            Save
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" type="submit" id="save" title="Submit"
+                                style=" width: 80px;height:30px;" disabled="disabled">
+                            Save
+                        </button>
+                    }
+                    <input type="button" class="btn btn-primary" style=" width: 100px;height:30px;" value="PSSR List"
+                           onclick="location.href='@Url.Action("PSSRList", "PSSR")'" />
+
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+
+}
+
+
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+
+
+
+    <script type="text/javascript">
+        function GetChecklist(pcmid) {
+
+            window.location.href = "../PSSR/CheckList?pcmID=" + pcmid + "&&PSSRID=" +@Model.PSSRID;
+        }
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.halfactive').css('background-color', 'orange');
+            $('.halfactive').css('color', 'white');
+
+            $('.active').css('background-color', 'green');
+            $('.active').css('color', 'white');
+        });
+
+        $("#Back").click(function () {
+            window.location.href("../PSSR/PSSRList");
+        })
+        $("#save").click(function () {
+            $("#getcheck *").attr("disabled", false);
+
+        })
+    </script>
+
+    @if (@ViewBag.checklistMessage != null)
+    {
+        <script type="text/javascript">
+            alert("@ViewBag.checklistMessage");
+
+    window.location.href = "../PSSR/CheckList?PSSRID=" +@Model.PSSRID;
+
+        </script>
+    }
+
+}
+
+
+

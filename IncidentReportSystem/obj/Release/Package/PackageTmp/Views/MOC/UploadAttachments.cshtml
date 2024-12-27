@@ -1,0 +1,154 @@
+﻿@model MonitPro.Models.MOC.AttachmentViewModel
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("UploadAttachments", "MOC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.StatusID)
+
+
+    <div class="div-border" style="width:50%; align-content:center; ">
+        <h1 class="div-h1"><span class="div-h1-span">&nbsp;Upload Supporting Attachments&nbsp;</span></h1>
+        <table id="UploadStatus" cellpadding="4" cellspacing="4" align="center">
+            <tr>
+                <td>MOC Number</td>
+                <td>@Html.DisplayFor(model => model.MocAttachments.MOCNo)</td>
+            </tr>
+            <tr>
+                <td>MOC Description</td>
+                <td>@Html.DisplayFor(model => model.MOCDescription)</td>
+            </tr>
+            <tr>
+                <td>Plant/Area</td>
+                <td>@Html.DisplayFor(model => model.PlantArea)</td>
+            </tr>
+           
+                <tr>
+                    <td> Upload</td>
+                    <td>
+                        @Html.TextBoxFor(m => m.MocAttachments.ImageFile, new { type = "file" })
+                        @Html.ValidationMessageFor(m => m.MocAttachments.ImageFile, "", new { @class = "label label-danger" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.HiddenFor(model => model.MocAttachments.MOCId)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="center">
+                        @if (Model.StatusID != 7 && Model.StatusID != 8 && Model.StatusID != 10)
+                        {
+                            <button type="submit" class="btn btn-primary" id="Save" style="width:100px">Save</button>
+                            if ((Model.StatusID == 1) || (Model.StatusID == 2))
+                            {
+                                <input type="button" class="btn btn-primary" value="Create MOC" onclick="CreateMOC(@Model.MocAttachments.MOCId);" />
+                            }
+                            else
+                            {
+                                <input type="button" class="btn btn-primary" value="Edit MOC" onclick="EditMOC(@Model.MocAttachments.MOCId);" />
+                            }
+                        }
+                        </td>
+                </tr>
+                <tr><td colspan="2"> </td></tr>
+            </table>
+    </div>
+
+    <br />
+    <div class="div-border" style="align-content:center; width:60%;">
+        <h1 class="div-h1"><span class="div-h1-span">Supporting docs list</span></h1>
+
+        @if (Model.mocattach.Count > 0)
+        {
+            <table class="table" id="SearchResults">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Attachment Name</th>
+                        <th>Download</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.mocattach)
+                    {
+                        <tr>
+                            <td>@item.SNo</td>
+                            <td> @item.ImageName </td>
+                            <td>
+                                @if (item.FileName != "")
+                                {
+                                    <a href="~/MOCAttachments/@item.FileName" download>
+                                        <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                    </a>
+                                }
+                            </td>
+                            <td>
+                                @if (Model.Roles.Find(a => a.RoleName == "MOC Coordinator") != null)
+                                {
+                                    <a href="javascript:DeleteAttachments(@item.MOCAttachmentId);" title="Delete Image"><img src="~/Images/remove.png" alt="Delete" style="height:25px;width:25px;" /></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Attachment(s) Found</p>
+        }
+    </div>
+}
+<br />
+<br />
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script>
+    function DeleteAttachments(MOCAttachID) {
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            method: "POST",
+            url: "../MOC/DeleteAttachments",
+            data: { MOCAttachID: MOCAttachID },
+            success: function (response) {
+                //$('#contentdiv').html(response);
+                alert('Attachment Deleted Successfully');
+                window.location.reload();
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    function EditMOC(MOCID) {
+
+        window.location.href = '../MOC/EditMOC?MOCID=' + MOCID;
+    }
+    function CreateMOC(MOCID) {
+
+        window.location.href = '../MOC/CreateMOC?MOCID=' + MOCID;
+    }
+    if(@Model.StatusID==7)
+    {
+        $("#UploadStatus *").attr('disabled', true);
+    }
+
+</script>
+
+

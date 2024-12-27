@@ -1,0 +1,335 @@
+﻿@model IncidentReportSystem.Models.IncidentListViewModel
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+<style type="text/css">
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+</style>
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        function OpenIncidentView(IncidentId) {
+
+            var IncidentURL = '../Incident/DetailedIncident';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: IncidentURL,
+                data: { IncidentID: IncidentId },
+                success: function (data) {
+                    $('#myModalContent').html(data);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function SearchIncidents()
+        {
+            var response = null;
+            var CurrentURL = '../Incident/History';
+            var options = { "backdrop": "static", keyboard: true };
+
+            var InciMod = @Html.Raw(Json.Encode(Model.IncidentSearchVM));
+
+            InciMod.IncidentFromDate = $("#IncidentSearchVM_IncidentFromDate").val();
+            InciMod.IncidentToDate = $("#IncidentSearchVM_IncidentToDate").val();
+            InciMod.InciClass = $("#IncidentSearchVM_InciClass").val();
+            InciMod.IncidentType = $("#IncidentType").val();
+            InciMod.IncidentPlant = $("#PlantsList").val();
+
+            $.ajax({
+                method: "POST",
+                url: "../Incident/History",
+                data: InciMod,
+                success: function (response) {
+                    document.open();
+                    document.write(response);
+
+                   /* $('#MainBody').html(response);*/
+                    $("#IncidentSearchVM_IncidentFromDate").val(InciMod.IncidentFromDate);
+                    $("#IncidentSearchVM_IncidentToDate").val(InciMod.IncidentToDate);
+                    $("#IncidentType").val(InciMod.IncidentType);
+                    $("#PlantsList").val(InciMod.IncidentPlant);
+                    $("#IncidentSearchVM_InciClass").val(InciMod.InciClass);
+                    document.close();
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data));
+                    window.location.href = '/Incident/History';
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function ClearSearch() {
+            $("#IncidentSearchVM_IncidentFromDate").val('');
+            $("#IncidentSearchVM_IncidentToDate").val('');
+            $("#IncidentType").val('');
+            $("#PlantsList").val('');
+            $("#PlantsList").select2('');
+            $("#IncidentSearchVM_InciClass").val(0);
+        }
+
+        
+        jQuery('#IncidentSearchVM_IncidentFromDate').datetimepicker({
+            format: 'd/m/Y H:m',
+            timepicker: true,
+            lang: 'ru',
+            step: 30
+        });
+
+        jQuery('#IncidentSearchVM_IncidentToDate').datetimepicker({
+            format: 'd/m/Y H:m',
+            timepicker: true,
+            lang: 'ru',
+            step: 30
+        });
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            document.getElementById('container').style.height = window.innerHeight - 280 + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+         $(function () {
+             $("#PlantsList").select2();
+         });
+    </script>
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+/**/</script>
+}
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        #SearchResults thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        html {
+            overflow: scroll;
+        }
+
+        .leftpad {
+            padding-left: 10px;
+            padding-right:20px;
+        }
+
+        .pad {
+            padding-left: 30px;
+        }
+
+        .txtpad {
+            position: relative;
+            left: -70px;
+        }
+
+        .pre-scrollable {
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+        .col1 {
+            padding-left: 60px;
+        }
+
+        .col2 {
+            padding-left: 60px;
+        }
+
+        .col3 {
+            padding-left: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-lg container-sm container-md container-xl">
+        <div class="div-border">
+            <h1 class="div-h1"><span class="div-h1-span">&nbsp;Incident History&nbsp;</span></h1>
+            <div class="container-lg container-sm container-md container-xl leftpad">
+
+                <div class="row">
+                    <div class="col-lg-2 col-sm-2 col1">
+                        <label>Incident From Date</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.EditorFor(model => model.IncidentSearchVM.IncidentFromDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col2">
+                        <label>Incident To Date</label>
+                    </div>
+
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.EditorFor(model => model.IncidentSearchVM.IncidentToDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;", @autocomplete = "off" } })
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col2">
+                        <label>Plant/Area</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownList("PlantsList", ViewBag.PlantsList as SelectList, new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Incident Category</label>
+                    </div>
+
+
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownList("IncidentType", ViewBag.IncidentTypes as SelectList, new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:25px;   max-width: 100%;" })
+                    </div>
+
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Incident Classification</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownListFor(Model => Model.IncidentSearchVM.InciClass, new SelectList(Model.IncidentClassficationList, "ID", "Name"),"--Select--", new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:25px;   max-width: 100%;" })
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        <img src="~/Images/searchIcon.png" onclick="SearchIncidents()" name="btnSearch" id="btnSearch" alt="Search Button" style="cursor: pointer;height:30px;width:30px" title="Search" />
+                        &nbsp; &nbsp; &nbsp;
+                        @if (Model.IncidentList.Count > 0)
+                        {
+                            <a href="@Url.Action("ExportIncidentHistory",new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentPlantID = ViewBag.PlantID, currentInciType = ViewBag.IncidentType, inciClass = ViewBag.InciClass })">
+                                <img src="~/Images/ms-excel-icon.png" alt="Export Incident History" style="width: 30px; height: 30px; cursor: pointer;" title="Export Incident History" />
+                            </a>
+
+                        }
+                    </div>
+                </div>
+                `
+                @*<div class="row text-center">
+                    <input type="button" class="btn btn-primary" name="btnSearch" id="btnSearch" onclick="SearchIncidents()" value="Search" />
+                    <input type="button" class="btn btn-primary" name="btnReset" id="btnReset" onclick="ClearSearch()" value="Clear" />
+                </div>*@
+
+                <br />
+            </div>
+        </div>
+
+        <br />
+
+        @*@if (Model.IncidentList.Count > 0)
+        {
+            @Html.ActionLink("Export Incident History", "ExportIncidentHistory", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentPlantID = ViewBag.PlantID, currentInciType = ViewBag.IncidentType, inciClass = ViewBag.InciClass, @class = "btn btn-primary" })
+
+        }*@
+        <div class="container-lg container-md container-sm container-xl">
+                <div class="container-lg container-md container-sm container-xl pre-scrollable">
+                    @if (Model.IncidentList.Count > 0)
+                    {
+                        <table class="table table-striped header-fixed table-hover" id="SearchResults">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Plant / Area</th>
+                                    <th>Incident ID</th>
+                                    <th>Incident Category</th>
+                                    <th>Incident Classification</th>
+                                    <th>Incident Description</th>
+                                    <th>Incident Date</th>
+                                    <th>Closed Date</th>
+                                    <th>Status</th>
+                                    <th>Downloads </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.IncidentList)
+                                {
+                                <tr>
+                                    <td>@item.SNo</td>
+                                    <td>@item.PlantArea</td>
+                                    <td>@item.IncidentNO</td>
+                                    <td>@item.IncidentType</td>
+                                    <td>@item.Inciclassification</td>
+                                    <td style="word-break:break-all;">@item.Title</td>
+                                    <td>@item.IncidentTime.ToString("dd/MM/yyyy HH:mm:ss")</td>
+
+                                    <td>@item.IncidentCloseTime.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.CurrentStatus</td>
+                                    <td>
+                                        <a href="@Url.Action("IncidentPdf","Incident", new { id = @item.IncidentID })" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+                                        @if (item.FileName != "")
+                                        {
+                                            <a href="~/IncidentAttachments/@item.FileName" download>
+                                                <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                            </a>
+                                        }
+                                    </td>
+
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No Incidents Found</p>
+                    }
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+

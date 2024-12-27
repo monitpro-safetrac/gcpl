@@ -1,0 +1,259 @@
+﻿
+@model  MonitPro.Models.MOC.MOCApproverList
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+@*<style>
+        .div-border {
+            overflow-y: auto;
+            height: 550px;
+        }
+
+    </style>*@
+
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    html {
+        overflow: scroll;
+    }
+</style>
+@Html.AntiForgeryToken()
+<!DOCTYPE html>
+
+@using (Html.BeginForm("MOCObservers", "MOC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="div-border" style="width:97%; align-items:center;">
+        <h1 class="div-h1"><span class="div-h1-span"> MOC Team</span></h1>
+
+        <table style="width:95%" align="center">
+            <tr>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <td colspan="5">
+                    <table id="tbl" style="width:90%" align="center" border="1">
+                        <tr>
+                            <th>MOC Number</th>
+                            <th>Plant/Area</th>
+                            <th>Description</th>
+                        </tr>
+
+
+                        <tr>
+                            <td>@Html.DisplayFor(model => model.MOCNo)</td>
+                            <td>@Html.DisplayFor(model => model.PlantName)</td>
+                            <td>@Html.DisplayFor(model => model.MOCDescription)</td>
+
+                        </tr>
+
+                    </table>
+
+                </td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            @Html.HiddenFor(m => m.MOCID)
+
+            @*<tr>
+                    <td> <h1><input type="button" class="btn btn-primary" id="addbtn" value="AddRow " onClick="AddRow()"></h1></td>
+                </tr>*@
+
+
+
+            <tr>
+                <th>
+                    SNo
+                </th>
+
+                <th>
+                    Level
+                </th>
+                <th>
+                    User (First &lastname)
+                </th>
+
+                <th>
+                    Target Date
+                </th>
+                <th> </th>
+
+                @for (var i = 0; i < Model.ApprovalList.Count; i++)
+                {
+
+                <tr id="required">
+                    <td style="width:auto">@(i + 1) @Html.HiddenFor(m => m.ApprovalList[i].ID) @Html.HiddenFor(m => m.ApprovalList[i].ApprovalName)
+                    <td>@Model.ApprovalList[i].ApprovalName</td>
+                    <td>
+                        @Html.DropDownListFor(model => model.ApprovalList[i].UserID,
+                                  new SelectList(Model.EmployeeList, "ID", "FullName", Model.ApprovalList[i].UserID), "-- Select --", new { @class = "form-control input-sm", style = "width: 300px;" })
+                        @Html.ValidationMessageFor(model => model.ApprovalList[i].UserID, "", new { @class = "label label-danger" })
+                    </td>
+
+
+                    @if (Model.ApprovalList[i].ApprovalName != "MOC Owner")
+                    {
+                        <td id="targetDate">
+                            @Html.EditorFor(model => model.ApprovalList[i].ApprovalTargetDate, new
+                            {
+                                htmlAttributes = new
+                                {
+                           @class = "dt",
+                                    style = "width: 200px",
+                                    @autocomplete = "off"
+                                }
+                            })
+                            @Html.ValidationMessageFor(model => model.ApprovalList[i].ApprovalTargetDate, "", new
+                            {
+                           @class = "label label-danger"
+                            })
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.EditorFor(model => model.ApprovalList[i].ApprovalTargetDate, new { htmlAttributes = new { @style = "width: 200px", @autocomplete = "off", @Value = "NOT APPLICABLE", @disabled = "disabled" } })
+                        </td>
+
+                    }
+
+                    <td>
+                        @*<label><input type="radio" name="radioName" value="1" /> 1</label> <br />*@
+
+                        @Html.RadioButtonFor(model => model.ApprovalList[i].IsTeamApprover, 1, new { @Id = ("info" + i) })Info
+                        @Html.RadioButtonFor(model => model.ApprovalList[i].IsTeamApprover, 2, new { @Id = ("appr" + i) })  Approver
+
+                    </td>
+
+                </tr>
+            }
+
+
+
+                <tr>
+                    <td height="30px" colspan="3" align="center">
+                        <br />
+                        <button class="btn btn-primary" type="submit" id="submit" formaction="MOCObservers" title="Submit">Submit</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="button" class="btn btn-primary" value="Edit MOC" onclick="EditMOC(@Model.MOCID);" />
+
+</tr>
+
+            </table>
+        </div>
+        <div class="modal" id='myModal'>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id='myModalContent'></div>
+                </div>
+                <input type="hidden" id="RowCount" value="@Model.ApprovalList.Count" />
+
+            </div>
+        </div>
+
+    }
+@if (ViewBag.Message1 != null)
+{
+    <script type="text/javascript">
+          {
+                alert("@ViewBag.Message1");
+                window.location.href = '../MOC/MOCList';
+        };
+
+    </script>
+
+}
+@if (ViewBag.Error != null)
+{
+    <script type="text/javascript">
+                    {
+            alert("@ViewBag.Error");
+            event.preventDefault();
+                    };
+    </script>
+}
+
+@section scripts
+  {
+
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+    <script type="text/javascript">
+                function AddRow() {
+
+                    $("#NewRow").show();
+                    $('#NewRow *').attr('required', true);
+                }
+        $(document).ready(function () {
+            for(var i = 0; i < $("#RowCount").val(); i++) {
+
+                    var approver = $("#ApprovalList_" + i + "__UserID").val();
+                    $("#ApprovalList_" + i + "__UserID").select2();
+
+
+               }
+
+        });
+
+
+         @*function Add() {
+
+
+         var MOCID = @Html.Raw(Json.Encode(Model.MOCID));
+
+         vApproverStagesID = $("#NewApprovalName").val();
+         vEmployeeID = $("#NewEmployee").val();
+         vTargetDate = $("#NewTargetDate").val();
+
+
+          {
+            $.ajax({
+                 method: "POST",
+                url: "../MOC/ApproverAdd",
+                data: { MOCID: MOCID, ApproverStagesID: vApproverStagesID, EmployeeID: vEmployeeID, TargetDate: vTargetDate },
+                success: function (resultdata) {
+                     alert(JSON.stringify('Investigation Team Assigned'));
+                     location.reload(true);
+                 },
+                error: function (errdata) {
+                     alert(JSON.stringify(errdata));
+                     alert("Dynamic content load failed.");
+                 }
+             });
+         }
+
+
+     }*@
+
+                function EditMOC(MOCID) {
+                    window.location.href = '../MOC/EditMoc?MOCID=' + MOCID;
+                }
+
+                $(function () {
+                    $(".dt").datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        minDate : new Date()
+                  });
+
+                });
+
+                    $("#submit").click(function (event) {
+
+                        $('#required *').attr('required', true);
+                        $('#targetDate *').attr('required', false);
+
+                    });
+
+
+    </script>
+}
+

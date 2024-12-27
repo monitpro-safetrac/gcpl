@@ -1,0 +1,661 @@
+﻿
+@model MonitPro.Models.WorkPermit
+@{
+    Layout = null;
+}
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+
+
+<style>
+
+
+
+    html {
+        overflow: scroll;
+    }
+
+    .col1 {
+        padding-left: 70px;
+    }
+
+    .col2 {
+        padding-left: 70px;
+    }
+
+    .col3 {
+        padding-left: 80px;
+    }
+
+    .rcol2 {
+        padding-left: 100px;
+    }
+
+    .rcol3 {
+        padding-left: 80px;
+    }
+
+    .row {
+        padding-bottom: 10px;
+    }
+
+    .apad {
+        padding-right: 30px;
+        padding-left: 20px;
+    }
+
+    .part1 {
+        padding-left: 10px;
+        padding-right: 20px;
+    }
+
+    .cpad {
+        padding-right: 30px;
+        padding-left: 10px;
+    }
+
+    .ppad {
+        padding-right: 30px;
+        padding-left: 10px;
+    }
+
+    .wpad {
+        padding-right: 30px;
+        padding-left: 10px;
+    }
+
+    .acol1 {
+        padding-left: 20px;
+    }
+
+    .acol2 {
+        padding-left: 70px;
+    }
+
+    .acol3 {
+        padding-left: 70px;
+    }
+
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+</style>
+
+
+@if (ViewBag.IsValidationFailed == true)
+{
+    <div class="row">
+        <div class="text-danger text-center">
+            <strong>@Html.ValidationMessage("ApproverValidation")</strong>
+        </div>
+    </div>
+}
+
+<div id="tbl" class=" container-lg container-sm container-md">
+    <div class="part1">
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">
+                <label>Validity From :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.TextBoxFor(m => m.ValidityFrom, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "form-control input-sm", @autocomplete = "off" })
+                @Html.ValidationMessageFor(m => m.ValidityFrom, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 rcol2">
+                <label>Validity To:</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.TextBoxFor(m => m.ValidityTo, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "form-control input-sm", @autocomplete = "off" })
+                @Html.ValidationMessageFor(m => m.ValidityTo, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 rcol3">
+                <label>Job Request ID :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.TextBoxFor(m => m.JobID, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(m => m.JobID, null, new { @class = "label label-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">
+                <label>Plant/Area:</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.DropDownListFor(m => m.PlantID, new SelectList(Model.PlantList, "DivisionID", "DivisionName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:220px" })  @Html.ValidationMessageFor(m => m.PlantID, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 col2">
+                <label>Equipment/Area :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.DropDownListFor(m => m.EquipmentID, new SelectList(Model.EquipmentList, "EquipmentID", "EquipmentName"), "-- Select --", new { @class = "form-control input-sm", @style = "width:300px", @id = "EquipmentList" })
+                @Html.ValidationMessageFor(m => m.EquipmentID, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 col3">
+                <label>Exact Location :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.TextBoxFor(m => m.Location, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.Location, null, new { @class = "label label-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">
+                <label>Work done by :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.DropDownListFor(m => m.ContractorEmpID, new List<SelectListItem>
+                            {
+                               new SelectListItem { Text = "Contractor", Value = "1"},
+                               new SelectListItem { Text = "Department", Value = "2"}
+
+                             }, "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                @Html.ValidationMessageFor(m => m.ContractorEmpID, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 col2">
+                <label>Department :</label>
+            </div>
+            <div class="col-lg-3 col-sm-2">
+                @Html.DropDownListFor(m => m.DepartID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 220px;  max-width: 100%;" })
+                @Html.ValidationMessageFor(m => m.DepartID, null, new { @class = "label label-danger" })
+            </div>
+        </div>
+
+        @if (Model.Status == "D" || Model.Status == null)
+        {
+            <div class="row">
+                <div class="col-lg-2 col-sm-2 col1">
+                    <label>Type Of Work :</label>
+                </div>
+                <div class="col-lg-10 col-sm-10 ">
+                    @Html.Partial("TypeofWork", Model)
+                </div>
+            </div>
+        }
+
+
+        @if (Model.Status == "S" || Model.Status == "R")
+        {
+            <div class="row">
+
+                <div class="col-lg-2 col-sm-2 col1">
+                    <label>Type Of Work :</label>
+                </div>
+                <div class="col-lg-10 col-sm-10 ">
+                    @Html.Partial("TypeofWorkReadOnly", Model)
+                </div>
+            </div>
+        }
+
+
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">
+                <label>Contractor :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @if (Model.Status == "D" || Model.Status == null)
+                {
+                    @Html.DropDownListFor(m => m.ContractorID, new SelectList(Model.ContractorList, "ContractorID", "ContractorName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;", @id = "Contractor" }) @Html.ValidationMessageFor(m => m.ContractorID, null, new { @class = "label label-danger" })
+                }
+                @if (Model.Status == "S" || Model.Status == "R")
+                {
+                    @Html.DropDownListFor(m => m.ContractorID, new SelectList(Model.ContractorList, "ContractorID", "ContractorName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;", @id = "Contractor", @disabled = true }) @Html.ValidationMessageFor(m => m.ContractorID, null, new { @class = "label label-danger" })
+                }
+            </div>
+            <div class="col-lg-2 col-sm-2 col1">
+                <label>Risk Assessment Required :</label>
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.DropDownListFor(m => m.Risk, new List<SelectListItem> { new SelectListItem { Text = "NO", Value = "2" }, new SelectListItem { Text = "YES", Value = "1" } }, "--Select--")
+                @Html.ValidationMessageFor(m => m.Risk, "", new { @class = "label label-danger", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2">
+                <label>Description of the Work : <br />(Max 200)</label>
+            </div>
+            <div class="col-lg-10 col-sm-10">
+                @Html.TextAreaFor(m => m.WorkDescription, new { maxlength = "200", @class = "form-control input-sm", @style = "width:1200px;   max-width: 100%;" })  @Html.ValidationMessageFor(m => m.WorkDescription, null, new { @class = "label label-danger" })
+            </div>
+
+        </div>
+    </div>
+    <div class="div-border">
+        <h1 class="div-h1"><span class="div-h1-span"> &nbsp; Personal Protective Equipment : &nbsp;</span></h1>
+        <div class="row ppad">
+            <div class="col-lg-12 col-sm-12">
+                @Html.Partial("PPE", Model)
+
+            </div>
+        </div>
+    </div>
+
+    <div class="div-border">
+        <h1 class="div-h1">
+            <span class="div-h1-span">
+                &nbsp;Checklist:&nbsp;
+            </span>
+        </h1>
+        <div class="row cpad">
+            <div class="col-lg-12 col-sm-12">
+                @Html.Partial("GeneralCheckList", Model)
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="div-border">
+        <h1 class="div-h1"><span class="div-h1-span"> &nbsp; WorkType Check List: &nbsp;</span></h1>
+        <div class="row wpad" id="checkbox">
+            <div class="col-lg-12 col-sm-12">
+                @Html.Partial("AllWorktTypeCheckList", Model)
+                <span class="label label-danger" id="error" style="display:none">Please select at-least one.</span>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="tbl" class=" container-lg container-sm container-md">
+        <div class="div-border">
+            <h1 class="div-h1"><span class="div-h1-span"> &nbsp; Approvals &nbsp;&nbsp;</span></h1>
+            <div class="apad">
+                <div class="row">
+                    <div class="col-lg-2 col-sm-2 acol1">
+                        Name / Number of person(s) working at site:
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.TextBoxFor(m => m.NoOfPersonAtSite, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                        @Html.ValidationMessageFor(m => m.NoOfPersonAtSite, null, new { @class = "label label-danger" })
+                    </div>
+                    <div class="col-lg-2 col-sm-2 acol2">
+                        Stand by person :
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownListFor(m => m.PersonID, new SelectList(Model.Standbyperson, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;", @id = "FireWatchList" })  @Html.ValidationMessageFor(m => m.PersonID, null, new { @class = "label label-danger" })
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-lg-2 col-sm-2 acol1">
+                        Permit Receiver :
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.TextBoxFor(m => m.PermitHolderName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                        @Html.ValidationMessageFor(m => m.PermitHolderName, null, new { @class = "label label-danger" })
+                    </div>
+
+                    <div class="col-lg-2 col-sm-2 acol2">
+                        Permit Issuer :
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Model.PermitIssuerName @Html.HiddenFor(m => m.PermitIssuerID)
+                    </div>
+                    @if (Model.Status != "S" && Model.Status != "A")
+                    {
+                        <div class="col-lg-2 col-sm-2 acol3">
+                            Shift in charge :
+                        </div>
+
+
+                        if (Model.Status == "S")
+                        {
+                            <div class="col-lg-2 col-sm-2">
+                                @Html.DropDownListFor(m => m.UserID, new SelectList(Model.ApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.UserID, null, new { @class = "label label-danger" })
+                                @Html.HiddenFor(m => m.ApproverID)
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-sm-2">
+                                @Html.DropDownListFor(m => m.ApproverID, new SelectList(Model.ApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.ApproverID, null, new { @class = "label label-danger" })
+
+                            </div>
+                        }
+                    }
+
+                </div>
+                @if (Model.Status != "S" && Model.Status != "A")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            Mechanical in charge :
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.MechanicalIncharge, new SelectList(Model.MechancialDept, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                            @Html.ValidationMessageFor(m => m.MechanicalIncharge, null, new { @class = "label label-danger" })
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            Electrical In-charge :
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.ElectricalIncharge, new SelectList(Model.ElectricalDept, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                            @Html.ValidationMessageFor(m => m.ElectricalIncharge, null, new { @class = "label label-danger" })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol3">
+                            Instrument Incharge :
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.InstrumentalIncharge, new SelectList(Model.InstrumentationDept, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })
+                            @Html.ValidationMessageFor(m => m.InstrumentalIncharge, null, new { @class = "label label-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            Safety Officer :
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.SafetyOfficer, new SelectList(Model.SafetyDept, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.SafetyOfficer, null, new { @class = "label label-danger" })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            Process Manager :
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.ProcessManager, new SelectList(Model.ProcessManagerDept, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.ProcessManager, null, new { @class = "label label-danger" })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol3">
+                            Operations Head :
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            @Html.DropDownListFor(m => m.GMOperations, new SelectList(Model.GMDept, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.GMOperations, null, new { @class = "label label-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        @*@if (Model.Status == "S" || Model.Status == "R" || Model.Status == "D")
+                            {
+                                <div class="col-lg-6 col-sm-6">
+                                    Approver Comment :(Max 100)
+
+                                    @Html.TextAreaFor(m => m.ApproverComment, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm " })
+                                    @Html.ValidationMessageFor(m => m.ApproverComment, null, new { @class = "label label-danger" })
+                                </div>
+                            }*@
+                        <div class="col-lg-6 col-sm-6"></div>
+
+                        @if (Model.Status == "S" || Model.Status == "R" || Model.Status == "D")
+                        {
+
+                            <div class="col-lg-6 col-sm-6" id="display">
+                                Cancellation Comment: (Max 100)
+
+                                @Html.TextAreaFor(m => m.ClosureComment, new { maxlength = 100, @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.ClosureComment, null, new { @class = "label label-danger" })
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            @if (Model.WorkPermitID > 0 && Model.Status == "S")
+            {
+
+                <div class="row">
+                    <div class="col-lg-2 col-sm-2 acol1">
+                        <b>&nbsp;&nbsp;&nbsp; Role</b>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        <b>&nbsp;&nbsp;&nbsp; Name</b>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 acol2">
+                        <b>&nbsp;&nbsp;&nbsp; Approver Comments</b>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        <b>&nbsp;&nbsp;&nbsp; Action</b>
+                    </div>
+
+                </div>
+                if (Model.ShiftInchName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Shift Incharge
+                        </div>
+
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.ShiftInchName</label>
+                        </div>
+                        @if ((Model.Status == "S" || Model.Status == "R" || Model.Status == "D") && Model.ShiftInchName == Model.UserFullName)
+                        {
+                            <div class="col-lg-2 col-sm-2 acol2" id="cancelhide">
+                                @Html.TextAreaFor(Model => Model.ApproverComment, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm " })
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-sm-2 acol2" id="cancelhide">
+                                @Html.TextAreaFor(Model => Model.ApproverComment, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                            </div>
+                        }
+                        <div class="col-lg-6 col-sm-6 ">
+
+                            @if (Model.checkvalidapprover == 1)
+                            {
+                                <input type="submit" class="btn btn-primary" value="Approve" id="ApprovePermit" style="width:150px" />
+                                <input type="submit" class="btn btn-primary" value="Recycle" id="RejectPermit" style="width:150px" />
+                                <input type="submit" class="btn btn-primary" value="Cancel" id="Cancel" style="width:150px" />
+
+                            }
+                            else
+                            {
+                                <input type="submit" class="btn btn-primary" value="Approve" id="ApprovePermit" style="width:150px" disabled="disabled" />
+                                <input type="submit" class="btn btn-primary" value="Recycle" id="RejectPermit" style="width:150px" disabled="disabled" />
+                                <input type="submit" class="btn btn-primary" value="Cancel" id="Cancel" style="width:150px" disabled="disabled" />
+                            }
+                        </div>
+
+                    </div>
+                }
+                if (Model.MechInchName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Mechanical Incharge
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.MechInchName</label>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            @Html.TextAreaFor(Model => Model.MechInchRemarks, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+
+                            <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                    style=" width: 80px;height:30px;" disabled="disabled">
+                                Approve
+                            </button>
+                        </div>
+
+                    </div>
+                }
+                if (Model.ElecInchName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Electrical Incharge
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.ElecInchName</label>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            @Html.TextAreaFor(Model => Model.ElecInchRemarks, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+
+                            <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                    style=" width: 80px;height:30px;" disabled="disabled">
+                                Approve
+                            </button>
+                        </div>
+
+                    </div>
+                }
+                if (Model.InstruInchName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Instrument Incharge
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.InstruInchName</label>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            @Html.TextAreaFor(Model => Model.InstruInchRemarks, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+
+                            <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                    style=" width: 80px;height:30px;" disabled="disabled">
+                                Approve
+                            </button>
+                        </div>
+
+                    </div>
+                }
+                if (Model.SafetyOffName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Safety Officer
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.SafetyOffName</label>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            @Html.TextAreaFor(Model => Model.SafetyOffRemarks, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+
+                            <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                    style=" width: 80px;height:30px;" disabled="disabled">
+                                Approve
+                            </button>
+                        </div>
+
+                    </div>
+                }
+                if (Model.ProMgrName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Process Manager
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.ProMgrName</label>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            @Html.TextAreaFor(Model => Model.ProMgrRemarks, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+
+                            <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                    style=" width: 80px;height:30px;" disabled="disabled">
+                                Approve
+                            </button>
+                        </div>
+
+                    </div>
+                }
+                if (Model.GMOpName != "")
+                {
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-2 acol1">
+                            &nbsp;&nbsp;&nbsp; Operations Head
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+                            <label style="font-weight: normal;">@Model.GMOpName</label>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 acol2">
+                            @Html.TextAreaFor(Model => Model.GMOpRemarks, new { maxlength = "100", @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm ", @disabled = true })
+
+                        </div>
+                        <div class="col-lg-2 col-sm-2 ">
+
+                            <button class="btn btn-primary" type="submit" id="saveChairPerson" title="Submit"
+                                    style=" width: 80px;height:30px;" disabled="disabled">
+                                Approve
+                            </button>
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+</div>
+
+
+
+@Html.HiddenFor(m => m.ContractorID)
+
+<script>
+    $(function () {
+        $('#FireWatchRequired').change(function () {
+            Fire = $('#FireWatchRequired option:selected').val();
+            alert(Fire);
+
+        })
+    });
+
+</script>
+
+<script type="text/javascript">
+    var fromdate = '@Model.ValidityFrom';
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+
+    jQuery('#ValidityFrom').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30
+    });
+    jQuery('#ValidityTo').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30,
+        minDate: fromdate,
+        maxDate: date,
+
+    });
+</script>

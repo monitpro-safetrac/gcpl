@@ -1,0 +1,10 @@
+server down
+
+https//aws.amazon.com
+id:Kirthi@archimedis.net
+
+password is monitpro
+login instance
+select ec2
+then select running instance
+instance reboot only under instance state

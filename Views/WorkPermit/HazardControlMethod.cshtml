@@ -1,0 +1,36 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+<table id="fixTable" class="table table-responsive table-bordered">
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.PreEntryRescueBriefing) Pre-Entry & Rescue Briefing</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.VentilationAirChanges) Ventilation Air Changes/Hr</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FlushPurgeDrainClean) Flush/Purge/Drain/Clean</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.CommunicationVerbal) Communication Verbal
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.GroundFaultCircuitInterrupter) Ground Fault Circuit Interrupter</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePiping) Isolate Piping (specify)</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LockoutProceduresInitiated) Lockout Procedures Initiated</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.NonSparkingTools) Non Sparking Tools</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDoubleBlock) Double Block/Bleed Pipe</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LineBreakingProceduresInitiated) Line Breaking Procedures Initiated (specify)</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExplosionProofLighting) Explosion Proof Lighting </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingBlankBlindPipe) Blank/Blind Pipe</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.HotWorkProceduresInitiated) Hot Work Procedures Initiated </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.MSDSChemicalInfoAvailable) MSDS/Chemical Info Available</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDisconnect) Disconnect</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExternalBarricades)External Barricades/Barrier Tape</td>
+    </tr>
+     <tr>
+         <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FireExtinguisher) Fire Extinguisher </td>
+        <td>Others</td>
+        <td colspan="2">@Html.TextAreaFor(m => m.HazardControlMethod.Others)</td>
+    </tr>
+</table>

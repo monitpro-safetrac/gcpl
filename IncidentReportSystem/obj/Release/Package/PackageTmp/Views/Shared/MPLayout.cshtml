@@ -1,0 +1,438 @@
+﻿@model MonitPro.Models.BaseEntity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/NavLayoutStyle.css" rel="stylesheet" />
+    <title>MonitPro Solutions</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+
+    <style>
+        .logo {
+            padding-top: -47px;
+            height: 38px;
+        }
+
+        .topnav {
+            width: 100%;
+        }
+
+        .navbar-fixed-top, .navbar-fixed-bottom {
+            position: fixed;
+            right: 0;
+            left: 0;
+            border-width: 0 0 1px;
+        }
+
+        .btn-danger {
+            background-color: red;
+        }
+
+        .mov {
+            padding-top: 6px;
+        }
+
+        body {
+            margin: 0;
+            font-family: /*"Helvetica Neue"*/, /*Helvetica*/, /*Arial,*/ sans-serif;
+            width: 100%;
+        }
+
+
+        .lp {
+            position: relative;
+            top: -4px;
+        }
+
+        .up {
+            position: relative;
+            top: -2px;
+        }
+
+        .up1 {
+            position: relative;
+            top: 2px;
+        }
+
+        .ld {
+            padding-top: 4px;
+        }
+
+
+
+        .mov1 {
+            padding-top: 4px;
+        }
+
+        .topnav {
+            overflow: visible;
+            /*background-color: #428bca;*/ /*layout bg color*/
+            background-color: white; /*layout bg color*/
+            width: 100%;
+        }
+
+            .topnav a {
+                float: left;
+                display: block;
+                /* font-weight: bold;*/
+                text-align: center;
+                padding: -6px 10px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+
+        .active {
+            background-color: white;
+            color: cornflowerblue;
+        }
+
+        .topnav .icon {
+            display: none;
+        }
+
+        .dropdown {
+            float: left;
+            overflow: visible;
+            visibility: visible;
+            z-index: 1;
+        }
+
+            .dropdown .dropbtn {
+                font-size: 16px;
+                text-align: center;
+                border: none;
+                outline: none;
+                color: white; /*layout text color*/
+                /*font-weight: bold;*/
+                padding: 4px 10px;
+                background-color: #428bca;
+                font-family: inherit;
+                margin: 3px;
+                border-radius: 5px;
+            }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                float: none;
+                color: black; /* dropd text color*/
+                font-family: sans-serif;
+                padding: 12px 16px;
+                font-size: 14px;
+                text-decoration: none;
+                display: block;
+                text-align: left;
+                background-color: white; /* dropd bg color*/
+            }
+
+        .topnav a:hover, .dropdown:hover .dropbtn {
+            /*background-color: #1f77b4;*/
+            color: white;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #428bca;
+            color: white;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .caret {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 2px;
+            vertical-align: middle;
+            border-top: 4px solid #fff;
+            border-right: 4px solid transparent;
+            border-bottom: 0 dotted;
+            border-left: 4px solid transparent;
+            content: "";
+        }
+    </style>
+
+</head>
+<body style="overflow-x:hidden;overflow-y:hidden">
+    <div class="table-responsive">
+        <div class="container-fluid">
+            <div class="topnav ld navbar-fixed-top" role="navigation" id="myTopnav" style="width:100%">
+
+                <div class="nav-header mov">
+                    <div class="nav-logo">
+                        <a>
+                            <img class="logo" src="~/Images/gcpl_logo.jpg" style="width:100px" alt="logo">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="dropbtn ">
+                        <a href="@Url.Action("MyActionStatus", "CAPA")" style="color: white">My Dashboard</a>
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        DashBoards
+                        <i class="caret"></i>
+                    </button>
+                    <div class="dropdown-content">
+
+                        <a href="~/Home/Chart">IIR Dashboard </a>
+                        <a href="~/Home/Capachart">CAPA Dashboard </a>
+                        <a href="~/Chart/Newchartwps">WPS Dashboard</a>
+                        <a href="~/MOC/MOCDashboard">MOC Dashboard</a>
+                        <a href="~/PSSR/PSSRChart">PSSR Dashboard</a>
+
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        PSSR
+                        <i class="caret"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="~/PSSR/CreatePSSR">Create PSSR</a>
+                        <a href="../PSSR/PSSRList">PSSR List</a>
+                        <a href="../PSSR/AllPSSRObservation">Track Actions</a>
+                        <a href="../PSSR/PSSRHistory">PSSR History</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        MOC
+                        <i class="caret"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        @if (Model != null && Model.IsRestrict == "Y")
+                        {
+                            <a href="~/MOC/CreateMOC">Create MOC</a>
+                        }
+
+                        <a href="~/MOC/MOCList">MOC List </a>
+                        <a href="~/MOC/TrackActions">Track Actions</a>
+                        <a href="~/MOC/TemporaryMOC">Temporary MOC</a>
+                        <a href="~/MOC/MOCHistory">History</a>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.Roles != null && Model.Roles.Find(a => a.RoleName == "Administrator") != null)
+                {
+                    <div class="dropdown">
+                        <button class="dropbtn">
+                            Admin
+                            <i class="caret"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="~/Admin/Register">New User</a>
+                            <a href="~/Admin/UserList">Manage Users</a>
+                            <a href="~/Admin/LoginHistory">Login History</a>
+
+                        </div>
+                    </div>
+
+                }
+
+            <div class="btn-group" style="align-content:center">
+                &nbsp;&nbsp;
+                <a href="@Url.Action("HomePage", "Incident")"><img class="" src="~/Images/HomeIcon.png" title="Home Page" height="35" width="30" /></a>
+            </div>
+                <div class="btn-group pull-right mov">
+
+                    <div class="btn-group">
+                        <a>
+                            <img src="~/Images/wall-clock.png" title="login time out" height="25" width="25" />
+                        </a>  &nbsp;<label class="up1" height="22px" width="20px" title="login time out" id="timecountdown"></label>
+                        &nbsp;&nbsp;
+
+                    </div>
+                    <div class="btn-group">
+                        <a href="~/Account/Myprofile"><img class="" src="~/Users/@Model.ProfileImage" title="@Model.UserFullName" height="22" width="24" /></a>&nbsp;&nbsp;
+                    </div>
+                    <div class="btn-group">
+                        <a> <span class="label label-success up">@Model.UserFullName</span>&nbsp; </a>
+
+                    </div>
+                    <div class="btn-group">
+                        <a class=" btn-danger" style="height:22px;width:25px" title="Logout" href="../Account/Logout"><i class="glyphicon glyphicon-off"></i></a>
+                    </div>
+                    <div class="btn-group lp">
+                        <a> <img height="30" width="140" src="~/Images/monitpro-logo.png"></a>
+                    </div>
+
+                </div>
+                <div class="fa-toggle-right" style="padding-right:30px">
+                    <a href="javascript:void(0);" style="font-size:25px;" class="icon" onclick="myFunction()">&#9776;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div @*style="padding-top:70px*@>
+        <div>
+            <br /><br /><br />
+            @RenderBody()
+        </div>
+
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+<script type="text/javascript">
+    function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+
+    //$(document).ready(function () {
+    //    var end;
+    //    var timer;
+
+    //    function fetchSessionTime() {
+    //        $.ajax({
+    //            type: "GET",
+    //            url: "/Account/GetSessionTime",
+    //            success: function (response) {
+    //                console.log('Session Time from server:', response.sessionTime);
+    //                end = new Date(response.sessionTime);
+
+    //                clearInterval(timer);
+    //                timer = setInterval(function () {
+    //                    showRemaining(end);
+    //                }, 1000);
+    //            },
+    //            error: function () {
+    //                console.error('Failed to fetch session time.');
+    //                // Handle error (e.g., redirect to login page)
+    //            }
+    //        });
+    //    }
+
+    //    function showRemaining(end) {
+    //        var now = new Date();
+    //        var distance = end - now;
+
+    //        var minutes = Math.floor(distance / 60000);
+    //        var seconds = Math.floor((distance % 60000) / 1000);
+
+    //        document.getElementById('timecountdown').innerHTML = minutes + ':' + seconds;
+    //        if (minutes < 0 && seconds < 1) {
+    //            clearInterval(timer);
+    //            window.location.href = "../Account/Login"; // Redirect to login page when session expires
+    //        }
+    //        if (minutes === 2 && seconds === 10) {
+    //            if (confirm("Your session will expire soon. Do you want to continue this session?")) {
+    //                extendSession();
+    //            }
+    //        }
+    //    }
+
+    //    function extendSession() {
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "../Account/ExtendSession",
+    //            success: function (response) {
+    //                if (response.error) {
+    //                    console.error('Failed to extend session:', response.error);
+    //                    alert('Failed to extend session. Please refresh the page or try again later.');
+    //                } else {
+    //                    console.log('New Expiration Time from server:', response.newExpirationTime);
+    //                    end = new Date(response.newExpirationTime);
+
+    //                    clearInterval(timer);
+    //                    timer = setInterval(function () {
+    //                        showRemaining(end);
+    //                    }, 1000);
+    //                }
+    //            },
+    //            error: function () {
+    //                console.error('Failed to extend session.');
+    //                alert('Failed to extend session. Please refresh the page or try again later.');
+    //            }
+    //        });
+    //    }
+
+    //    fetchSessionTime();
+    //});
+
+
+        @*$(document).ready(function () {
+
+            var dt = '@Session["time"].ToString()';
+
+        var dateAr = dt.split('-');
+        var newDate = dateAr[1] + '/' + dateAr[0] + '/' + dateAr[2];
+
+        var end = new Date(dateAr[1] + '/' + dateAr[0] + '/' + dateAr[2]);
+
+        var _second = 1000;
+        var _minute = _second * 60;
+        var _hour = _minute * 60;
+        var _day = _hour * 24;
+        var timer;
+
+        function showRemaining() {
+            var now = new Date();
+            var distance = end - now;
+
+            var days = Math.floor(distance / _day);
+            var _hours = Math.floor((distance % _day) / _hour);
+            var _minutes = Math.floor((distance % _hour) / _minute);
+            var _seconds = Math.floor((distance % _minute) / _second);
+
+            document.getElementById('timecountdown').innerHTML = ' ';     //' Hrs: ' + _hours;
+
+            document.getElementById('timecountdown').innerHTML = ' '; //' + _seconds;
+            document.getElementById('timecountdown').innerHTML += _minutes +':Mins ';
+
+            if (_minutes == 0) {
+                window.location.href = "../Account/Login";
+            }
+            else if (_minutes == 2 && _seconds==59) {
+                var x;
+                if (confirm(" Your Session will be Expired. Are you Continue this Session ?") == true) {
+                    x = "Yes";
+                    var SaveURL = '../Account/SessionTimeout';
+
+                    $.ajax({
+                        method: "POST",
+                        url: SaveURL,
+
+
+                    })
+                    event.preventDefault();
+
+                } else {
+                    x = "No";
+                    event.preventDefault();
+                }
+            }
+            }
+
+            timer = setInterval(showRemaining, 1000);
+        })*@
+</script>
+
+
+

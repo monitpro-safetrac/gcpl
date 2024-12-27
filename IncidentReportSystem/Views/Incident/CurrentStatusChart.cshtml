@@ -1,0 +1,15 @@
+﻿@model IncidentReportSystem.Models.StatusChartViewModel
+
+@{
+
+    var myChart1 = new Chart(width: 380, height:330, themePath: "customtheme1.xml")
+           .AddTitle("Incident Status", "main")
+        .AddSeries(name:"serie",chartType: "Pie",
+      
+            xValue: Model.statusCounts, xField: "StatusName",
+            yValues: Model.statusCounts, yFields: "TotalCount")
+                .AddLegend()
+        .Write();
+
+}
+

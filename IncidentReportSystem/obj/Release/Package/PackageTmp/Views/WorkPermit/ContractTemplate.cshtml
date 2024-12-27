@@ -1,0 +1,161 @@
+﻿@model MonitPro.Models.Contract
+@{
+    Layout = null;
+}
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+
+    @if (ViewBag.IsValidationFailed == true)
+    {
+        <div class="row">
+            <div class="text-danger col-lg-12 col-sm-12 text-center">
+                <strong>@Html.ValidationMessage("ApproverValidation")</strong>
+            </div>
+        </div>
+    }
+
+<style>
+    .padr{
+        padding-left:10px;
+        padding-right:30px;
+    }
+    .row{
+        padding-bottom:10px;
+    }
+    .col1{
+        padding-left:50px;
+    }
+    .col2{
+        padding-left:40px;
+    }
+    .col3{
+        padding-left:20px;
+    }
+    .tpad{
+        padding-left:60px;
+    }
+    .pad{
+        padding-left:40px;
+        padding-right:20px;
+    }
+</style>
+
+
+
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 pad">
+            <label>SASA-Contractor Statement:</label>
+            The awarding of contracts by SASA is determined on grounds not only of price and technical ability, but also on a Contractors’ past safety record and present ability to carry out work competently, safely and without risk to health. Please complete this Health and Safety Profile to enable SASA to make an assessment of contractor’s capability/performance with regard to Health & Safety? If the contractor fails to complete the profile in a reasonable period, or if the data supplied is insufficient or in any way not satisfactory, it could result in the contractor company being removed from the Register of Approved Contractors for use at SASA PTA - ADANA site.
+        </div>
+    </div>
+    <div class="padr">
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">
+                Company’s Name :
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.TextBoxFor(m => m.CompanyName, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(m => m.CompanyName, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 col2"> Contract Manager</div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.DropDownListFor(m => m.ValsparManager, new SelectList(Model.ValsparContactList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                @Html.ValidationMessageFor(m => m.ValsparManager, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 col3">Contractor Approver: </div>
+            <div class="col-lg-2 col-sm-2">@Html.DropDownListFor(m => m.ContactID, new SelectList(Model.ContractApprover, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.ContactID, null, new { @class = "label label-danger" })</div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">Supervisor First Name : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.SupervisorFirstName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.SupervisorFirstName, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col2">Supervisor Last Name : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.SupervisorLastName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.SupervisorLastName, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col3">Mobile No : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.MobileNo, null, new { @class = "label label-danger" })</div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">Address :</div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.TextBoxFor(m => m.Address, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(m => m.Address, null, new { @class = "label label-danger" })
+            </div>
+            <div class="col-lg-2 col-sm-2 col2">Street : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.Street, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.Street, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col3">City : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.City, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.City, null, new { @class = "label label-danger" })</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">State : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.State, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.State, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col2">Country : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.Country, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.Country, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col3">Post Code : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.PostCode, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.PostCode, null, new { @class = "label label-danger" })</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1">Email Address : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })  @Html.ValidationMessageFor(m => m.EmailAddress, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col2"> Frequency Of Evaluation : </div>
+            <div class="col-lg-2 col-sm-2">@Html.DropDownListFor(m => m.FrequencyID, new SelectList(Model.FrequencyOfEvaluation, "FrequencyID", "FrequencyName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @id = "WorkType", @onchange = "toggleDIvDisplay(this.value)" })  @Html.ValidationMessageFor(m => m.FrequencyID, null, new { @class = "label label-danger" })</div>
+
+            <div class="col-lg-2 col-sm-2 col3">Assessment Date : </div>
+            <div class="col-lg-2 col-sm-2">@Html.TextBoxFor(m => m.AssessmentDate, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "form-control input-sm", @autocomplete = "off" })</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col1"> Nature of business : </div>
+            <div class="col-lg-2 col-sm-2">@Html.DropDownListFor(m => m.NOBusinessTypeID, new SelectList(Model.NatureOfBusiness, "NOBusinessTypeID", "NOBusinessType"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @id = "WorkType", @onchange = "toggleDIvDisplay(this.value)" })  @Html.ValidationMessageFor(m => m.NOBusinessTypeID, null, new { @class = "label label-danger" })</div>
+            <div class="col-lg-2 col-sm-2 col2">Is any sub-contractor involved : </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.CheckBoxFor(m => m.SubcontractorInvolved)
+            </div>
+            <div class="col-lg-2 col-sm-2">
+                Have you received, read, understood and <br />
+                willing to follow SASA Safety code of conduct?
+            </div>
+            <div class="col-lg-2 col-sm-2 col3">
+                @Html.CheckBoxFor(m => m.Have)
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="col-lg-2 col-sm-2 col1"> Is the contractor Active?  </div>
+            <div class="col-lg-2 col-sm-2">
+                @Html.CheckBoxFor(m => m.Isactiveselect)
+
+            </div>
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-lg-12 col-sm-12 tpad">
+                @Html.Partial("TypeofWorkCheckList", Model)
+            </div>
+        </div>
+    </div>
+
+
+<script>
+  
+    jQuery('#AssessmentDate').datetimepicker({
+        format: 'd/m/Y',
+        timepicker: false,
+        lang: 'ru',
+        step: 30
+
+
+    });
+
+</script>

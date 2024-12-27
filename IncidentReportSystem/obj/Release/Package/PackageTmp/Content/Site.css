@@ -1,0 +1,129 @@
+﻿body {
+    margin:auto;
+    padding-top: 0px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.div-border {
+    border: 1px solid #000;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.div-h1 {
+    text-align: left;
+    margin-top: -10px;
+    margin-left: 15px;
+    line-height: 20px;
+    font-size: 16px;
+    font-weight: 700;
+    color: cadetblue;
+}
+
+.div-h1-span {
+    background-color: whitesmoke;
+}
+
+.border-div {
+    order: 1px solid #000;
+    width: 200px;
+    height: 200px;
+}
+
+.border-div-h2 {
+    text-align: left;
+    margin-left: 10px;    
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+}
+
+.border-div-h2-span {
+        background-color: white;
+}
+
+.contentdiv {
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.bodycontentdiv {
+    float:left;
+    overflow-y:auto;    
+}
+
+.img-wrapper {
+    background-repeat: no-repeat;
+    background-size: 100%;    
+}
+/* reset */
+/** {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}*/
+
+
+
+/*body {
+    background-color: #EFEFEF;
+}*/
+
+
+/* page */
+/*.page-wrapper {
+    margin: 0 auto;
+    width: 1000px;
+    max-width: 100%;
+}*/
+
+
+/* box */
+/*.box-content {
+    padding: 20px;
+    background-color: #EFEFEF;
+}*/*/
+
+
+/*textarea {
+    background-color: #FAFAFA;
+    border: #EFEFEF solid 1px;
+    color: #333;
+    height: 150px;
+    width: 1020px;
+}*/
+
+
+/* richtext custom style */
+/*.richText {
+    margin-top: 40px;
+    -webkit-box-shadow: 0 0 20px 0 #999;
+    -moz-box-shadow: 0 0 20px 0 #999;
+    box-shadow: 0 0 20px 0 #999;
+}*/

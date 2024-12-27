@@ -1,0 +1,313 @@
+﻿
+@model MonitPro.Models.MOC.NewMOCModel
+
+@{
+    /**/
+
+    Layout = null;
+}
+
+<style>
+    .pad {
+        padding-left: 30px;
+    }
+</style>
+
+<div id="Create" class="container-fluid container-lg container-sm container-md pad">
+    <div class="row">
+        <br />
+        <label for="Plant/Area Name" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Plant/Area</label>
+        <div class="form-group col-sm-5 col-lg-3 col-md-3  ">
+
+            @Html.DropDownListFor(model => model.moca.PlantID,
+              new SelectList(Model.PlantList, "ID", "Name"), "-- Select --", new { @class = "form-control input-sm", style = "width: 300px" })
+            @Html.ValidationMessageFor(model => model.moca.PlantID, "", new { @class = "label label-danger" })
+        </div>
+        <label for="ChangeType" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Change Type</label>
+        <div class="form-group col-sm-5 col-lg-2 col-md-2">
+            @Html.RadioButtonFor(model => model.moca.MOCClassificationID, 1) Permanent
+            &nbsp;@Html.RadioButtonFor(model => model.moca.MOCClassificationID, 2)  Temporary
+            @Html.ValidationMessageFor(model => model.moca.MOCClassificationID, "", new { @class = "label label-danger" })
+        </div>
+        <label for="Emergency" class="col-sm-1 col-lg-1 col-md-1 control-label  ">Emergency</label>
+        <div class="form-group col-sm-2 col-lg-1 col-md-1">
+
+            @Html.CheckBoxFor(m => m.moca.Emergency, htmlAttributes: new { @class = "big-checkbox",@disabled="disabled" })
+        </div>
+    </div>
+
+
+    <div class="row">
+        <label for="ChangeCategory" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Change Category</label>
+        <div class="form-group col-sm-2 col-lg-3 col-md-3">
+
+            @Html.DropDownListFor(model => model.moca.MOCTypeID,
+              new SelectList(Model.moctype, "ID", "Name"), "-- Select --", new { @class = "form-control input-sm", style = "width: 300px" })
+            @Html.ValidationMessageFor(model => model.moca.MOCTypeID, "", new { @class = "label label-danger" })
+        </div>
+        @*<label for="AssetID" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Asset ID & Name </label>
+        <div class="form-group col-sm-2 col-lg-2 col-md-2">
+
+            @Html.DropDownListFor(model => model.moca.AssetID,
+                      ViewBag.EquipmentList as SelectList, "--Select--", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.moca.AssetID, "", new { @class = "label label-danger" })
+        </div>*@
+        <div class="col-sm-2 col-md-2 col-lg-2  ">
+            <label>Estimated Cost (INR)</label>
+        </div>
+        <div class=" col-sm-2 col-md-2 col-lg-2  ">
+            @Html.TextAreaFor(model => model.moca.DRCost, new { @class = "form-control input-sm", @disabled = "disabled", @style = "width: 100px; height:30px;", onkeypress = "return /[0-9]/i.test(event.key)" })
+
+
+        </div>
+        @*<div class="col-sm-1 col-md-3 col-lg-3  "></div>*@
+    </div>
+    @*<div class="row">
+        <label for="ChangeEffectiveDate" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Change Effective Date</label>
+        <div class="form-group col-sm-5 col-lg-3 col-md-3">
+
+            @Html.EditorFor(model => model.moca.EffectiveDate, new { @class = "form-control date-time-picker", @style = "width: 300px;" })
+            @Html.ValidationMessageFor(model => model.moca.EffectiveDate, "", new { @class = "label label-danger" })
+        </div>
+        <label for="ExpiryDate" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Expiry Date</label>
+        <div class="form-group col-sm-5 col-lg-2 col-md-2">
+
+            @Html.EditorFor(model => model.moca.ExpiryDate, new { @class = "form-control date-time-picker", @style = "width: 320px;" })
+            @Html.ValidationMessageFor(model => model.moca.ExpiryDate, "", new { @class = "label label-danger" })
+        </div>
+        <div class="col-sm-1 col-md-1 col-lg-1  ">
+            <label>Estimated Cost (INR)</label>
+        </div>
+        <div class=" col-sm-1 col-md-1 col-lg-1  ">
+            @Html.TextAreaFor(model => model.moca.DRCost, new { @class = "form-control input-sm", @disabled="disabled",@style = "width: 100px; height:30px;", onkeypress = "return /[0-9]/i.test(event.key)" })
+
+
+        </div>
+    </div>*@
+    <div class="row">
+        <label for="SecondaryChange" class="col-sm-1 col-lg-2 col-md-2   control-label ">Secondary Changes</label>
+        <div class="form-group col-sm-11 col-lg-9 col-md-12 ">
+
+            <div class="col-sm-12 col-lg-12 col-md-9 " id="Category">
+
+                @for (var i = 0; i < Model.moca.mocCategory.Count; i++)
+                {
+                    <div class="col-md-3 col-sm-3 col-xs-3">
+                        @Html.HiddenFor(m => m.moca.mocCategory[i].ID)
+                        @Html.HiddenFor(m => m.moca.mocCategory[i].Name)
+                        @Html.CheckBoxFor(m => m.moca.mocCategory[i].YesNo, htmlAttributes: new { @class = "big-checkbox" })
+                        @Model.moca.mocCategory[i].Name
+                    </div>
+
+                }
+                <span class="MOCCategoryError label label-danger" style="display:none;">Please select at-least one Secondary Changes.</span>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @*<label for="ReasonforChange" class="col-sm-1 col-lg-2 col-md-2   control-label ">Reason for change</label>
+        <div class="form-group col-sm-11 col-lg-9 col-md-12 ">
+
+            <div class="col-sm-12 col-lg-12 col-md-9 " id="SecondaryCategory">
+
+                @for (var i = 0; i < Model.moca.GetMocReasonForChange.Count; i++)
+                {
+                    <div class="col-md-3 col-sm-3 col-xs-3">
+                        @Html.HiddenFor(m => m.moca.GetMocReasonForChange[i].ReasonID)
+                        @Html.HiddenFor(m => m.moca.GetMocReasonForChange[i].ReasonForChangeName)
+                        @Html.CheckBoxFor(m => m.moca.GetMocReasonForChange[i].YesNo, htmlAttributes: new { @class = "big-checkbox" })
+                        @Model.moca.GetMocReasonForChange[i].ReasonForChangeName
+                    </div>
+
+                }
+                <span class="SecondaryMOCCategoryError label label-danger" style="display:none;">Please select at-least one Reason for change.</span>
+
+            </div>
+        </div>*@
+    </div>
+    <div class="row">
+        <label for="Change Title" class="col-sm-1 col-lg-2 col-md-2 control-label  ">
+            Change Title<br />
+            (Maximum 100 Characters)
+        </label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4 ">
+
+            @Html.TextAreaFor(model => model.moca.MOCTitle, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;", maxlength = "100", onkeypress = "return /[0-9a-zA-Z ]/i.test(event.key)" })
+            @Html.ValidationMessageFor(model => model.moca.MOCTitle, "", new { @class = "label label-danger" })
+        </div>
+
+        <label for="Change Description" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Change Description</label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+            @Html.TextAreaFor(model => model.moca.MOCDescription, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.moca.MOCDescription, "", new { @class = "label label-danger" })
+        </div>
+    </div>
+    <div class="row">
+        <label for="ChangeJustification" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Change Justification </label>
+        <div class="form-group col-sm-10 col-lg-10 col-md-10">
+
+
+            @Html.TextAreaFor(model => model.moca.Others, new { @class = "form-control input1 input-sm", @style = "width: 1085px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.moca.Others, "", new { @class = "label label-danger" })
+        </div>
+    </div>
+
+    <div class="row">
+
+        <label for="Originator" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Originator</label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+            @Html.TextAreaFor(model => model.moca.CreatedBy, new { style = "width: 300px;height:30px", @disabled = "true" })
+            @Html.ValidationMessageFor(model => model.moca.CreatedBy, "", new { @class = "label  label-danger" })
+        </div>
+        <label for="MOCInitiationDate" class="col-sm-1 col-lg-2 col-md-2 control-label  ">MOC Initiation Date</label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+
+            @Html.EditorFor(model => model.moca.CreatedDate, new { @class = "form-control date-time-picker", @style = "width: 300px;" })
+            @Html.ValidationMessageFor(model => model.moca.CreatedDate, "", new { @class = "label label-danger" })
+        </div>
+    </div>
+
+
+    @*
+        <div class="row">
+            <label for="Process " class="col-sm-1 col-lg-2 col-md-2 control-label  ">Process </label>
+            <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+                @Html.TextAreaFor(model => model.moca.Process, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.moca.Process, "", new { @class = "label label-danger" })
+            </div>
+            <label for="Civil" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Civil </label>
+            <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+
+                @Html.TextAreaFor(model => model.moca.Civil, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.moca.Civil, "", new { @class = "label label-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="Electrical" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Electrical </label>
+            <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+
+                @Html.TextAreaFor(model => model.moca.Electrical, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.moca.Electrical, "", new { @class = "label label-danger" })
+            </div>
+            <label for="Mechanical" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Mechanical</label>
+            <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+                @Html.TextAreaFor(model => model.moca.Mechanical, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.moca.Mechanical, "", new { @class = "label label-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <label for="Instrument" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Instrument </label>
+            <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+
+                @Html.TextAreaFor(model => model.moca.Instrument, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.moca.Instrument, "", new { @class = "label label-danger" })
+            </div>
+            <label for="Instrument" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Others </label>
+            <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+
+                @Html.TextAreaFor(model => model.moca.Others, new { @class = "form-control input1 input-sm", @style = "width: 400px;   max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.moca.Others, "", new { @class = "label label-danger" })
+            </div>
+        </div>
+    *@
+
+    <div class="row">
+        <label for="Instrument" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Upload Document </label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+            <a id="link" href="javascript:UploadImages(@Model.moca.MOCID);" title="Upload Attachments"><img src="~/Images/upload.jpeg" title="Upload Attachments" alt="Upload" style="height:25px;width:25px;" /></a>
+        </div>
+
+        <label for="Functional Manager" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Discipline Lead</label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+
+
+
+            @Html.DropDownListFor(model => model.moca.MOCFunCMgrID, new SelectList(Model.FunMgrList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", style = "width: 300px;" })
+            @Html.ValidationMessageFor(model => model.moca.MOCFunCMgrID, "", new { @class = "label label-danger" })
+        </div>
+
+        <div class="form-group col-sm-5 col-lg-4 col-md-4"></div>
+    </div>
+
+
+
+</div>
+<div class=" panel-primary" width="100%" id="linemanagerdetails">
+    <br/>
+    <h1 class="div-h1"><span class="div-h1-span">&nbsp;Section 2: Decision Team/ Line Manager &nbsp;</span></h1>
+    <br/>
+    <div class="row">
+        <div class="form-group col-sm-5 col-lg-1 col-md-1 "></div>
+        <div class="form-group col-sm-5 col-lg-1 col-md-1 ">
+            @Html.CheckBoxFor(m => m.moca.VerifyRiskAssessment, htmlAttributes: new { @class = "big-checkbox" })
+            @Html.ValidationMessageFor(model => model.moca.Emergency, "", new { @class = "label label-danger" })
+        </div>
+
+        <label for="risk Assessement" class="col-sm-1 col-lg-2 col-md-2 control-label ">Verified idea, practicality and risk assessment </label>
+        <div class="form-group col-sm-5 col-lg-1 col-md-1">
+            @Html.CheckBoxFor(m => m.moca.CrossBussinessIdea, htmlAttributes: new { @class = "big-checkbox" })
+            @Html.ValidationMessageFor(model => model.moca.Emergency, "", new { @class = "label label-danger" })
+        </div>
+        <label for="risk Assessement" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Cross business review   / Cross business team completed </label>
+
+        <label for="Instrument" class="col-sm-1 col-lg-2 col-md-2 control-label  ">Line Manager Comment</label>
+        <div class="form-group col-sm-5 col-lg-4 col-md-4">
+            @Html.TextAreaFor(model => model.moca.FunMgrComment, new { @class = "form-control input-sm", @style = "width: 400px;   max-width: 100%;" })
+            @Html.ValidationMessageFor(model => model.moca.FunMgrComment, "", new { @class = "label label-danger" })
+
+        </div>
+
+
+    </div>
+</div>
+<div class="modal" id='myModal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+        <input type="hidden" id="RowCount" value="@Model.moca.mocCategory.Count" />
+    </div>
+</div>
+
+
+<script>
+    $("#Create *").attr('disabled', true);
+    $("#tblc *").attr('disabled', true);
+
+        if((@Model.RoleID==4)||(@Model.RoleID==18))
+        {
+
+
+            $('#hideAssign').show();
+
+
+
+        }
+        else
+        {
+
+            $("#tblc *").attr('disabled', true);
+            $('#moca_DRCost').attr('disabled',true);
+            $('#hideAssign').hide();
+
+
+    }
+    $(document).ready(function () {
+        $("#Create *").attr('disabled', true);
+        $('#moca_DRCost').attr('disabled', true);
+        $("#linemanagerdetails").attr('disabled', true);
+    })
+</script>

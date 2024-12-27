@@ -1,0 +1,857 @@
+﻿@model IncidentReportSystem.Models.IncidentObservationViewModel
+
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<style>
+
+
+
+    .SearchResults thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+</style>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+    @*<script>
+        if (@Model.Observation.ObservationID == 0) {
+            $(function () {
+
+                $("#DeptManager").select2();
+                $("#ActionBy").select2();
+            });
+        }
+           
+    </script>*@
+
+
+    <script type="text/javascript">
+
+        function SaveObservations(status) {
+
+          var ValidationMessage = '';
+            var ControlToFocus = '';
+            var formData = new FormData();
+            var fileUpload = $("#fileToUpload").get(0);
+            var files = fileUpload.files;
+            if (files[0] != null) {
+                formData.append(files[0].name, files[0]);
+            }
+            else {
+                formData.append('InciAttachment', $("#disvalue").html());
+
+            }
+
+            var SaveURL = '../Incident/SaveObservations';
+
+            var options = { "backdrop": "static", keyboard: true };
+
+            var ObservationMod = @Html.Raw(Json.Encode(Model.Observation));
+
+            //Temp Code
+            var CompletedUser = $("#Observation_UserID").val();
+
+            if (isNaN(CompletedUser)) {
+                CompletedUser = 0;
+              }
+              formData.append('IncidentID', $("#Observation_IncidentID").val());
+            formData.append('Title', $("#Title").val());
+            formData.append('Recommendation', $("#Recommendation").val());
+            formData.append('Description', $("#Descripition").val());
+            formData.append('CategoryID', $("#Category").val());
+            formData.append('PriorityID', $("#Priority").val());
+            formData.append('ActionTaken', $("#ActionTaken").val());
+            formData.append('DeptManager', $("#DeptManager").val());
+
+            ObservationMod.Title = $("#Title").val();
+            ObservationMod.Description = $("#Descripition").val();
+            ObservationMod.PriorityID = $("#Priority").val();
+            ObservationMod.Recommendation = $("#Recommendation").val();
+            ObservationMod.ActionTaken = $("#ActionTaken").val();
+            ObservationMod.DeptManager = $("#DeptManager").val();
+            if (status == 1) {
+                formData.append('CpStatusID', status);
+                formData.append('CompletedDate', $("#CompletedDate").val());
+
+            }
+            else if ($("#CapStatus").val() == 4) {
+                formData.append('CpStatusID', -1);
+
+            }
+            else if ($("#CapStatus").val() == 1) {
+                formData.append('CpStatusID', 1);
+                formData.append('CompletedDate', $("#CompletedDate").val());
+
+            }
+            else {
+                formData.append('CpStatusID', $("#CapStatus").val());
+            }
+            formData.append('TargetDate', $("#TargetDate").val());
+            formData.append('ObservationID', $("#ObservationID").val());
+            formData.append('UserID', $("#ActionBy").val());
+            if (status == 1) {
+                var x;
+                if (confirm("Has the task been completed ?") == true) {
+                    x = "Yes";
+                    if ($("#ActionTaken").val() == '') {
+                        ValidationMessage = ValidationMessage + '\n ActionTaken';
+
+                        if (ControlToFocus == '') {
+                            ControlToFocus = "#ActionTaken"
+                        }
+
+                        if (ValidationMessage != '') {
+                            alert('Please provide the following field(s) ' + ValidationMessage);
+                            $(ControlToFocus).focus();
+                        }
+                    }
+                    else {
+
+                        $.ajax({
+                            method: "POST",
+                            datatype: 'json',
+                            contentType: false,
+                            processData: false,
+                            cache: false,
+                            url: SaveURL,
+                            data: formData,
+
+                        })
+                            .done(function (msg) {
+                                alert("Data Saved Successfully " + msg);
+                            });
+
+                        alert('Data Saved Successfully');
+                        location.reload(true);
+                    }
+
+                }
+
+                else {
+                    x = "Cancel";
+                }
+            }
+
+            else {
+
+
+                if ($("#Recommendation").val() == '') {
+                    ValidationMessage = ValidationMessage + '\n Recommendation';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#Recommendation"
+                    }
+                }
+                if ($("#Priority").val() == 0) {
+                    ValidationMessage = ValidationMessage + '\n Priority';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#Priority"
+                    }
+                }
+                if ($("#DeptManager").val() == 0) {
+                    ValidationMessage = ValidationMessage + '\n Functional Manager';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#DeptManager"
+                    }
+                }
+                if ($("#ActionBy").val() == '') {
+                    ValidationMessage = ValidationMessage + '\n Action By';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#ActionBy"
+                    }
+                }
+                if ($("#TargetDate").val() == '') {
+                    ValidationMessage = ValidationMessage + '\n Target Date';
+
+                    if (ControlToFocus == '') {
+                        ControlToFocus = "#TargetDate"
+                    }
+                }
+
+                if (ValidationMessage != '') {
+                    alert('Please provide the following field(s) ' + ValidationMessage);
+                    $(ControlToFocus).focus();
+                }
+                else {
+                    $.ajax({
+                        method: "POST",
+                        datatype: 'json',
+                        contentType: false,
+                        processData: false,
+                        cache: false,
+                        url: SaveURL,
+                        data: formData,
+
+                    })
+                        .done(function (msg) {
+                            alert("Data Saved Successfully " + msg);
+                        });
+
+                    alert('Data Saved Successfully');
+                    location.reload(true);
+
+                }
+
+            }
+        }
+
+        function Statuschange() {
+            $("#CompletedDate").val("");
+        }
+
+        function ClearRecord() {
+            $("#Title").val('');
+            $("#Descripition").val('');
+            $("#Priority").val('');
+            $("#Recommendation").val('');
+            $("#ActionTaken").val('');
+            $("#ActionBy").val('');
+            $("#CapStatus").val('');
+            $("#DeptManager").val('');
+
+        }
+
+        function EditObservation(ObsID) {
+
+            var response;
+            var EditURL = '../Incident/EditObservation';
+            var options = { "backdrop": "static", keyboard: true };
+
+
+
+            var saveData = $.ajax({
+                type: "POST",
+                url: EditURL,
+                data: '{observationID: ' + ObsID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (resultdata) {
+                    $("#txtIncName").val(resultdata.insObservation.IncidentTitle);
+                    $("#txtPlantName").val(resultdata.insObservation.PlantName);
+
+                    $("#ObservationID").val(resultdata.insObservation.incidentObservation.ObservationID);
+                    //$("#Observation_IncidentID").val(resultdata.insObservation.incidentObservation.IncidentID);
+                    $("#Title").val(resultdata.insObservation.incidentObservation.Title);
+                    $("#Descripition").val(resultdata.insObservation.incidentObservation.Description);
+                    $("#Priority").val(resultdata.insObservation.incidentObservation.PriorityID);
+                    $("#Recommendation").val(resultdata.insObservation.incidentObservation.Recommendation);
+                    $("#ActionTaken").val(resultdata.insObservation.incidentObservation.ActionTaken);
+                    $("#TargetDate").val(resultdata.insObservation.incidentObservation.TargetDate);
+                    $("#CompletedDate").val(resultdata.insObservation.incidentObservation.CompletedDate);
+                    $("#ActionBy").val(resultdata.insObservation.incidentObservation.CompletedBy);
+                    $("#CapStatus").val(resultdata.insObservation.incidentObservation.CpStatusID);
+                    $("#DeptManager").val(resultdata.insObservation.incidentObservation.DeptManager);
+                    $("#disvalue").html(resultdata.insObservation.incidentObservation.InciAttachment);
+                    var attachment = resultdata.insObservation.incidentObservation.InciAttachment;
+                    var actionby = resultdata.insObservation.incidentObservation.CompletedBy;
+                    var cruser = @Model.CurrentUser;
+                    var status = resultdata.insObservation.incidentObservation.CpStatusID;
+                    if (actionby != cruser) {
+                        $("#btnSave").show();
+                        $("#btnCompleted").hide();
+                    }
+                    else {
+                        $("#btnSave").hide();
+                        $("#btnCompleted").show();
+                        $("#btnCompleted").attr("disabled", false);
+                    }
+                    if ((status == 1) && (@Model.RoleID == 4)) {
+                        $("#CapStatus").attr("disabled", false);
+                    }
+
+                    if (attachment != "") {
+                        $("#attach").show();
+                        $("#delete").show();
+
+                    }
+                    else {
+                        $("#attach").hide();
+                        $("#delete").hide();
+                    }
+                    console.log(resultdata);
+                },
+
+                error: function (errdata) {
+                    //alert(JSON.stringify(errdata));
+                    alert("Dynamic content load failed.");
+                }
+
+               
+            });
+        }
+
+
+        if ((@Model.observers.AssignedLead==@Model.CurrentUser) || (@Model.observers.Manager==@Model.CurrentUser))
+        {
+
+            $("#Title").prop("disabled", false);
+            $("#Priority").prop("disabled", false);
+            $("#Descripition").prop("disabled", false);
+            $("#Recommendation").prop("disabled", false);
+            $("#ActionTaken").prop("disabled", true);
+            $("#TargetDate").prop("disabled", false);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", false);
+
+            //window.location.href = '../Incident/Observation?incidentID=' + IncID;
+
+        }
+        else if ((@Model.actionerid==@Model.CurrentUser)&&(@Model.RoleID!=4))
+        {
+            $("#Title").prop("disabled", true);
+            $("#Priority").prop("disabled", true);
+            $("#Descripition").prop("disabled", true);
+            $("#Recommendation").prop("disabled", true);
+            $("#ActionTaken").prop("disabled", true);
+            $("#TargetDate").prop("disabled", true);
+            $("#ActionBy").prop("disabled", true);
+            $("#CompletedDate").prop("disabled", true);
+            $("#CapStatus").prop("disabled", true);
+            $("#DeptManager").prop("disabled", true);
+        }
+
+            if((@Model.StatusID==5)&&(@Model.RoleID==4)) {
+
+            $("#Title").prop("disabled", true);
+             $("#Priority").prop("disabled", true);
+             $("#Descripition").prop("disabled", true);
+             $("#Recommendation").prop("disabled", true);
+            $("#ActionTaken").prop("disabled", true);
+             $("#TargetDate").prop("disabled", true);
+            $("#ActionBy").prop("disabled", false);
+            $("#CompletedDate").prop("disabled", true);
+            $("#CapStatus").prop("disabled", true);
+            $("#DeptManager").prop("disabled", false);
+
+            //window.location.href = '../Incident/Observation?incidentID=' + IncID;
+
+            }
+            function DisabledActioner(ObsID) {
+
+                $("#Title").prop("disabled", true);
+                $("#Priority").prop("disabled", true);
+                $("#Descripition").prop("disabled", false);
+                $("#Recommendation").prop("disabled", true);
+                $("#ActionTaken").prop("disabled", false);
+                $("#TargetDate").prop("disabled", true);
+                $("#ActionBy").prop("disabled", true);
+                $("#CompletedDate").prop("disabled", true);
+                $("#DeptManager").prop("disabled", true);
+                $("#CapStatus").prop("disabled", true);
+            }
+
+          function EnabledHSE(ObservationID) {
+
+           if ((@Model.StatusID== 5) && (@Model.RoleID== 4)) {
+               $("#Title").prop("disabled", true);
+               $("#Priority").prop("disabled", true);
+               $("#Descripition").prop("disabled", true);
+               $("#Recommendation").prop("disabled", true);
+               $("#ActionTaken").prop("disabled", true);
+               $("#TargetDate").prop("disabled", true);
+               $("#ActionBy").prop("disabled", false);
+               $("#CompletedDate").prop("disabled", true);
+               $("#CapStatus").prop("disabled", true);
+               $("#DeptManager").prop("disabled", false);
+
+           }
+           else {
+               $("#Title").prop("disabled", false);
+               $("#Priority").prop("disabled", false);
+               $("#Descripition").prop("disabled", false);
+               $("#Recommendation").prop("disabled", false);
+               $("#ActionTaken").prop("disabled", true);
+               $("#TargetDate").prop("disabled", false);
+               $("#ActionBy").prop("disabled", false);
+               $("#CompletedDate").prop("disabled", true);
+               $("#DeptManager").prop("disabled", false);
+               $("#CapStatus").prop("disabled", true);
+           }
+
+        }
+
+
+        function DeleteObservation(ObsID) {
+            var EditURL = '../Incident/DeleteObservation';
+            var options = { "backdrop": "static", keyboard: true };
+            if (confirm(" Do you want to Delete the Observation ?") == true) {
+                x = "Yes";
+
+                $.ajax({
+                    type: "POST",
+                    url: EditURL,
+                    data: '{observationID: ' + ObsID + ' }',
+                    contentType: "application/json; charset=utf-8",
+                    datatype: "json",
+                    success: function (resultdata) {
+                        alert("Deleted Successfully!");
+                        window.location.reload(true);
+                    },
+                    error: function (errdata) {
+                        //alert(JSON.stringify(errdata));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            }
+            else {
+                x = "No";
+                event.preventDefault();
+
+            }
+
+        }
+
+        function DamageInfo() {
+            var CurrentURL = '../Incident/DamageInfo';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: '{RecommandationID: 1}',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+
+        function DeleteOBImage(ObservationID) {
+            var i;
+            if (confirm("Are you sure you want to delete ?") == true) {
+                i = "OK";
+                var options = { "backdrop": "static", keyboard: true };
+
+                $.ajax({
+                    method: "POST",
+                    url: "../Incident/DeleteOBDOC",
+                    data: { obid: ObservationID },
+                    success: function (response) {
+                        //$('#contentdiv').html(response);
+                        alert(' Deleted Successfully');
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert(JSON.stringify(data));
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            } else {
+                i = "Cancel";
+            }
+
+        }
+
+        function DamageInfo() {
+            var CurrentURL = '../Incident/DamageInfo';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: '{RecommandationID: 1}',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function ActionsToTake() {
+            var RecID = 1;
+            var CurrentURL = '../Incident/ActionToTake';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: '{RecommandationID: ' + RecID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function btnClear() {
+            $("#EmployeeName").val('');
+            $("#Dept").val('');
+        }
+
+
+        $(document).ready(function () {
+            $("#attach").hide();
+            $("#delete").hide();
+
+        });
+
+
+        $(function () {
+            $("#TargetDate").datepicker({dateFormat: 'dd/mm/yy', minDate: 0, autoclose: true});
+            $("#CompletedDate").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
+        function EditIncident(IncID) {
+
+            window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+        }
+
+
+    </script>
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+@{
+    ViewBag.Title = "Observations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html {
+            overflow: scroll;
+        }
+
+        .pad {
+            padding-left: 20px;
+        }
+
+        .pad1 {
+            padding-left: 40px;
+        }
+
+        .select2-container {
+            max-width: 100%;
+        }
+
+        .select2-container {
+            width: 300px; /* or any other value you prefer */
+        }
+
+        .row {
+            padding-bottom: 10px;
+        }
+
+        .col1 {
+            padding-left: 90px;
+        }
+
+        .col2 {
+            padding-left: 90px;
+        }
+
+        .padr {
+            padding-right: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Recommendations  (Provide Atleast One Recommendation)</h1>
+        </div>
+        <table id="fixTable" style="width:95%" align="center" class="table-borderedless table-responsive">
+            @Html.HiddenFor(model => model.Observation.ObservationID)
+            @Html.HiddenFor(model => model.Observation.IncidentID)
+            <tr>
+                <td colspan="4">
+                    <table style="width:95%" align="center" border="1">
+                        <tr>
+                            <th>Incident Number</th>
+                            <th>Incident Description</th>
+                            <th>Plant/Area</th>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayFor(model => model.IncidentNo)</td>
+                            <td style="word-break:break-all;">@Html.DisplayFor(model => model.IncidentTitle)</td>
+                            <td>@Html.DisplayFor(model => model.IncidentPlant)</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <br />
+
+        <div class="container-lg container-md container-sm padr">
+            <div class="row paddown">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>RecommendationID</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.TextBoxFor(Model => Model.Observation.ObservationID, new { @id = "ObservationID", @class = "form-control input-sm", @disabled = "disabled", @maxlength = "100", @style = "width: 250px;height:25px;   max-width: 100%;" })
+                </div>
+
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Status</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(Model => Model.Observation.CpStatusID,
+                                new SelectList(Model.Observation.observationstatuslist, "ID", "Name"), new { @class = "form-control", onclick = "Statuschange()", @id = "CapStatus", @disabled = "disabled", @maxlength = "100", @style = "width: 250px;height:25px;   max-width: 100%;" })
+
+                </div>
+            </div>
+
+
+
+
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Priority<span style="color:red"> *</span></label>
+                </div>
+
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.Observation.PriorityID,
+                                                    new SelectList(Model.Observation.PriorityList, "ID", "Name"), new { @class = "form-control input-sm", @id = "Priority", @maxlength = "100", @style = "width: 250px;height:25px;   max-width: 100%;" })
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Recommendation<span style="color:red"> *</span></label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.TextAreaFor(model => model.Observation.Recommendation, new { @id = "Recommendation", @class = "form-control input-sm", @style = "width: 500px;height:60px;   max-width: 80%;" })
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Functional Manager<span style="color:red"> *</span></label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(model => model.Observation.DeptManager,
+                           new SelectList(Model.DeptManagerList, "ID", "FullName"),new { @class = "form-control input-sm", @id = "DeptManager", @maxlength = "100", @style = "width: 250px;   max-width: 100%;" })
+                    @Html.ValidationMessageFor(model => model.Observation.DeptManager, "", new { @class = "label label-danger" })
+                </div>
+
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Target Date</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">@Html.EditorFor(model => model.Observation.TargetDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "TargetDate", @maxlength = "100", @style = "width: 250px;   max-width: 100%;", @autocomplete = "off" } })</div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Action By<span style="color:red"> *</span></label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.DropDownListFor(m => m.Observation.UserID, new SelectList(Model.Observation.ActionList, "UserID", "DisplayUserName", Model.Observation.UserID), "-- Select --",new { @id = "ActionBy", @class = "form-control input-sm", @maxlength = "100", @style = "width: 250px;   max-width: 100%;" })
+                    @Html.ValidationMessageFor(m => m.UserID, null, new { @class = "label label-danger" })
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Completed Date</label>
+                </div>
+
+                <div class="col-lg-3 col-sm-3">
+                    @Html.EditorFor(model => model.Observation.CompletedDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @id = "CompletedDate", @disabled = "disabled", @maxlength = "100", @style = "width: 250px;   max-width: 100%;" } })
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Action Taken</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @Html.TextAreaFor(model => model.Observation.ActionTaken, new { @id = "ActionTaken", @disabled = "disabled", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;" })
+                </div>
+                <div class="col-lg-3 col-sm-3 col2">
+                    <label>Remarks</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">@Html.TextAreaFor(model => model.Observation.Description, new { @id = "Descripition", @class = "form-control input-sm", style = "width: 500px; height: 60px;  max-width: 80%;" })</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3 col1">
+                    <label>Attachment</label>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    @*@Html.TextBoxFor(model => model.Observation.InciObAttachment, new { @id = "fileToUpload", type = "file", accept = "image/*" })*@
+                    <input id="fileToUpload" name="fileToUpload" class="form-control" type="file" />
+
+                    <span id="disvalue">
+                        @Html.DisplayFor(Model => Model.Observation.InciAttachment)
+
+                    </span>
+
+
+                </div>
+            </div>
+
+
+
+
+            <div class="text-center row">
+                <input type="button" id="btnSave" class="btn btn-primary" onclick="javascript: SaveObservations();" value="Save" />
+
+                &nbsp;<input type="button" class="btn btn-primary" value="Edit Incident" onclick="EditIncident(@Model.Observation.IncidentID);" />
+                @if (Model.actionerid == Model.CurrentUser)
+                {
+                    <input type="button" id="btnCompleted" class="btn btn-primary" disabled="disabled" onclick="javascript:SaveObservations(1);" value="Complete Task" />
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="container-fluid ">
+        <div class="div-border">
+            <h1 class="div-h1"><span class="div-h1-span"> Recommendations list</span></h1>
+
+            <table class="table table-striped table-hover pre-scrollable" id="SearchResults">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Incident Number</th>
+                        <th>Recom ID</th>
+                        <th>Priority</th>
+                        <th>Recommendation</th>
+                        <th>Action Taken</th>
+                        <th>Target Date</th>
+                        <th>Action by</th>
+                        <th>Completed Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.ObservationViewModelList)
+                    {
+                        <tr>
+                            <td>@item.SNo</td>
+                            <td>@item.IncidentNO</td>
+                            <td>@item.OBID</td>
+                            <td>@item.PriorityName</td>
+                            <td style="word-break:break-all;">@item.Recommendation</td>
+                            <td style="word-break:break-all;">@item.ActionTaken</td>
+                            <td>@item.TargetDate</td>
+                            <td>@item.CompletedUser</td>
+                            <td>@item.CompletedDate</td>
+                            <td>
+                                @if (item.Attachment != "")
+                                {
+                                    <a href="~/IncidentRecomAttachment/@item.Attachment" download>
+                                        <img id="attach" border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                    </a>
+                                    if (Model.Roles.Find(a => a.RoleName == "HSE Manager") != null)
+                                    {
+                                        <a id="delete" href="javascript:DeleteOBImage(@item.ObservationID);" title="Delete Image"><img src="~/Images/remove.png" alt="Delete" style="height:25px;width:25px;" /></a>
+                                    }
+                                }
+                                @if (item.ActionBy == Model.CurrentUser)
+                                {
+                                    <a href="javascript:EditObservation(@item.ObservationID);" onclick="DisabledActioner(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+
+                                }
+                                else
+
+                                if ((Model.Roles.Find(a => a.RoleName == "HSE Manager") != null) || (item.Approver == Model.CurrentUser) || (Model.observers.AssignedLead == Model.CurrentUser))
+                                {
+                                    <a href="javascript:EditObservation(@item.ObservationID);" onclick="EnabledHSE(@item.ObservationID);" title="Observations"><img src="~/Images/Edit.png" title="Edit Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                }
+
+                                @if (Model.Roles.Find(a => a.RoleName == "HSE Manager") != null)
+                                {
+                                    <a href="javascript:DeleteObservation(@item.ObservationID);"><img src="~/Images/DeleteIcon.jpg" title="Delete Observation" alt="Edit" style="height:25px;width:25px;" /></a>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+@*<div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Recommendations  (Provide Atleast One Recommendation)</h1>
+        </div>
+        <table id="fixTable" style="width:95%" align="center" class="table-bordered table-responsive">
+            @Html.HiddenFor(model => model.Observation.ObservationID)
+            @Html.HiddenFor(model => model.Observation.IncidentID)
+
+            <td colspan="4">
+                <table style="width:95%" align="center" border="1">
+                    <tr>
+                        <th>Incident Number</th>
+                        <th>Incident Description</th>
+                        <th>Plant/Area</th>
+                    </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.IncidentNo)</td>
+                        <td style="word-break:break-all;">@Html.DisplayFor(model => model.IncidentTitle)</td>
+                        <td>@Html.DisplayFor(model => model.IncidentPlant)</td>
+                    </tr>
+                </table>
+            </td>
+
+
+
+        </table>
+    </div>*@

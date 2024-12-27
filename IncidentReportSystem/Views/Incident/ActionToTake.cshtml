@@ -1,0 +1,112 @@
+﻿
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    function EditDamageDetails() {
+
+        var NewIncidentURL = '/Incident/EditRecommendations';
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "GET",
+            url: NewIncidentURL,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                $('#myModalContent1').html(data);
+                $('#myModal1').modal(options);
+                $('#myModal1').modal('show');
+
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+</script>
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel">Acions to Take</h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                        <tr>
+                            <td>Obsrvation</td>
+                            <td>Missing Fire Extinguisher</td>
+                        </tr>
+                        <tr>
+                            <td>Action to Take</td>
+                            <td>Keep Fire Extinguisher</td>
+                        </tr>
+                        <tr>
+                            <td>Obsrvation</td>
+                            <td>Fire</td>
+                        </tr>
+                        <tr>
+                            <td>Actions Taken</td>
+                            <td>@Html.TextBox("EmployeeName")</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>@Html.TextBox("EmployeeName")</td>
+                        </tr>
+                        <tr>
+                            <td>Attachments</td>
+                            <td>@Html.TextBox("EmployeeName")</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" id="btnSave" onclick="javascript: SaveRecommendation();" value="Save" style="width: 75px;" /></td>
+                            <td>&nbsp;<input type="button" id="btnClear" onclick="javascript: ClearSearch();" value="Clear" style="width: 75px;" /></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Observation</th>
+                                <th>Action To Take</th>
+                                <th>Description</th>
+                                <th>Action Taken</th>
+                                <th>Date</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Missing Fire Extinguisher</td>
+                                <td>Keep Fire Extinguisher</td>
+                                <td>Describes Fire Incident</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <a href=""><img src="~/Images/Edit.png" title="Edit Incident" alt="Edit" style="height:25px;width:25px;" /></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <br /><br /><br />
+    </div>
+    <br /><br />`
+</div>
+

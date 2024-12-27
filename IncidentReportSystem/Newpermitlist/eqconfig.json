@@ -1,0 +1,97 @@
+f{
+  "status": null,
+  "id": 0,
+  "userId": null,
+  "mqttConfig": {
+    "url": "ssl://ec2-35-160-105-146.us-west-2.compute.amazonaws.com:8883",
+    "port": 8883,
+    "clientId": "DaemonClient1",
+    "subScribeTopic": "/cluster/cid/command",
+    "reconnectSleep": 10000
+  },
+  "sqlConfig": {
+    "connectUrl": "/home/pi/iot/db/offlineDB/"
+  },
+  "outboundConfig": null,
+  "config": null,
+  "rebootCmd": "shutdown -r",
+  "offlineInterval": 60000,
+  "httpEqRestUrl": null,
+  "engineContextMap": {
+    "58": {
+      "status": "stop",
+      "id": 58,
+      "userId": null,
+      "mqttConfig": {
+        "url": "ssl://ec2-35-160-105-146.us-west-2.compute.amazonaws.com:8883",
+        "port": 0,
+        "clientId": "DaemonClientErrorListener1",
+        "subScribeTopic": null,
+        "reconnectSleep": 0
+      },
+      "sqlConfig": null,
+      "outboundConfig": {
+        "type": "1",
+        "mqtt.clientId": "outbound_2",
+        "url": "http://ec2-35-160-105-146.us-west-2.compute.amazonaws.com/monitPro/service/SaveEquipment",
+        "mqtt.url": "ssl://ec2-35-160-105-146.us-west-2.compute.amazonaws.com:8883",
+        "mqtt.topic": "/node/1/equip/58"
+      },
+      "config": {
+        "modbushost": "ec2-35-160-105-146.us-west-2.compute.amazonaws.com",
+        "quantity": "1",
+	"dev":"/dev/ttyUSB0",
+	"baud_rate":"9600",
+	"ascii":"rtu",
+        "slaveId": "1",
+        "interval": "10000",
+        "type": "2"
+      },
+      "equipment": {
+        "id": 58,
+        "userId": null,
+        "tagId": "02G06",
+        "name": "Acetone",
+        "config": null,
+        "outboundConfig": null,
+        "parameter": [
+          {
+            "id": 10740,
+            "config": {
+              "memoryaddress": [
+               44101
+              ],
+              "calcblock": "var x; x = v_0;",
+              "type": "holdingregister"
+            },
+            "name": "Density",
+            "min": "",
+            "max": "",
+            "tagId": "D102",
+            "uom": "",
+            "datatype": ""
+          },
+          {
+            "id": 10741,
+            "config": {
+              "memoryaddress": [
+                44103
+              ],
+              "calcblock": "var x; x = v_0;",
+              "type": "holdingregister"
+            },
+            "name": "Boiling point",
+            "min": "",
+            "max": "",
+            "tagId": "B103",
+            "uom": "",
+            "datatype": ""
+          }
+        ]
+      },
+      "eqConfigPath": null,
+      "outboundConnected": false
+    }
+  },
+  "outboundConnected": false
+}

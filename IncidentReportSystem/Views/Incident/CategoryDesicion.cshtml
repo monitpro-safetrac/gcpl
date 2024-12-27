@@ -1,0 +1,458 @@
+﻿@model MonitPro.Models.Incident.IncidentMaincategoryModel
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@{
+    ViewBag.Title = "CategoryDesicion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    html {
+        overflow: scroll;
+    }
+
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+
+    pre-scrollable {
+        max-height: 1000px;
+        overflow-y: scroll;
+    }
+
+    .padr {
+        padding-right: 60px;
+        padding-left: 30px;
+    }
+
+
+    #fixTable thead th {
+        position: sticky;
+        top: 0;
+    }
+
+    .radio-button {
+        width: 18px;
+        height: 18px;
+    }
+
+    .radio2 {
+        width: 18px;
+        height: 18px;
+    }
+
+    .InciType {
+        width: 18px;
+        height: 18px;
+    }
+   
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var check = @Model.tempValue;
+        var saveapi = check -1
+        if (check == 0) {
+            $("#fixTable1 tbody tr:not(:first)").hide();
+        }
+        else {
+            $("#fixTable1 tbody tr:gt(" + saveapi + ")").hide();
+        }
+    });
+       
+</script>
+@using (Html.BeginForm("CategoryDesicion", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(m => m.IncidentID)
+    @Html.HiddenFor(m => m.CurrentUserID)
+    @Html.HiddenFor(m => m.DecisionTypeID)
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <html>
+    <body>
+        <h1 class="div-h1"><span class="div-h1-span"> Incident Category Decision Tree </span></h1>
+
+        <table id="tbl" style="width:80%" align="center" border="1">
+            <tr>
+                <th>Incident Number</th>
+                <th>Plant/Area</th>
+                <th>Incident Description</th>
+            </tr>
+            <tr>
+                <td>@Html.DisplayFor(model => model.IncidentNO)</td>
+                <td>@Html.DisplayFor(model => model.PlantName)</td>
+                <td style="word-break:break-all;">@Html.DisplayFor(model => model.IncidentTitle)</td>
+            </tr>
+        </table><br />
+        <div class="tab-container">
+
+            <ul class="nav nav-tabs">
+                @foreach (var i in Model.DecisionTypeList)
+                {
+                    if (Model.DecisionTypeID == i.DecisionTypeID)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active checkactive" data-toggle="tab" href="#"
+                               onclick="GetDecisionList('@i.DecisionTypeID', this);">@i.DecisionTypeName</a>
+                        </li>
+                    }
+                    else if (i.Status == 1)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#"
+                               onclick="GetDecisionList('@i.DecisionTypeID', this);">@i.DecisionTypeName</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link halfactive" data-toggle="tab" href="#" onclick="GetDecisionList('@i.DecisionTypeID',this)">@i.DecisionTypeName</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+
+        <div id="container" class="container-lg container-sm  pre-scrollable" style="max-height:500px">
+            <table id="fixTable" style="width:100%" align="center" class="table table-striped header-fixed table-hover pre-scrollable">
+
+                <thead>
+                    <tr>
+
+                        <th>ID</th>
+                        <th align="center">Description</th>
+                        <th>Yes</th>
+                        <th>No</th>
+                        <th align="center">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.decisionlist.Count; i++)
+                    {
+                        @Html.HiddenFor(m => m.decisionlist[i].QuestionID)
+                        @Html.HiddenFor(m => m.decisionlist[i].Description)
+                        @Html.HiddenFor(m => m.decisionlist[i].DescriptionIdentity)
+                        <tr>
+                            @if (@Model.decisionlist[i].QuestionID != 0)
+                            {
+                                var temp = Model.decisionlist[i].DescriptionIdentity;
+                                var questionid = Model.decisionlist[i].QuestionID;
+                                <td>@Model.decisionlist[i].QuestionID</td>
+                                <td style="max-width:500px">@Model.decisionlist[i].Description</td>
+
+
+                                <td> @Html.RadioButtonFor(Model => Model.decisionlist[i].UserValue, "1", new { @class = "radio-button", @onclick = "DecisionautoChange(this, " + temp + "," + questionid + ");" })</td>
+                                <td>
+                                    @Html.RadioButtonFor(Model => Model.decisionlist[i].UserValue, "2", new { @class = "radio-button", @onclick = "DecisionautoChange(this, " + temp + "," + questionid + ");" })
+                                    @Html.ValidationMessageFor(Model => Model.decisionlist[i].UserValue, null, new { @class = "label label-danger" })
+                                </td>
+                                <td>
+                                    @Html.TextAreaFor(model => model.decisionlist[i].Remarks, new
+                               {
+                                   @class = "form-control input-sm",
+                                   @maxlength = "200",
+                                   @style = "width: 300px;   max-width: 100%;"
+                               })
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="max-width:500px" colspan="5"><b>@Model.decisionlist[i].Description</b></td>
+                            }
+
+
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div id="container1" class="container-lg container-sm  pre-scrollable" style="max-height:500px">
+            <table id="fixTable1" style="width:100%" align="center" class="table table-striped header-fixed table-hover pre-scrollable">
+
+                <thead>
+                    <tr>
+
+                        <th>ID</th>
+                        <th align="center">Description</th>
+                        <th>Yes</th>
+                        <th>No</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Api754List.Count > 0)
+                    {
+                        for (int i = 0; i < Model.Api754List.Count; i++)
+                        {
+                            @Html.HiddenFor(m => m.Api754List[i].RedirectionID)
+                            @Html.HiddenFor(m => m.Api754List[i].Result)
+                            @Html.HiddenFor(m => m.Api754List[i].QID)
+                            @Html.HiddenFor(m => m.Api754List[i].Description)
+                            <tr>
+                                <td>@Model.Api754List[i].QID</td>
+                                <td style="max-width:500px">@Model.Api754List[i].Description</td>
+
+                                <td> @Html.RadioButtonFor(Model => Model.Api754List[i].UserValue, "1", new { @class = "radio2",@id="radio2_"+i, @onclick = "GetNextLine(this, " + i + ");" })</td>
+                                <td>
+                                    @Html.RadioButtonFor(Model => Model.Api754List[i].UserValue, "2", new { @class = "radio2", @id = "radio2_" + i, @onclick = "GetNextLine(this, " + i + ");" })
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+
+            </table>
+        </div>
+        <div id="container2" class="container-lg pre-scrollable" style="display: flex; flex-direction: row; max-height: 500px">
+
+            <table id="fixTable5" class="table table-striped header-fixed table-hover pre-scrollable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px"></th>
+                        <th style="padding-left: 100px; text-align:center;width:150px">ID</th>
+                        <th style="width:250px">Description</th>
+                        <th>Value</th>
+                        <th style="padding-left:250px"></th>
+                        <th>Tier1 Indoor</th>
+                        <th>Tier1 Outdoor</th>
+                        <th>Tier2 Indoor</th>
+                        <th>Tier2 Outdoor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ChemicalList.Count > 0)
+                    {
+                        <tr>
+                            <td style="width: 50px"></td>
+                            <td style="width: 100px"></td>
+
+                            <td>Type of Release</td>
+                            <td>
+                                @Html.RadioButtonFor(Model => Model.IncidentChemicalQTYType, "1", new { @class = "InciType" }) &nbsp;Indoor &nbsp;&nbsp;
+                                @Html.RadioButtonFor(Model => Model.IncidentChemicalQTYType, "2", new { @class = "InciType" }) &nbsp;Outdoor &nbsp;&nbsp;
+                                @Html.ValidationMessageFor(Model => Model.IncidentChemicalQTYType, null, new { @class = "label label-danger" })
+                            </td>
+                            <td colspan="5"></td>
+                        </tr>
+                        for (int i = 0; i < Model.ChemicalList.Count; i++)
+                        {
+                            @Html.HiddenFor(m => m.ChemicalList[i].ChemicalID)
+                            @Html.HiddenFor(m => m.ChemicalList[i].ChemicalName)
+                            <tr>
+                                <td style="width: 50px"></td>
+                                <td style="padding-left: 100px; text-align:center ">@Model.ChemicalList[i].ChemicalID</td>
+                                <td>@Model.ChemicalList[i].ChemicalName</td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.ChemicalList[i].UserValue, new { @class = "ChemicalValue", onkeypress = "return isNumberKey(event)" })
+                                    @Html.ValidationMessageFor(Model => Model.ChemicalList[i].UserValue, null, new { @class = "label label-danger" })
+                                </td>
+                                <td style="padding-left:250px"></td>
+                                <td style="width:150px">@Model.ChemicalList[i].Tier1Indoor >= kg</td>
+                                <td style="width:150px">@Model.ChemicalList[i].Tier1Outdoor >=kg</td>
+                                <td style="width:150px">@Model.ChemicalList[i].Tier2Indoor >=kg</td>
+                                <td style="width:150px">@Model.ChemicalList[i].Tier2Outdoor >=kg</td>
+                            </tr>
+
+                        }
+
+
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div style="text-align: center; width: 50%; margin: 0 auto;">
+
+            @if (Model.decisionlist.Count > 0)
+            {
+                <b>Total :</b> @Model.calculationResult.Total
+                <b>Result :</b> @Model.calculationResult.CategoryName
+                <br />
+                <button class="btn btn-primary" type="submit" id="save" title="Submit"
+                        style=" width: 80px;height:30px;">
+                    Save
+                </button>
+            }
+            else if (Model.Api754List.Count > 0)
+            {
+                <b>Result:</b> <p id="tempValue">@Model.calculationResult.CategoryName</p>
+                <button class="btn btn-primary" type="submit" id="save" title="Submit"
+                        style=" width: 80px;height:30px;">
+                    Save
+                </button>
+            }
+            else if (Model.ChemicalList.Count > 0)
+            {
+                <b>Result:</b> @Model.calculationResult.CategoryName
+                <br />
+                <button class="btn btn-primary" type="submit" id="Chemicalsave" title="Submit"
+                        style=" width: 80px;height:30px;">
+                    Save
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-primary" type="submit" id="save" title="Submit"
+                        style=" width: 80px;height:30px;" disabled="disabled">
+                    Save
+                </button>
+            }
+            <input type="button" class="btn btn-primary" style=" width: 100px;height:30px;" value="Back"
+                   onclick="BackPage(@Model.IncidentID)" />
+            <input type="hidden" id="RowCount" value="@Model.Api754List.Count" />
+
+        </div>
+        <input type="hidden" id="decisionRowCount" value="@Model.decisionlist.Count" />
+        <input type="hidden" id="API754RowCount" value="@Model.Api754List.Count" />
+    </body>
+</html>
+}
+<script type="text/javascript">
+
+    function DecisionautoChange(select, Identity, QuestionID) {
+        for (var i = 0; i < $("#decisionRowCount").val(); i++) {
+            var EnableIdentity = $("#decisionlist_" + i + "__DescriptionIdentity").val();
+            var quesID = $("#decisionlist_" + i + "__QuestionID").val();
+            if (select.value === '1' && Identity == EnableIdentity && quesID != QuestionID && Identity != 0) {
+
+                $("input[name='decisionlist[" + i + "].UserValue'][value='2']").prop('checked', true);
+                $("#decisionlist_" + i + "__Remarks").attr("disabled", true);
+            }
+            else {
+                $("#decisionlist_" + i + "__Remarks").attr("disabled", false);
+            }
+
+        }
+    }
+
+    $(document).ready(function () {
+       
+        for (var i = 0; i < $("#decisionRowCount").val(); i++) {
+            var uservalue = $("input[name='decisionlist[" + i + "].UserValue']:checked").val();
+         if (uservalue === "1") {
+                $("#decisionlist_" + i + "__Remarks").attr("disabled", false);
+            }
+            else {
+                $("#decisionlist_" + i + "__Remarks").attr("disabled", true);
+            }
+        }
+    })
+
+</script>
+<script>
+
+    function GetDecisionList(DecisionID) {
+       window.location.href = '../Incident/CategoryDesicion?incidentid=' +@Model.IncidentID +'&&DecisionID=' + DecisionID;
+
+    }
+  
+
+
+    function BackPage(IncidentID) {
+        window.location.href = '../Incident/EditIncident?incidentID=' + IncidentID;
+       
+    }
+    $("#save").click(function () {
+        $(".radio-button").attr('required', true);
+    });
+    $("#Chemicalsave").click(function () {
+        $(".ChemicalValue").attr('required', true);
+        $(".InciType").attr('required', true);
+    });
+    $(document).ready(function () {
+        if (@Model.tempValue > 0) {
+            $('.ChemicalValue').val('');
+        }
+    });
+
+    $(document).ready(function () {
+        $("#container1").hide();
+        var ID = $("#DecisionTypeID").val();
+        if (ID == 5) {
+            $("#container").hide();
+            $("#container1").show();
+
+            $("#container2").hide();
+        }
+        else if (ID == 6) {
+            $("#container").hide();
+            $("#container1").hide();
+            $("#container2").show();
+        }
+        else {
+            $("#container").show();
+            $("#container1").hide();
+            $("#container2").hide();
+        }
+    });
+
+</script>
+<script type="text/javascript">
+
+    function GetNextLine(QID, row) {
+        var temp = QID.value;
+        var i = row + 1;
+        var redirect = $("#Api754List_" + row + "__RedirectionID").val();
+        if (redirect == temp) {
+            $("#fixTable1 tbody tr:lt(" + (i + 1) + ")").show();
+
+            $("#fixTable1 tbody tr:gt(" + i + ")").hide();
+            var result = $("#Api754List_" + row + "__Result").val();
+            if (i == 13 && temp == 1) {
+                $("#tempValue").text(result);
+            }
+        }
+        else {
+            var result = $("#Api754List_" + row + "__Result").val();
+            if (i == 13 && temp == 2) {
+                $("#tempValue").text("Tier 3");
+            }
+            else {
+                $("#tempValue").text(result);
+            }
+            $("#fixTable1 tbody tr:gt(" + row + ")").hide();
+
+        }
+    }
+
+</script>
+<script>
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.active').css('background-color', 'green');
+        $('.active').css('color', 'white');
+
+        $('.checkactive').css('background-color', '#428BCA');
+        $('.checkactive').css('color', 'white');
+        
+    })
+
+</script>
+
+@if (ViewBag.CategoryMessage != null)
+{
+    <script type="text/javascript">
+        alert('@ViewBag.CategoryMessage');
+        window.location.href ='../Incident/CategoryDesicion?incidentid='+@Model.IncidentID;
+
+    </script>
+}
+
+

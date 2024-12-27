@@ -1,0 +1,19 @@
+﻿
+@model MonitPro.Models.MOC.MonthlyMOCStatusChart
+@{
+    var mychart = new Chart(width: 400, height: 400, themePath: "customthemeMonthlyMOC.xml")
+        .AddTitle("Monthly MOC Status", "main")
+        .SetXAxis(title: "Months")
+        .SetYAxis(title: "Status")
+
+        .AddSeries(name: "Permanent", chartType: "StackedColumn",
+        xValue: Model.monthlychart, xField: "MonthName",
+        yValues: Model.monthlychart, yFields: "Permanent")
+
+        .AddSeries(name: "Temporary", chartType: "StackedColumn",
+        xValue: Model.monthlychart, xField: "MonthName",
+        yValues: Model.monthlychart, yFields: "Temporary")
+        .AddLegend()
+        .Write();
+
+}

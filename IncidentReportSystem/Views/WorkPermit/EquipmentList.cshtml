@@ -1,0 +1,209 @@
+﻿@model MonitPro.Models.EquipmentList
+@{
+    ViewBag.Title = "AddEquipment";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@section Scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Styles.Render("~/bundles/jqueryuicss"))
+}
+<script type="text/javascript">
+
+        function SearchEquipment(){
+        var response = null;
+        var CurrentURL = '../CAPA/AllCAPAObservation';
+        var options = { "backdrop": "static", keyboard: true };
+
+
+            var EquipMod = @Html.Raw(Json.Encode(Model.searchEquipment));
+
+
+            EquipMod.DivisionID = $("#searchEquipment_DivisionID").val();
+            EquipMod.EquipID = $("#searchEquipment_EquipID").val();
+
+        $.ajax({
+            method: "POST",
+            url: "../WorkPermit/EquipmentList",
+            data: EquipMod,
+            success: function (response) {
+                document.open();
+                document.write(response);
+             //   $('#MainBody').html(response);
+
+                //assign the values back to control
+
+                $("#searchEquipment_DivisionID").val(EquipMod.DivisionID);
+                $("#searchEquipment_EquipID").val(EquipMod.EquipID);
+
+                document.close();
+
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+        }
+
+
+        function ClearSearch() {
+
+            $("#searchEquipment_DivisionID").val('');
+            $("#searchEquipment_EquipID").val('');
+
+
+
+    }
+    $(function () {
+        $("#searchEquipment_EquipID").select2();
+
+        $("#searchEquipment_DivisionID").select2();
+
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+
+            #SearchResults thead th {
+                position: sticky;
+                top: 0;
+            }
+
+            .table-hover tbody tr:hover td {
+                background-color: #B4CFEC;
+            }
+
+            .table > thead > tr > th {
+                background-color: #428BCA;
+                color: white;
+            }
+
+            html {
+                overflow: scroll;
+            }
+
+            .row {
+                padding-bottom: 10px;
+            }
+
+            .pre-scrollable {
+                max-height: 400px;
+                overflow-y: scroll;
+            }
+        </style>
+    </head>
+    <body>
+        <br />
+        <div class="container-fluid">
+            <div class="div-border" width="100%">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Search Equipment &nbsp;</span></h1>
+                <div class="container-fluid padr">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-3 text-right">
+                            <label>Plant/Area</label>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            @Html.DropDownListFor(m => m.searchEquipment.DivisionID, ViewBag.DivisionList as SelectList, "-- Select  --", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                        </div>
+                        <div class="col-lg-3 col-sm-3 text-right">
+                            <label>Equipment ID - Name</label>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            @Html.DropDownListFor(model => Model.searchEquipment.EquipID,
+                                ViewBag.EquipmentList as SelectList, "--Select--", new { @class = "form-control", @maxlength = "100", @style = "width: 200px;height:25px;   max-width: 100%;" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center">
+                            <input type="button" class="btn btn-primary" onclick="SearchEquipment()" name="btnSearch" id="btnSearch" value="Search" />
+                            <input type="button" class="btn btn-primary" onclick="ClearSearch()" name="btnReset" id="btnReset" value="Clear" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.ActionLink("Export Equipment List", "ExportEquipmentList",  new { @class = "btn btn-primary" })
+            <br />
+            <div class="container-fluid">
+                <div class="div-border">
+                    <h1 class="div-h1"><span class="div-h1-span"> &nbsp;Equipment List &nbsp; &nbsp;&nbsp;</span></h1>
+                    <div class="table-responsive pre-scrollable header-fixed" id="IncidentListDiv">
+
+                        <table class="table table-hover table-striped" id="SearchResults">
+                            <thead>
+                                <tr>
+                                    <th width="1%">SNO</th>
+                                    <th>
+                                        Action
+                                    </th>
+                                    @*<th >Factory Name</th>*@
+                                    <th >Plant/Area </th>
+                                    <th width="20%">Equipment Type</th>
+                                    <th width="20%">Equipment ID</th>
+                                    <th width="20%">Equipment Name</th>
+                                    <th width="20%">Equipment Description</th>
+                                    <th>IsEquipment</th>
+                                    <th>IsActive</th>
+
+                                </tr>
+                            </thead>
+                            @for (var i = 0; i < Model.EquipmentEntity.Count; i++)
+                            {
+                                <tr>
+                                    <td> @(i + 1)</td>
+                                    <td> @Html.ActionLink("Edit", "UpdateEquipment", new { id = Model.EquipmentEntity[i].EquipmentID })</td>
+                                    @*<td> @Model.EquipmentEntity[i].FactoryName</td>*@
+                                    <td> @Model.EquipmentEntity[i].DivisionName</td>
+                                    <td>@Model.EquipmentEntity[i].EqTypeName</td>
+                                    <td> @Model.EquipmentEntity[i].EquipmentTagID</td>
+                                    <td> @Model.EquipmentEntity[i].EquipmentName</td>
+                                    <td> @Model.EquipmentEntity[i].EquipmentDescription</td>
+                                    <td> @Model.EquipmentEntity[i].IsEquipmentSelect</td>
+                                    <td> @Model.EquipmentEntity[i].IsActiveSelect</td>
+
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+
+}
+<script>
+    $(document).ready(function () {
+        $("#EquipmentList").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+</script>
+
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}

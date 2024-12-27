@@ -1,0 +1,646 @@
+﻿@model IncidentReportSystem.Models.IncidentListViewModel
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+
+@section scripts
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.triggerPopup').forEach(function (triggerPopup) {
+                triggerPopup.addEventListener('click', function (event) {
+                    // Get the current row's popup and overlay
+                    var popup = triggerPopup.nextElementSibling.nextElementSibling; // The next two siblings are the overlay and the popup
+                    var overlay = triggerPopup.nextElementSibling;
+
+                    // Get the position of the clicked image
+                    var rect = triggerPopup.getBoundingClientRect();
+                    var offsetX = rect.left + window.scrollX;
+                    var offsetY = rect.top + window.scrollY;
+
+                    // Display the overlay and popup
+                    overlay.style.display = 'block';
+                    popup.style.display = 'block';
+
+                    // Position the popup near the clicked image
+                    popup.style.position = 'absolute';
+                    popup.style.left = (offsetX - 50) + 'px'; // Horizontal position near the image
+
+                    // Calculate space remaining in the viewport
+                    var windowHeight = window.innerHeight;
+                    var spaceBelow = windowHeight - (offsetY + triggerPopup.offsetHeight);
+                    var popupHeight = popup.offsetHeight;
+
+                    // If there is not enough space below, position the popup above
+                    if (spaceBelow < popupHeight) {
+                        popup.style.top = offsetY - popupHeight - 5 + 'px'; // Position above the image
+                    } else {
+                        popup.style.top = offsetY + triggerPopup.offsetHeight + 5 + 'px'; // Position below the image
+                    }
+
+                    // Optional: Adjust the popup's maximum width or other styling
+                    popup.style.maxWidth = '300px'; // Set the max width for the popup
+                });
+            });
+
+            // Event listener for clicking on the overlay to close the popup
+            document.querySelectorAll('.overlay').forEach(function (overlay) {
+                overlay.addEventListener('click', function () {
+                    var popup = overlay.nextElementSibling; // The popup is the next sibling of the overlay
+                    overlay.style.display = 'none';
+                    popup.style.display = 'none';
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+
+    function CreateNewIncident() {
+
+        var NewIncidentURL = '../Incident/Create';
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "GET",
+            url: NewIncidentURL,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                $('#myModalContent').html(data);
+                $('#myModal').modal(options);
+                $('#myModal').modal('show');
+
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    function EditIncident(IncID) {
+
+        window.location.href = '../Incident/EditIncident?incidentID=' + IncID;
+
+    }
+        function Draft(IncID) {
+
+            window.location.href = '../Incident/CreateNew?incidentID=' + IncID;
+
+        }
+    function AssignObservers(IncID) {
+        window.location.href = '../Incident/AssignObservers?incidentID=' + IncID;
+    }
+
+    function UpdateStatus(IncID) {
+        var CurrentURL = '../Incident/UpdateStatus';
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "POST",
+                url: CurrentURL,
+                data: '{incidentID: ' + IncID + ' }',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (response) {
+                    $('#myModalContent').html(response);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+    }
+
+    function Observations(IncID) {
+        window.location.href = '../Incident/Observations?incidentID=' + IncID;
+    }
+
+
+    function UploadImages(IncID) {
+        window.location.href = '../Incident/UploadImages?incidentID=' + IncID;
+    }
+
+    function LogObservations(IncidentID) {
+
+        var CurrentURL = '../Incident/Observations/ID/' + IncidentID;
+        var options = { "backdrop": "static", keyboard: true };
+        $.ajax({
+            type: "GET",
+            url: CurrentURL,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                $('#myModalContent').html(data);
+                $('#myModal').modal(options);
+                $('#myModal').modal('show');
+
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    function SearchIncidents() {
+        var response = null;
+        var CurrentURL = '../Incident/Index';
+        var options = { "backdrop": "static", keyboard: true };
+
+        var InciMod = @Html.Raw(Json.Encode(Model.IncidentSearchVM));
+
+        InciMod.IncidentTitle = $("#IncidentSearchVM_IncidentTitle").val();
+        InciMod.IncidentStatus = $("#IncidentSearchVM_IncidentStatus").val();
+        InciMod.IncidentFromDate = $("#IncidentSearchVM_IncidentFromDate").val();
+        InciMod.IncidentToDate = $("#IncidentSearchVM_IncidentToDate").val();
+        InciMod.IncidentType = $("#IncidentSearchVM_IncidentType").val();
+        InciMod.IncidentPlant = $("#IncidentSearchVM_IncidentPlant").val();
+        InciMod.InciClass = $("#IncidentSearchVM_InciClass").val();
+
+        $.ajax({
+            method: "POST",
+            url: "../Incident/Index",
+            data: InciMod,
+            success: function (response) {
+                document.open();
+                document.write(response);
+
+               /* $('#MainBody').html(response);*/
+                //$("#contentdiv").replaceWith($('#contentdiv', response));
+                //assign the values back to control
+                $("#IncidentSearchVM_IncidentTitle").val(InciMod.IncidentTitle);
+                $("#IncidentSearchVM_IncidentStatus").val(InciMod.IncidentStatus);
+                $("#IncidentSearchVM_IncidentFromDate").val(InciMod.IncidentFromDate);
+                $("#IncidentSearchVM_IncidentToDate").val(InciMod.IncidentToDate);
+                $("#IncidentSearchVM_IncidentType").val(InciMod.IncidentType);
+                $("#IncidentSearchVM_IncidentPlant").val(InciMod.IncidentPlant);
+                $("#IncidentSearchVM_InciClass").val(InciMod.InciClass);
+                document.close();
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                alert("Dynamic content load failed.");
+            }
+        });
+
+    }
+
+    function OpenIncidentView(IncidentId) {
+
+        var IncidentURL = '../Incident/DetailedIncident';
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "POST",
+            url: IncidentURL,
+            data: { IncidentID: IncidentId },
+            success: function (data) {
+                $('#myModalContent').html(data);
+                $('#myModal').modal(options);
+                $('#myModal').modal('show');
+
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    function ClearSearch() {
+        $("#IncidentSearchVM_IncidentTitle").val('');
+        $("#IncidentSearchVM_IncidentStatus").val('');
+        $("#IncidentSearchVM_IncidentFromDate").val('');
+        $("#IncidentSearchVM_IncidentToDate").val('');
+        $("#IncidentSearchVM_IncidentType").val('');
+        $("#IncidentSearchVM_IncidentPlant").val('');
+        $("#IncidentSearchVM_IncidentPlant").select2('');
+        $("#IncidentSearchVM_InciClass").val(0);
+    }
+
+    function CloseModel() {
+        $('#myModal').modal('hide');
+    }
+
+    $(document).ready(function () {
+
+        $("#SearchResults").tableHeadFixer({ "left": 0 });
+        document.getElementById('IncidentListDiv').style.height = "100%";
+        document.getElementById('IncidentListDiv').style.width = window.innerWidth - 10 + "px";
+
+
+    });
+
+        jQuery('#IncidentSearchVM_IncidentFromDate').datetimepicker({
+            format: 'd/m/Y H:m',
+            timepicker: true,
+            lang: 'ru',
+            step: 30,
+
+        });
+
+        jQuery('#IncidentSearchVM_IncidentToDate').datetimepicker({
+            format: 'd/m/Y H:m',
+            timepicker: true,
+            lang: 'ru',
+            step: 30,
+
+        });
+        $(document).ready(function () {
+            $("#SearchResults").tableHeadFixer({ "left": 0 });
+            //document.getElementById('container').style.height = window.innerHeight  + "px";
+            document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+        });
+
+          $(function () {
+
+            $("#IncidentSearchVM_IncidentPlant").select2();
+
+        });
+    </script>
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+
+        /**/</script>
+}
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+
+        #SearchResults thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        html {
+            overflow: auto;
+        }
+
+        .table-hover tbody tr:hover td {
+            background-color: #B4CFEC;
+        }
+
+        .table > thead > tr > th {
+            background-color: #428BCA;
+            color: white;
+        }
+
+        pre-scrollable {
+            overflow-y: scroll;
+        }
+
+        .padr {
+            padding-right: 60px;
+            padding-left: 30px;
+        }
+
+        .col1 {
+            padding-left: 30px;
+        }
+
+        .col2 {
+            padding-left: 50px;
+        }
+
+        .col3 {
+            padding-left: 100px;
+        }
+
+        .select2-container {
+            max-width: 100%;
+        }
+
+        .select2-container {
+            width: 300px; /* or any other value you prefer */
+        }
+
+        .row {
+            padding-bottom: 10px;
+        }
+    </style>
+    <style>
+
+
+           /*.container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }*/
+
+           .image {
+               cursor: pointer;
+               width: 30px;
+               height: 30px;
+               border: 2px solid #ddd;
+               border-radius: 5px;
+               overflow: hidden;
+           }
+
+               .image img {
+                   width: 100%;
+                   height: 100%;
+                   object-fit: cover;
+               }
+
+           /* Popup styles */
+           .popup {
+               position: fixed;
+               top: 50%;
+               left: 90%;
+               transform: translate(-50%, -50%);
+               background: #fff;
+               box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+               padding: 20px;
+               border-radius: 10px;
+               z-index: 1000;
+               display: none;
+           }
+
+               .popup h2 {
+                   margin-top: 0;
+               }
+
+               .popup ul {
+                   list-style: none;
+                   padding: 0;
+               }
+
+                   .popup ul li {
+                       margin: 10px 0;
+                   }
+
+                       .popup ul li a {
+                           text-decoration: none;
+                           color: #007bff;
+                           transition: color 0.3s;
+                       }
+
+                           .popup ul li a:hover {
+                               color: #0056b3;
+                           }
+
+           .overlay {
+               position: fixed;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               background: rgba(0, 0, 0, 0.5);
+               z-index: 999;
+               display: none;
+           }
+    </style>
+
+
+
+</head>
+<body>
+    <div class="container-lg container-sm container-md container-xl">
+        <div class="div-border">
+            <h1 class="div-h1"><span class="div-h1-span">&nbsp;INCIDENTS LIST &nbsp;</span></h1>
+            <div class="container-lg container-sm container-md container-xl padr">
+
+                <div class="row">
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Incident From Date</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.EditorFor(model => model.IncidentSearchVM.IncidentFromDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @maxlength = "100", @style = "width: 300px;height:30px;   max-width: 100%;", @autocomplete = "off", @data_mdb_inline = "true" } })
+                    </div>
+
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Incident To Date</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.EditorFor(model => model.IncidentSearchVM.IncidentToDate, new
+                        {
+                            htmlAttributes = new
+                            {
+                                @class = "form-control date-time-picker",
+                                @maxlength = "100",
+                                @style = "width: 300px;height:30px;   max-width: 100%;",
+                                @autocomplete = "off",
+                                @data_mdb_inline = "true" // Razor allows this for custom data attributes
+                            }
+                        })
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col2">
+                        <label>Incident Description</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">@Html.EditorFor(model => model.IncidentSearchVM.IncidentTitle, new { htmlAttributes = new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:30px; max-width: 100%;" } }) </div>
+                </div>
+
+
+
+
+                <div class="row">
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Plant/Area</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownListFor(model => Model.IncidentSearchVM.IncidentPlant,
+                        ViewBag.IncidentPlant as SelectList, new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:30px;   max-width: 100%;" })
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Incident Category</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownListFor(model => Model.IncidentSearchVM.IncidentType,
+                            ViewBag.IncidentTypes as SelectList, new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:30px;   max-width: 100%;" })
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col2">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownListFor(Model => Model.IncidentSearchVM.IncidentStatus, new SelectList(Model.statusList.Where(x => x.ID != 6), "ID", "Name"), new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:30px;   max-width: 100%;" })
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-sm-2">
+                        <label>Incident Classification</label>
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        @Html.DropDownListFor(Model => Model.IncidentSearchVM.InciClass, new SelectList(Model.IncidentClassficationList, "ID", "Name"), "All", new { @class = "form-control", @maxlength = "100", @style = "width: 300px;height:30px;   max-width: 100%;" })
+                    </div>
+
+
+                    <div class="col-lg-2 col-sm-2">
+                        <img src="~/Images/searchIcon.png" onclick="SearchIncidents()" name="btnSearch" id="btnSearch" alt="Search Button" style="cursor: pointer;height:30px;width:30px" title="Search" />
+                        &nbsp; &nbsp; &nbsp;
+                        @if (Model.IncidentList.Count > 0)
+                        {
+                            <a href="@Url.Action("ExportIncidentList", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, IncidentPlantID = ViewBag.PlantID, incidentstatus = ViewBag.IncidentStatus, incidenttype = ViewBag.IncidentType, inciclass = ViewBag.InciClass })">
+                                <img src="~/Images/ms-excel-icon.png" alt="Export Incident List" style="width: 30px; height: 30px; cursor: pointer;" title="Export Incident List" />
+                            </a>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container-fluid">
+
+        <div class="container-lg container-sm  pre-scrollable" style="max-height: 70vh;" id="IncidentListDiv">
+            @if (Model.IncidentList.Count > 0)
+            {
+                <table class="table table-striped header-fixed table-hover pre-scrollable" id="SearchResults" width="100%">
+                    <thead>
+                        <tr>
+                            <th width="1%">S.No</th>
+                            <th width="10%">Plant</th>
+                            <th width="8%">Incident ID</th>
+                            <th width="5%">Category</th>
+                            <th width="10%">Classification</th>
+                            <th width="25%">Incident Description</th>
+                            <th width="15%">Incident Date</th>
+                            <th width="10%">Created By</th>
+                            <th width="10%">Status</th>
+                            <th width="10%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.IncidentList)
+                        {
+                            // Determine the user's roles
+                            bool isAdministrator = Model.Roles.Any(a => a.RoleName == "Administrator");
+                            bool isHSEManager = Model.Roles.Any(a => a.RoleName == "HSE Manager");
+                            bool isOtherUser = Model.Roles.Any(a => a.RoleName != "HSE Manager" && a.RoleName != "Administrator");
+
+                            <tr>
+                                <td>@item.SNo</td>
+                                <td>@item.PlantArea</td>
+                                <td>@item.IncidentNO</td>
+                                <td>@item.IncidentType</td>
+                                <td>@item.Inciclassification</td>
+                                <td style="word-break:break-all;">@item.Title</td>
+                                <td>@item.IncidentTime.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>@item.CreatedBy</td>
+                                <td>@item.CurrentStatus</td>
+
+                                <!-- Actions column -->
+                                <td>
+                   
+
+                                    <div class="image triggerPopup">
+                                        <img src="~/Users/application.png"  alt="Click to open popup" width="30" height="30">
+                                    </div>
+                                    <div class="overlay" style="display: none;"></div>
+                                    <div class="popup" style="display: none;">
+                                        <ul>
+                                            <li>
+                                                @if (isAdministrator || isHSEManager)
+                                                {
+                                                    // Administrator and HSE Manager can perform these actions
+                                                    if (item.CurrentStatus == "Draft")
+                                                    {
+                                                        <a href="javascript:Draft(@item.IncidentID);" title="Draft"><img src="~/Images/View.png" title="Draft" alt="Draft" style="height:25px;width:25px;" /></a>
+                                                    }
+                                                    if (item.CurrentStatus != "Draft" && item.CurrentStatus != "Approved")
+                                                    {
+                                                        <a href="javascript:EditIncident(@item.IncidentID);" title="Edit Incident"><img src="~/Images/Edit.png" title="Edit Incident" alt="Edit" style="height:25px;width:25px;" /></a>
+                                                    }
+                                                    if (item.CurrentStatus == "New" || item.CurrentStatus == "Approved")
+                                                    {
+                                                        if (string.IsNullOrEmpty(item.ActionTaken) && item.ObCount > 0)
+                                                        {
+                                                            <a href="javascript:UpdateStatus(@item.IncidentID);"><img src="~/Images/StatusChange.png" title="Update Status" alt="Change Status" style="height:25px;width:25px;" /></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/StatusChange.png" title="Please Complete All Recommendations" alt="Change Status" style="height:25px;width:25px;" disabled />
+                                                        }
+                                                    }
+                                                }
+                                                else if (isOtherUser)
+                                                {
+                                                    // For other users (e.g., DeptManagers, ObserverTeamLead)
+                                                    foreach (var item1 in Model.ObserverTeamList)
+                                                    {
+                                                        if (((item1.DeptManager == Model.CurrentUser || item1.ObserverTeamLead == Model.CurrentUser) && item1.IncidentID == item.IncidentID) && item.CurrentStatus != "Draft" && item.CurrentStatus != "Approved")
+                                                        {
+                                                            <a href="javascript:EditIncident(@item.IncidentID);" title="Edit Incident"><img src="~/Images/Edit.png" title="Edit Incident" alt="Edit" style="height:25px;width:25px;" /></a>
+                                                            break;
+                                                        }
+
+                                                        // Additional logic for ObserverTeam or DeptManager with specific status
+                                                        if ((item1.ObserverTeamLead == Model.CurrentUser || item1.DeptManager == Model.CurrentUser) && item.CurrentStatus == "Under Investigation")
+                                                        {
+                                                            <a href="javascript:EditIncident(@item.IncidentID);" title="Edit Incident"><img src="~/Images/Edit.png" title="Edit Incident" alt="Edit" style="height:25px;width:25px;" /></a>
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            </li>
+                                            <li><a href="@Url.Action("IncidentPdf", "Incident", new { id = @item.IncidentID })" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a></li>
+                                            @*<li><a href="@Url.Action("IncidentLFIPdf", "Incident", new { id = @item.IncidentID })" target="_blank" title="LFI PDF"><img src="~/Images/doc.png" style="height:30px;width:30px;" /></a></li>*@
+                                            @if (item.FileName != "")
+                                            {
+                                                <li>
+                                                    <a href="~/IncidentAttachments/@item.FileName" download>
+                                                        <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+
+
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            else
+            {
+                <p>No Incidents not Found</p>
+            }
+        </div>
+
+    </div>
+    </div>
+
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

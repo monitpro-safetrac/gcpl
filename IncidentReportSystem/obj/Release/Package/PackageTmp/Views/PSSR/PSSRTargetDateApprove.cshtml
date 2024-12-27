@@ -1,0 +1,170 @@
+﻿
+@model MonitPro.Models.PSSR.TargetDateApprove
+
+@{
+    Layout = null;
+}
+
+
+<script type="text/javascript">
+    jQuery('#TargetDate').datetimepicker({
+        format: 'd/m/Y',
+        timepicker: false,
+        lang: 'ru',
+        step: 30
+
+    });
+</script>
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+        <h4 class="modal-title" id="myModalLabel"><b>Target Date Approve</b></h4>
+    </div>
+
+    <div class="container">
+        <table cellpadding="4" cellspacing="4" width="90%" align="center" style="border: solid 2px gray;">
+            <tr>
+                <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+                <td height="10px" colspan="3">
+                    <table cellpadding="4" cellspacing="4" width="90%" align="center">
+                        <tr>
+                            <td colspan="2">@Html.HiddenFor(model => model.RecomID)</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Recommendation ID</b></td>
+                            <td>@Html.DisplayFor(model => model.RecomID)</td>
+                          
+                        </tr>
+                        <tr>
+                            <td><b>Exsisting Target Date</b></td>
+                            <td>
+                                @Html.DisplayFor(model => model.ExsistingTargetDate)
+                            </td>
+                            <td><b>Requested Target Date</b></td>
+                            <td>
+                                @Html.DisplayFor(model => model.RequestTargetDate)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Reason for Requested Target Date</b></td>
+                            <td>@Html.DisplayFor(model => model.RequestRemarks)</td>
+                        </tr>
+                        <tr id="alterTargetDate">
+                            <td>Alternative Target Date</td>
+                            <td>
+                                @Html.EditorFor(model => model.TargetDate, new { htmlAttributes = new { @class = "form-control date-time-picker", @style = "width: 160px;height:25px", @autocomplete = "off" } })
+
+                            </td>
+                        </tr>
+                        <tr><td colspan="2">&nbsp;</td></tr>
+                        <tr>
+
+
+                            <td align="center" colspan="2">
+                                <input type="button" class="btn btn-primary" id="btnUpdate" value="Approve" />
+
+                                <input type="button" class="btn btn-primary" id="btnchange" value="Change & Approve" />
+
+                                <input type="button" class="btn btn-primary" id="btnCancel" value="Cancel" />
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+    <br /><br />`
+</div>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        $("#alterTargetDate").hide();
+      
+    });
+
+    $('#btnchange').click(function () {
+
+        var currentURL = '../PSSR/UpdatePSSRTargetDateRequest';
+        $("#alterTargetDate").show();
+        var targetdate = $("#TargetDate").val();
+        var reommid = $("#RecomID").val();
+        if (targetdate != "") {
+            $.ajax({
+                type: "POST",
+                url: currentURL,
+                data: { Recomid: reommid, Identiy: 2, RevisedTargetDate: targetdate },
+                success: function (response) {
+                    alert('Target Date Approved Successfully');
+                    $('#myModal').modal('hide');
+                    location.reload(true);
+                },
+                error: function (errmessage) {
+                    alert("Failed to update PSSR status: " + JSON.stringify(errmessage));
+                    $('#myModal').modal('hide');
+                }
+            });
+        }
+        else {
+            $('#myModal').modal('show');
+        }
+    });
+    $('#btnUpdate').click(function () {
+
+        var currentURL = '../PSSR/UpdatePSSRTargetDateRequest';
+        var reommid = $("#RecomID").val();
+        $.ajax({
+            type: "POST",
+            url: currentURL,
+            data: { Recomid: reommid, Identiy: 3 },
+            success: function (response) {
+                alert('Target Date Approved Successfully');
+                $('#myModal').modal('hide');
+                location.reload(true);
+            },
+            error: function (errmessage) {
+                alert("Failed to update PSSR status: " + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    });
+    $('#btnCancel').click(function () {
+        var currentURL = '../PSSR/UpdatePSSRTargetDateRequest';
+        var reommid = $("#RecomID").val();
+        $.ajax({
+            type: "POST",
+            url: currentURL,
+            data: { Recomid: reommid, Identiy: 4 },
+            success: function (response) {
+                alert('Requested Target Date Cancelled !!!');
+                $('#myModal').modal('hide');
+                location.reload(true);
+            },
+            error: function (errmessage) {
+                alert("Failed to update PSSR status: " + JSON.stringify(errmessage));
+                $('#myModal').modal('hide');
+            }
+        });
+    })
+   
+</script>
+
+
+
+
+@*function CloseModel() {
+        $('#myModal').modal('hide');
+    }*@
+
+

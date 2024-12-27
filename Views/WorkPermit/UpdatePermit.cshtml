@@ -1,0 +1,96 @@
+﻿@model ValsparApp.Models.WorkPermit
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Update</h1>
+        </div>
+        <div id="container" class="table-responsive">
+            @Html.HiddenFor(m => m.Status)
+            @Html.HiddenFor(m => m.WorkPermitID)
+            <table id="fixTable" class="table-bordered table-responsive" width="98%">
+                @Html.Partial("PermitTemplate", Model)
+
+                @*@if (Model.WorkTypeID == 1)
+                {
+                    <tr id="ElectricalInstallation">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("ElectricalInstallation", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                @if (Model.WorkTypeID == 5)
+                {
+                    <tr id="HotWork">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HotWork", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.WorkTypeID == 8)
+                {
+                    <tr id="HeightFragileRoof">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HeightFragileRoof", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.WorkTypeID == 10)
+                {
+                    <tr id="HazardInformation">
+                        <td colspan="4">
+                            <div>
+                                @Html.Partial("HazardInformation", Model)
+                            </div>
+                        </td>
+                    </tr>
+                }*@
+                <tfoot>
+                    <tr>
+                        <td colspan="4" align="center">
+                            <input type="submit" class="btn btn-primary" value="Save" id="Save" style="width:125px" />&nbsp;&nbsp;
+                            @*<input type="submit" class="btn btn-primary" value="Submit for Approval" id="SubmitForApproval" style="width:200px" />&nbsp;&nbsp;*@
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        @Html.HiddenFor(m => m.WorkTypeID);
+    </div>
+}
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $("#SubmitForApproval").click(function (event) {
+        $('#Status').val("S");
+    }
+);
+    $("#SavePermit").click(function (event) {
+        $('#Status').val("D");
+    }
+ );
+
+    $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 100 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+
+
+
+    
+</script>

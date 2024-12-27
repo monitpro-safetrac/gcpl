@@ -1,0 +1,123 @@
+﻿
+@model IncidentReportSystem.Models.CreateComplianceViewModel
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+
+            <div id="WasteList" class="table-responsive pre-scrollable" style="max-height:600px">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">Update Compliance</h1>
+                    </div>
+                    @Html.HiddenFor(m => m.ComplianceFormID)
+
+                    <table class="table table-responsive  pre-scrollable table-bordered">
+                        <tr>
+                            <td class="col-md-4 text-right">Transporter Name: </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.TransporterName, new SelectList(Model.Contract, "ContractID", "TransporterName", Model.ContractID), new { @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.TransporterName, null, new { @class = "label label-danger" })
+
+                            </td>
+                            <td class=" text-right">Type of Vehicle  : </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.VechicleID, new SelectList(Model.Vechicle, "VechicleId", "VechicleType"), new { @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.VechicleID, null, new { @class = "label label-danger" })
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class=" text-right">Vehicle Registration No: </td>
+                            <td>
+                                @Html.TextAreaFor(m => m.VechicleRegistrationNumber, new { maxlength = "250", @rows = "1", @cols = "300px" })
+                                @Html.ValidationMessageFor(m => m.VechicleRegistrationNumber, null, new { @class = "label label-danger" })
+
+                            </td>
+                            <td class=" text-right">Receiver Name : </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.ReceiverName, new SelectList(Model.Contract, "ContractID", "ReceiverName"), new { @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.ReceiverName, null, new { @class = "label label-danger" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Compliance Date</td>
+                            <td>
+                                @Html.TextBoxFor(m => m.ComplianceDate, new { style = "width: 150px;", @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.ComplianceDate, null, new { @class = "label label-danger" })
+                            </td>
+
+                            <td colspan="2"></td>
+                        </tr>
+                    </table>
+
+                    @Html.Partial("WasteQuantityList", Model)
+
+
+                    <table class="table table-responsive table-bordered">
+                        <tr>
+                            <td class="col-md-4 text-right">Physical Form : </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.PhysicalFormId, new SelectList(Model.Form, "PhysicalFormId", "Type"), new { @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.PhysicalFormId, null, new { @class = "label label-danger" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class=" text-right">Sender Certificate: </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.SenderName, new SelectList(Model.ApproverList, "UserID", "DisplayUserName"), new { @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.SenderName, null, new { @class = "label label-danger" })
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                <input type="submit" class="btn btn-primary" value="Update" style="width:100px" />&nbsp;&nbsp;
+                                <input type="button" class="btn btn-primary" value="Clear" style="width:100px" id="Reset" />
+                            </td>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-1"></div>
+}
+<script>
+    jQuery('#ComplianceDate').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru'
+    });
+</script>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+
+
+<script>
+    $("#Reset").click(function (event) {
+        $(".field-validation-error").empty();
+        $(':text').val("");
+        $('select').val("");
+        // Clear values from all the text boxes
+    }
+    );
+    $(document).ready(function () {
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+    });
+</script>

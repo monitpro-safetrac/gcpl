@@ -1,0 +1,292 @@
+﻿@model MonitPro.Models.NewContractor
+@{
+
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<style>
+    .select2-container {
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: 300px; /* or any other value you prefer */
+    }
+
+    html{
+        overflow:scroll;
+    }
+    .row{
+        padding-bottom:10px;
+    }
+    .padr{
+        padding-left:20px;
+        padding-right:30px;
+    }
+    .col1{
+        padding-left:60px;
+    }
+    .col2{
+        padding-left:40px;
+    }
+</style>
+
+@using (Html.BeginForm("CreateContractorEmployee", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-fluid"><br />
+        @*<div class="panel panel-primary">
+            <div class="panel-heading">
+                <h1 class="panel-title">Create New Contractor Employee</h1>
+            </div>*@
+            <div class="div-border" style="width:80%; ">
+                <h1 class="div-h1"><span class="div-h1-span">&nbsp;Create New Contractor Employee &nbsp;</span></h1>
+
+                <div class="container-fluid padr">
+                    <div class="table table-responsive">
+                        @Html.HiddenFor(m => m.EmployeeID)
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>First Name :</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.HiddenFor(m => m.UserID) @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "label label-danger" })
+                            </div>
+                            <div class="col-lg-3 col-sm-3 col2"><label>Last Name :</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.LastName, new {  @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "label label-danger" })
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>Contractor Employee ID:</label></div>
+                            <div class="col-lg-3 col-sm-3">@Html.TextBoxFor(m => m.EmployeeID, new {  @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @disabled = "true" })</div>
+
+                            <div class="col-lg-3 col-sm-3 col2"><label>ID Card Detail (Aadhar etc)</label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.IDDetail, new {  @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.IDDetail, null, new { @class = "label label-danger" })
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>Contractor Company :</label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.DropDownListFor(m => m.ContractID, new SelectList(Model.ContractorList, "ContractorID", "ContractorName"), "-- Select Contractor--", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.ContractID, null, new { @class = "label label-danger" })
+                            </div>
+                            <div class="col-lg-3 col-sm-3 col2"> <label>Age</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.Age, new {  @id = "txtAge", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>WorkType :</label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.DropDownListFor(m => m.SkillsID, new SelectList(Model.contractorskills, "SkillsID", "SkillName"), "-- Select--", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.SkillsID, null, new { @class = "label label-danger" })
+                            </div>
+
+                            <div class="col-lg-3 col-sm-3 col2"><label>Training Type :</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.DropDownListFor(m => m.TrainingTypeID, new SelectList(Model.trainingtype, "TypeID", "TypeName"), "-- Select Traning Type--", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.TrainingTypeID, null, new { @class = "label label-danger" })
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>Mobile Number :</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.MobileNumber, new {  @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.MobileNumber, null, new { @class = "label label-danger" })
+                            </div>
+
+
+                            <div class="col-lg-3 col-sm-3 col2"><label> Frequency </label></div>
+                            <div class="col-lg-3 col-sm-3">@Html.DropDownListFor(m => m.FrequencyID, new SelectList(Model.FrequencyOfEvaluation, "FrequencyID", "FrequencyName"), "-- Select Frequency--", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @id = "WorkType", @onchange = "toggleDIvDisplay(this.value)" })  @Html.ValidationMessageFor(m => m.FrequencyID, null, new { @class = "label label-danger" })</div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>Date Of Birth:</label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.DateOFBirth, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @Id = "txtbirthdate", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.DateOFBirth, "", new { @class = "label label-danger" })
+                            </div>
+
+                            <div class="col-lg-3 col-sm-3 col2"><label>Department :</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.DropDownListFor(m => m.DepartID, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.DepartID, null, new { @class = "label label-danger" })
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label>Training Date :</label></div>
+                            <div class="col-lg-3 col-sm-3">@Html.TextBoxFor(m => m.TraningDate, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "td", @autocomplete = "off" })</div>
+
+
+                            <div class="col-lg-3 col-sm-3 col2"><label>Emergency Contact Number:</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.EmergencyContactNumber, new {  @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(m => m.EmergencyContactNumber, null, new { @class = "label label-danger" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-3 col1"><label> Date Of Joining</label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.DateOfJoining, new { @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @class = "td", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(m => m.DateOfJoining, null, new { @class = "label label-danger" })
+
+                            </div>
+
+                            <div class="col-lg-3 col-sm-3 col2"> <label>PF Number</label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextBoxFor(m => m.PFNumber, new {  @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                @Html.ValidationMessageFor(model => model.PFNumber, "", new { @class = "label label-danger" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label> Address: </label></div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextAreaFor(model => model.Address, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 290px;   max-width: 100%;" })
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "label label-danger" })
+                            </div>
+                            <div class="col-lg-3 col-sm-3 col2"><label> Remarks :</label> </div>
+                            <div class="col-lg-3 col-sm-3">
+                                @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 290px;   max-width: 100%;" })
+                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "label label-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3 col1"><label> Active :</label></div>
+                            <div class="col-lg-3 col-sm-3">@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-control input-sm" })</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="text-center">
+                                @if (ViewBag.IsInsertSuccessful != null && ViewBag.IsInsertSuccessful)
+                                {
+                                    <div class="alert alert-success alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <strong>New Contractor Employee has been created successfully.</strong>
+                                    </div>
+                                }
+                                <input type="submit" class="btn btn-primary" value="Save" style="width:100px" />&nbsp;&nbsp;
+                                <button type="button" class="btn btn-primary" id="Reset" style="width:100px">Clear</button>
+                            </div>
+                        </div>
+
+
+                        <div class="row"><div colspan="4" class="text-danger text-center"><strong>@Html.ValidationMessage("ValidationError")</strong></div></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="col-xs-1"></div>*@
+    
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+@section Scripts {
+
+    <script>
+        $("#Reset").click(function (event) {
+            $(".field-validation-error").empty();
+            $("#FirstName").val("");
+            $("#LastName").val("");
+            $("#DateOFBirth").val("");
+            $("#Age").val("");
+            $("#EmployeeID").val("");
+            $("#IDDetail").val("");
+            $("#TrainingTypeID").val("");
+             $("#TrainingTypeID").select2("");
+            $("#TraningDate").val("");
+            $("#FrequencyID").val("");
+            $("#FrequencyID").select2("");
+            $("#SkillsID").val("");
+            $("#SkillsID").select2("");
+            $("#Remarks").val("");
+            $("#MobileNumber").val("");
+            $("#EmergencyContactNumber").val("");
+            $("#DateOfJoining").val("");
+            $("#ContractID").val("");
+            $("#ContractID").select2("");
+            $("#DepartID").val("");
+            $("#DepartID").select2("");
+            $("#PFNumber").val("");
+            $("#Address").val("");
+            $("#IsActive").val("");
+
+        });
+
+        $(".td").datepicker({ dateFormat: 'dd/mm/yy' });
+
+        $(function () {
+            $("#ContractID").select2();
+            $("#TrainingTypeID").select2();
+            $("#WorkType").select2();
+            $("#DepartID").select2();
+             $("#SkillsID").select2();
+          });
+
+    </script>
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+}
+<script>
+    $(function () {
+        $("#txtbirthdate").datepicker({
+            onSelect: function (value, ui) {
+                var today = new Date(),
+                    age = today.getFullYear() - ui.selectedYear;
+                $('#txtAge').val(age);
+
+            },
+
+            dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true, yearRange: "c-100:c+0"
+        });
+
+    });
+</script>
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}

@@ -1,0 +1,425 @@
+﻿@model MonitPro.Models.PSSR.PSSRDashboard
+
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/MPLayout.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PSSRChart</title>
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="~/Scripts/c3.min.js"></script>
+
+    <script src="~/Scripts/d3.min.js"></script>
+    <link href="~/Content/c3.css" rel="stylesheet" />
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        .pgfit {
+            height: 200px;
+            width: 300px;
+            text-align: center;
+            display: inline-block;
+            max-height: 500px;
+            max-width: 500px;
+        }
+
+        .c3-legend {
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            font-size: 24px;
+            color: #555;
+        }
+    </style>
+    <style>
+        .form-inline-custom {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+            .form-inline-custom label {
+                margin-right: 10px;
+            }
+
+            .form-inline-custom input[type="date"] {
+                margin-right: 10px;
+                padding: 5px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+
+            .form-inline-custom button, .form-inline-custom a {
+                margin-right: 10px;
+                padding: 5px 15px;
+                border-radius: 5px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .form-inline-custom a {
+                background-color: blueviolet;
+            }
+
+                .form-inline-custom button:hover, .form-inline-custom a:hover {
+                    background-color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <center>
+            <div class="form-inline-custom">
+                <label for="startDate">From Date:</label>
+                <input type="date" id="startDate" />
+                <label for="endDate">To Date:</label>
+                <input type="date" id="endDate" />
+                <button id="loadDataButton">Generate Chart</button>
+            </div>
+        </center>
+    </div>
+    @*<div class="loading" id="loading">Loading...</div>*@
+    <div>
+        <div id="current">
+            <div class="container-fluid text-center">
+                <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                    <h4><strong>PSSR Status Summary</strong></h4>
+                    <div id="PSSRStatusSummary" class="pgfit"></div>
+                </div>
+                <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                    <h4><strong>PSSR Recommendation Status</strong></h4>
+                    <div id="pssrActionbyCount" class="pgfit"></div>
+                </div>
+                <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                    <h4><strong>PSSR Priority</strong></h4>
+                    <div id="pssrpriorityCount" class="pgfit"></div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+
+    function ActionbyCount(jsondata) {
+        var data = {};
+        var actionby = [];
+        var overdue = [];
+        var complete = [];
+        var pending = [];
+
+
+        jsondata.forEach(function (e) {
+            actionby.push(e.ActionBy);
+
+            overdue.push(e.Overdue);
+            complete.push(e.Completed);
+            pending.push(e.Pending);
+
+
+
+        })
+
+        //// The variable name chart will automatically bind itself to an id = chart
+        var chart = c3.generate({
+            bindto: '#pssrActionbyCount',
+
+            data: {
+
+                columns: [
+
+                    ['Overdue'].concat(overdue), ['Pending'].concat(pending), ['Completed'].concat(complete)
+                ],
+                type: 'bar',
+
+                groups: [
+                    ['Overdue', 'Pending', 'Completed']
+                ]
+            },
+            color: {
+                pattern: ['#d62728', '#ff7f0e', '#2ca02c']
+            },
+            bar: {
+                width: {
+                    ratio: 0.2 // this makes bar width 50% of length between ticks
+                }
+
+            },
+            legend: {
+                show: true
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: actionby,
+                    tick: {
+                        rotate: -25,
+                        multiline: false
+                    },
+                    height: 55
+                }
+            },
+        });
+
+
+    }
+
+    // Priority based Recomm status Count chart
+
+    function PriorityCount(jsondata) {
+        var data = {};
+        var priority = [];
+        var overdue = [];
+        var complete = [];
+        var pending = [];
+
+
+        jsondata.forEach(function (e) {
+            priority.push(e.Priority);
+
+            overdue.push(e.Overdue);
+            complete.push(e.Completed);
+            pending.push(e.Pending);
+
+
+
+        })
+
+        //// The variable name chart will automatically bind itself to an id = chart
+        var chart = c3.generate({
+            bindto: '#pssrpriorityCount',
+
+            data: {
+
+                columns: [
+
+                    ['Overdue'].concat(overdue), ['Pending'].concat(pending), ['Completed'].concat(complete)
+                ],
+                type: 'bar',
+
+                groups: [
+                    ['Overdue', 'Pending', 'Completed']
+                ]
+            },
+            color: {
+                pattern: ['#d62728', '#ff7f0e', '#2ca02c']
+            },
+            bar: {
+                width: {
+                    ratio: 0.2 // this makes bar width 50% of length between ticks
+                }
+
+            },
+            legend: {
+                show: true
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: priority,
+                    tick: {
+                        rotate: -25,
+                        multiline: false
+                    },
+                    height: 55
+                }
+            },
+        });
+
+
+    }
+
+
+    // Month wise PSSR Status Count
+
+
+    function statusCount(jsondata) {
+        var data = {};
+        var Monthname = [];
+        var Draft = [];
+        var schedule = [];
+        var submittedforapprove = [];
+        var approve = [];
+        var close = [];
+
+        jsondata.forEach(function (e) {
+            Monthname.push(e.MonthName);
+            Draft.push(e.Draft);
+            schedule.push(e.Schedule);
+            submittedforapprove.push(e.Submittedforapproval);
+            approve.push(e.Approved);
+            close.push(e.Closed);
+
+        });
+
+        //// The variable name chart will automatically bind itself to an id = chart
+        var chart = c3.generate({
+            bindto: '#PSSRStatusSummary',
+
+            data: {
+                columns: [
+
+                    ['Draft'].concat(Draft), ['PSSR Scheduled'].concat(schedule), ['PSSR Submitted For Approval'].concat(submittedforapprove),
+                    ['PSSR Approved'].concat(approve), ['PSSR Closed'].concat(close)
+
+                ],
+                type: 'bar',
+                groups:
+                    [['Draft','PSSR Scheduled','PSSR Submitted For Approval','PSSR Approved','PSSR Closed']
+                    ]
+            },
+            color: {
+                pattern: ['#ff8c1a', '#2952a3', '#9900cc', '#ff0080','#2ca02c']
+            },
+            bar: {
+                width: {
+                    ratio: 0.2 // this makes bar width 50% of length between ticks
+                }
+
+            },
+            legend: {
+                show: false
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: Monthname,
+                    tick: {
+                        rotate: -25,
+                        multiline: true
+                    },
+                    height: 60
+                }
+            },
+        });
+
+
+    }
+
+ $(document).ready(function () {
+     function formatDate(date) {
+         var d = new Date(date);
+         var month = '' + (d.getMonth() + 1);
+         var day = '' + d.getDate();
+         var year = d.getFullYear();
+
+         if (month.length < 2) month = '0' + month;
+         if (day.length < 2) day = '0' + day;
+
+         return [year, month, day].join('-');
+     }
+
+     function setDefaultDates() {
+         var currentDate = new Date();
+         var currentYear = currentDate.getFullYear();
+         var startDate;
+         currentDate.setDate(currentDate.getDate());
+         // If the current month is before April, set start date to April 1st of the previous year
+         if (currentDate.getMonth() < 3) {
+             startDate = new Date(currentYear - 1, 3, 1); // April 1st of previous year
+         } else {
+             // Otherwise, set start date to April 1st of the current year
+             startDate = new Date(currentYear, 3, 1); // April 1st of current year
+         }
+
+         $('#startDate').val(formatDate(startDate));
+         $('#endDate').val(formatDate(currentDate));
+     }
+
+     function loadData(startDate, endDate) {
+         $('#loading').show();
+
+         function ajaxError(jqXHR, textStatus, errorThrown) {
+             console.error('AJAX Error: ', textStatus, errorThrown);
+             alert('Error loading data. Please try again later.');
+         }
+
+         var ajaxCalls = [
+             @*$.ajax({
+                 type: "GET",
+                 url: "@Url.Action("MOCPriorityCount", "MOC")",
+                 data: { startDate: formatDate(startDate), endDate: formatDate(endDate) },
+                 dataType: "json",
+                 success: function (response) {
+                     successpriority(response);
+                 },
+                 error: ajaxError
+             }),*@
+             // Action By Recomm Status Count Chart
+             $.ajax({
+                 type: "GET",
+                 url: "@Url.Action("ActionByCount", "PSSR")",
+                 data: { startDate: formatDate(startDate), endDate: formatDate(endDate) },
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: function (response) {
+                     ActionbyCount(response);
+                 },
+                 error: ajaxError
+             }),
+
+             $.ajax({
+                 type: "GET",
+                 url: "@Url.Action("PriorityRecommCount", "PSSR")",
+                 data: { startDate: formatDate(startDate), endDate: formatDate(endDate) },
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: function (response) {
+                     PriorityCount(response);
+                 },
+                 error: ajaxError
+             }),
+             $.ajax({
+                 type: "GET",
+                 url: "@Url.Action("MonthwiseStatusCount", "PSSR")",
+                 data: { startDate: formatDate(startDate), endDate: formatDate(endDate) },
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: function (response) {
+                     statusCount(response);
+                 },
+                 error: ajaxError
+             }),
+
+         ];
+
+         $.when.apply($, ajaxCalls).always(function () {
+             $('#loading').hide();
+         });
+     }
+
+     setDefaultDates();
+     var startDate = $('#startDate').val();
+     var endDate = $('#endDate').val();
+     loadData(startDate, endDate);
+
+     $('#loadDataButton').click(function () {
+         var startDate = $('#startDate').val();
+         var endDate = $('#endDate').val();
+         loadData(startDate, endDate);
+     });
+ });
+</script>
+
+
+

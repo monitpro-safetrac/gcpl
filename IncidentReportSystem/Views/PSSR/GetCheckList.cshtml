@@ -1,0 +1,125 @@
+﻿@model MonitPro.Models.PSSR.MainCheckListModel
+@{
+    Layout = null;
+}
+
+
+
+<div class="table-responsive table-container pre-scrollable">
+
+    <table class="table table-responsive" width="98%" align="center">
+        <tbody>
+            <tr>
+                <th class="text-left">S.No</th>
+                <th class="text-left" width="20%">
+                    Description
+                </th>
+                <th class="text-center">
+                    Yes
+                </th>
+                <th class="text-center">
+                    No
+                </th>
+                <th class="text-center">
+                    N/A
+                </th>
+                <th class="text-center">Remarks</th>
+               
+                <th class="text-center">Edited By</th>
+                <th class="text-center">Edit DateTime</th>
+
+
+            </tr>
+
+            @if (Model.CheckLists != null)
+            {
+                for (var i = 0; i < Model.CheckLists.Count; i++)
+                {
+                    @Html.HiddenFor(Model => Model.CheckLists[i].CheckListID)
+                    @Html.HiddenFor(Model => Model.CheckLists[i].PCMID)
+                    @Html.HiddenFor(Model => Model.CheckLists[i].Description)
+                  
+                    <tr>
+
+                        <td class="text-center">
+                            @Model.CheckLists[i].SNO
+                        </td>
+                        <td width="70%">@Model.CheckLists[i].Description</td>
+
+                        <td> @Html.RadioButtonFor(Model => Model.CheckLists[i].Ischecked, "1", new { @onclick = "ChangeEditedBy('"+@Model.CheckLists[i].SNO+"')" })</td>
+                        <td> @Html.RadioButtonFor(Model => Model.CheckLists[i].Ischecked, "2", new { @onclick = "ChangeEditedBy('" + @Model.CheckLists[i].SNO + "')" })</td>
+
+                        <td>
+                            @Html.RadioButtonFor(Model => Model.CheckLists[i].Ischecked, "3", new { @onclick = "ChangeEditedBy('" + @Model.CheckLists[i].SNO + "')" })
+                            @Html.ValidationMessageFor(Model => Model.CheckLists[i].Ischecked, null, new { @class = "label label-danger" })
+                        </td>
+
+                        <td>
+                            @Html.TextAreaFor(Model => Model.CheckLists[i].Remarks, new
+                       {
+                           @class = "form-control input-sm",
+                           @id = "remarks",
+                           maxlength = "75",
+                           @style = "width: 200px;   max-width: 100%;"
+                       })
+                        </td>
+
+                        @*<td>
+                            @Html.TextAreaFor(Model => Model.CheckLists[i].Consequences, new
+                       {
+                           @class = "form-control input-sm",
+                           @id = "Consequences",
+                           maxlength = "75",
+                           @style = "width: 200px;   max-width: 100%;"
+                       })
+                        </td>*@
+
+                        <td width="5%">@Html.EditorFor(Model => Model.CheckLists[i].EditedBy, new { @class = "form-control input-sm" })</td>
+
+                        <td>@Html.EditorFor(Model => Model.CheckLists[i].EditedDateTime, new { @class = "form-control input-sm" })</td>
+                    </tr>
+
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9" style="text-align:center">NO Data Found</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <div class="modal" id='myModal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id='myModalContent'></div>
+            </div>
+            <input type="hidden" id="RowCount" value="@Model.CheckLists.Count" />
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      
+        for (var i = 0; i < $("#RowCount").val(); i++) {
+          $("#CheckLists_" + i + "__EditedBy").attr('disabled', true);
+            $("#CheckLists_" + i + "__EditedDateTime").attr('disabled', true);
+
+        }
+    });
+    function ChangeEditedBy(select) {
+        if (select != "")
+        {
+            var temp = select - 1;
+            $("#CheckLists_" + temp + "__EditedBy").val("@Model.UserFullName");
+            $("#CheckLists_" + temp + "__EditedDateTime").val("@DateTime.Now.ToString("yyyy/MM/dd HH: mm")");
+
+        }
+    }
+
+</script>

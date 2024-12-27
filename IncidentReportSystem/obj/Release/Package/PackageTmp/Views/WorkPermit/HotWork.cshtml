@@ -1,0 +1,249 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    Layout = null;
+}
+<table class="table table-responsive table-bordered">
+    <thead><H3>Hot Work Check List</H3></thead>
+    <tbody>
+        <tr style="font-weight:bold">
+            <td>Yes</td>
+            <td>N/A</td>
+            <td>AIR MONITORING VERIFICATION</td>
+            <td>Yes</td>
+            <td>N/A</td>
+            <td>SLAG-PRODUCING ACTIVITIES**</td>
+        </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMCalibrationPerionCurrent, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMCalibrationPerionCurrent, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.AMCalibrationPerionCurrent, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Air monitoring instrument calibration period is current.
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAPlantManagerAuthorizationGranted, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAPlantManagerAuthorizationGranted, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPAPlantManagerAuthorizationGranted, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Plant Manager authorization granted
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMSensorsZeroed, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMSensorsZeroed, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.AMSensorsZeroed, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Air monitoring instrument sensor’s zeroed in a clean atmosphere
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAFireWatchAssigned, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAFireWatchAssigned, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPAFireWatchAssigned, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Fire watch identified and assigned
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMSensorsBumpChecked, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMSensorsBumpChecked, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.AMSensorsBumpChecked, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Air monitoring instrument sensor’s “bump” checked with test gas to ensure proper function of alarms and sensors.
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAContainmentOfSpark, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAContainmentOfSpark, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPAContainmentOfSpark, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Containment of spark/slag to immediate work area assured by:Enclosing activity to contain spark/slag and Covering/guarding floor/wall openings in area and Closing/covering ducts/conveyors in area
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.RadioButtonFor(m => m.HotWork.AMFlammableVaporCheck, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.AMFlammableVaporCheck, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.AMFlammableVaporCheck, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Flammable vapor check  with air monitoring instrument for % LEL and % oxygen</td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.SPAWoodFloorsCovered, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAWoodFloorsCovered, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPAWoodFloorsCovered, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Wood floors or platforms wetted or covered   </td>
+
+            
+        </tr>
+        <tr>
+            <td style="font-weight:bold">Yes</td>
+            <td  style="font-weight:bold">N/A</td>
+            <td  style="font-weight:bold">HOT WORK AREA PREPARATION</td>
+
+            <td>@Html.RadioButtonFor(m => m.HotWork.SPACombustibleDustsCleaned, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPACombustibleDustsCleaned, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPACombustibleDustsCleaned, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Combustible dusts/liquids swept and cleaned from surfaces in HW Area
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWAreaClear, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWAreaClear, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWAreaClear, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                HW Area clear of spills, drips, and releases
+            </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.SPASprinklerHeadsShielded, "1") </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.SPASprinklerHeadsShielded, "0") @Html.ValidationMessageFor(m => Model.HotWork.SPASprinklerHeadsShielded, null, new { @class = "label label-danger" })</td>
+            <td width="60%">Sprinkler heads shielded for protection   </td>
+
+           
+        </tr>
+        <tr>
+            <td>@Html.RadioButtonFor(m => m.HotWork.HWSewersDrainsChecked, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWSewersDrainsChecked, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWSewersDrainsChecked, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Sewers, drains, etc. checked with air monitoring instrument, flushed and sealed </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPACombustibleMaterialRemoved, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPACombustibleMaterialRemoved, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPACombustibleMaterialRemoved, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Combustible materials (bags, wood, etc.) are either:  Removed from HW Area, or Covered or shielded </td>
+          </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWFireExtinguisherPresent, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWFireExtinguisherPresent, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWFireExtinguisherPresent, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Approved fire extinguisher(s) present </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.SPAAccessPointsMarked, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.SPAAccessPointsMarked, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.SPAAccessPointsMarked, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Access points marked and HW Area demarcated  </td>
+           
+        </tr>
+        <tr>
+            <td>@Html.RadioButtonFor(m => m.HotWork.HWSprinklerOperational, "1") </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.HWSprinklerOperational, "0") @Html.ValidationMessageFor(m => Model.HotWork.HWSprinklerOperational, null, new { @class = "label label-danger" })</td>
+            <td width="60%">Sprinkler system is operational (NA if not present) </td>
+            <td style="font-weight:bold">Yes</td>
+            <td style="font-weight:bold">No</td>
+            <td style="font-weight:bold">PREPARATION FOR WORK ON PIPING, VESSELS, ETC.</td>
+
+            
+            </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWContainerFlammableMaterialRemoved, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWContainerFlammableMaterialRemoved, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWContainerFlammableMaterialRemoved, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Containers of flammable/combustible material are Removed from HW Area:</td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.EquipmentLinesIsolated, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.EquipmentLinesIsolated, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.EquipmentLinesIsolated, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Equipment and lines isolated/locked out  </td>
+
+            </tr>
+        <tr>
+            <td>@Html.RadioButtonFor(m => m.HotWork.HWEquipmentFlammableMaterialTightlySealed, "1") </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.HWEquipmentFlammableMaterialTightlySealed, "0") @Html.ValidationMessageFor(m => Model.HotWork.HWEquipmentFlammableMaterialTightlySealed, null, new { @class = "label label-danger" })</td>
+            <td width="60%"> Equipment with flammable/combustible materials are Cleaned and purged, or Tightly sealed</td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.EquipmentCleaned, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.EquipmentCleaned, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.EquipmentCleaned, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Equipment is cleaned/free of chemicals  </td>
+            
+        </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWOpenFlammableHandlingCeased, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWOpenFlammableHandlingCeased, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWOpenFlammableHandlingCeased, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Operations involving open flammable/combustible handling ceased  </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.EquipmentVerified, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.EquipmentVerified, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.EquipmentVerified, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">
+                Equipment verified to be vapor-free with air monitoring instrument
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWActivityDiscussed, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWActivityDiscussed, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWActivityDiscussed, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">HW activities/restrictions discussed with personnel </td>
+            <td>@Html.RadioButtonFor(m => m.HotWork.EquipmentBeingWorked, "1") </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.EquipmentBeingWorked, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.EquipmentBeingWorked, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Equipment being worked upon vented </td>
+           </tr>
+        <tr>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWFireBlanketsTarpaulinsChecked, "1")
+            </td>
+            <td>
+                @Html.RadioButtonFor(m => m.HotWork.HWFireBlanketsTarpaulinsChecked, "0")
+                @Html.ValidationMessageFor(m => Model.HotWork.HWFireBlanketsTarpaulinsChecked, null, new { @class = "label label-danger" })
+            </td>
+            <td width="60%">Condition of fire blankets/tarpaulins checked  </td>
+            
+        </tr>
+       </tbody>
+</table>
+
+

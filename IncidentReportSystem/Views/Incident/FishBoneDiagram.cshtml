@@ -1,0 +1,319 @@
+﻿@model MonitPro.Models.Incident.FishBone
+@{
+    ViewBag.Title = "CategoryDesicion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("FishBoneDiagram", "Incident", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m=> m.IncidentID)
+    @Html.HiddenFor(m=>m.Title)
+    @Html.HiddenFor(m=> m.ButtonValue)
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <style>
+            table, th, td {
+                border: 2px solid black;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f0f0f0;
+                margin: 0;
+                padding: 0;
+                overflow-y: scroll;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                flex-direction: column;
+                justify-content: flex-end;
+                font-size: 1.2vw;
+            }
+
+            .fishbone {
+                width: 100%;
+                max-width: 80vw; /* Set a maximum width if necessary */
+                max-height:75vh;
+                margin: 0 auto;
+                padding: 20px;
+                align-content: center;
+                background-color: #fff;
+                border: 2px solid #333;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .head {
+                text-align: center;
+                font-weight: bold;
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .branches {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            .Nextbranch {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            .branch {
+                text-align: center;
+            }
+
+            .label {
+                font-weight: bold;
+                font-size: 14px;
+                color: black;
+                margin-bottom: 5px;
+            }
+
+            .input-sm {
+                background-color: antiquewhite;
+            }
+
+            input[type="text"] {
+                border: none;
+                background: none;
+                outline: none;
+                border-bottom: 1px solid #333;
+                font-size: 14px;
+                width: 80%;
+                padding: 5px;
+                margin: 2px;
+            }
+
+            .triangle-line-container {
+                display: flex;
+                align-items: center;
+            }
+
+            
+
+            .diamond {
+                width: 150px; /* Set the width of the diamond */
+                height: 150px; /* Set the height of the diamond */
+                max-width:150px;
+                max-height:150px;
+                background-color: #3498db;
+                transform: rotate(45deg);
+                margin-right: 10px;
+                margin-top: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                overflow: hidden;
+                color:white;
+                
+                 white-space: pre-wrap;
+            }
+
+            .rotated-text {
+                text-align: center;
+                transform: rotate(-45deg); /* Rotate the text inside the diamond */
+                white-space: pre-wrap; /* Allow the text to wrap to the next line */
+                overflow: hidden; /* Hide overflowing text */
+            }
+
+            .line {
+                flex: 2;
+                height: 2px;
+                background-color: #000;
+                margin-bottom: -10px; /* Adjust the margin to move the line up */
+            }
+
+            .slanted-line {
+                width: 300px;
+                height: 2px; /* Adjust the thickness of the line as needed */
+                background-color: #333;
+                margin-bottom: 20px; /* Add spacing between lines */
+                transform-origin: 0% 0%; /* Set the rotation origin to the top-left corner */
+            }
+
+                /* Customize each slanted line */
+                .slanted-line:nth-child(1) {
+                    width: 100px; /* Decrease the width of the first line */
+                    transform: skewY(-30deg) translateY(127px) translateX(120px); /* Skew and move the first line down */
+                }
+
+                .slanted-line:nth-child(2) {
+                    width: 100px; /* Decrease the width of the second line */
+                    transform: skewY(-30deg) translateY(382px) translateX(600px); /* Skew and move the second line down */
+                }
+
+                .slanted-line:nth-child(3) {
+                    width: 100px; /* Decrease the width of the third line */
+                    transform: skewY(-30deg) translateY(620px) translateX(1050px); /* Skew and move the third line down */
+                }
+
+                .slanted-line:nth-child(4) {
+                    width: 100px; /* Decrease the width of the first line */
+                    transform: skewY(30deg) translateY(-192px) translateX(120px); /* Skew and move the first line down */
+                }
+
+                .slanted-line:nth-child(5) {
+                    width: 100px; /* Decrease the width of the second line */
+                    transform: skewY(30deg) translateY(-493px) translateX(600px); /* Skew and move the second line down */
+                }
+
+                .slanted-line:nth-child(6) {
+                    width: 100px; /* Decrease the width of the third line */
+                    transform: skewY(30deg) translateY(-775px) translateX(1050px); /* Skew and move the third line down */
+                }
+
+
+            .double-arrow {
+                width: 0;
+                height: 0;
+                border-left: 80px solid transparent; /* Adjust the size of the arrow */
+                border-right: 10px solid transparent; /* Adjust the size of the arrow */
+                border-top: 70px solid #333; /* Color of the arrow */
+                border-bottom: 70px solid #333; /* Color of the arrow */
+            }
+            
+
+        </style>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fishbone Diagram</title>
+    </head>
+    <body>
+        <div>
+            <h1 class="div-h1"><span class="div-h1-span"> FISHBONE DIAGRAM</span></h1>
+
+            <table style="width:80%" align="center">
+                <tr>
+                    <th>Incident Number</th>
+                    <th>Plant/Area</th>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayFor(model => model.IncidentNo)</td>
+                    <td>@Html.DisplayFor(model => model.PlantName)</td>
+                </tr>
+            </table><br />
+
+            <div class="container-lg container-sm fishbone pre-scrollable">
+                <div class="branches">
+                    <div class="branch">
+                        @Html.TextAreaFor(model => model.Header1, new { @class = "form-control input-sm", @maxlength = "200", @style = "width: 300px;   max-width: 100%;font-weight: bold;" })
+
+                        <input type="text" placeholder="Sub-cause 1" name="ManSub1" value="@Model.ManSub1">
+                        <input type="text" placeholder="Sub-cause 2" name="ManSub2" value="@Model.ManSub2">
+                        <input type="text" placeholder="Sub-cause 3" name="ManSub3" value="@Model.ManSub3">
+                        <input type="text" placeholder="Sub-cause 4" name="ManSub4" value="@Model.ManSub4">
+                        <input type="text" placeholder="Sub-cause 5" name="ManSub5" value="@Model.ManSub5">
+                    </div>
+                    <div class="branch">
+                        @Html.TextAreaFor(model => model.Header2, new { @class = "form-control input-sm", @maxlength = "200", @style = "width: 300px;   max-width: 100%;font-weight: bold;" })
+
+                        <input type="text" placeholder="Sub-cause 6" name="MachiSub1" value="@Model.MachiSub1">
+                        <input type="text" placeholder="Sub-cause 7" name="MachiSub2" value="@Model.MachiSub2">
+                        <input type="text" placeholder="Sub-cause 8" name="MachiSub3" value="@Model.MachiSub3">
+                        <input type="text" placeholder="Sub-cause 9" name="MachiSub4" value="@Model.MachiSub4">
+                        <input type="text" placeholder="Sub-cause 10" name="MachiSub5" value="@Model.MachiSub5">
+                    </div>
+                    <div class="branch">
+                        @Html.TextAreaFor(model => model.Header3, new { @class = "form-control input-sm", @maxlength = "200", @style = "width: 300px;   max-width: 100%;font-weight: bold;" })
+
+                        <input type="text" placeholder="Sub-cause 11" name="MethodSub1" value="@Model.MethodSub1">
+                        <input type="text" placeholder="Sub-cause 12" name="MethodSub2" value="@Model.MethodSub2">
+                        <input type="text" placeholder="Sub-cause 13" name="MethodSub3" value="@Model.MethodSub3">
+                        <input type="text" placeholder="Sub-cause 14" name="MethodSub4" value="@Model.MethodSub4">
+                        <input type="text" placeholder="Sub-cause 15" name="MethodSub5" value="@Model.MethodSub5">
+                    </div>
+                </div><br />
+                <div class="triangle-line-container">
+                    <div class="double-arrow"></div>
+                    <div class="line ">
+                        <div class="slanted-line"></div>
+                        <div class="slanted-line"></div>
+                        <div class="slanted-line"></div>
+                        <div class="slanted-line"></div>
+                        <div class="slanted-line"></div>
+                        <div class="slanted-line"></div>
+                    </div>
+                    <div class="diamond">
+                        <p class="rotated-text"> @Model.Title</p>
+                    </div>
+                </div>
+                <div class="Nextbranch">
+                    <div class="branch">
+
+                        <input type="text" placeholder="Sub-cause 1" name="MaterialSub1" value="@Model.MaterialSub1">
+                        <input type="text" placeholder="Sub-cause 2" name="MaterialSub2" value="@Model.MaterialSub2">
+                        <input type="text" placeholder="Sub-cause 3" name="MaterialSub3" value="@Model.MaterialSub3">
+                        <input type="text" placeholder="Sub-cause 4" name="MaterialSub4" value="@Model.MaterialSub4">
+                        <input type="text" placeholder="Sub-cause 5" name="MaterialSub5" value="@Model.MaterialSub5"><br /><br />
+                        @Html.TextAreaFor(model => model.Header4, new { @class = "form-control input-sm", @maxlength = "200", @style = "width: 300px;   max-width: 100%;font-weight: bold;" })
+                    </div>
+                    <div class="branch">
+
+                        <input type="text" placeholder="Sub-cause 6" name="MeasureSub1" value="@Model.MeasureSub1">
+                        <input type="text" placeholder="Sub-cause 7" name="MeasureSub2" value="@Model.MeasureSub2">
+                        <input type="text" placeholder="Sub-cause 8" name="MeasureSub3" value="@Model.MeasureSub3">
+                        <input type="text" placeholder="Sub-cause 9" name="MeasureSub4" value="@Model.MeasureSub4" />
+                        <input type="text" placeholder="Sub-cause 10" name="MeasureSub5" value="@Model.MeasureSub5" /><br /><br />
+                        @Html.TextAreaFor(model => model.Header5, new { @class = "form-control input-sm", @maxlength = "200", @style = "width: 300px;   max-width: 100%;font-weight: bold;" })
+                    </div>
+                    <div class="branch">
+
+                        <input type="text" placeholder="Sub-cause 11" name="EnviSub1" value="@Model.EnviSub1">
+                        <input type="text" placeholder="Sub-cause 12" name="EnviSub2" value="@Model.EnviSub2">
+                        <input type="text" placeholder="Sub-cause 13" name="EnviSub3" value="@Model.EnviSub3">
+                        <input type="text" placeholder="Sub-cause 14" name="EnviSub4" value="@Model.EnviSub4">
+                        <input type="text" placeholder="Sub-cause 15" name="EnviSub5" value="@Model.EnviSub5"><br /><br />
+                        @Html.TextAreaFor(model => model.Header6, new { @class = "form-control input-sm", @maxlength = "200", @style = "width: 300px;   max-width: 100%;font-weight: bold;" })
+                    </div>
+                </div><br />
+                <div style="text-align: center; width: 50%; margin: 0 auto;">
+                    <button id="convert-button" class="btn btn-primary" style=" width: 100px;height:30px;">Save</button> &nbsp;&nbsp;
+                    @if (Model.FishImage == null)
+                    {
+                        <button id="convert" class="btn btn-primary" style=" width: 150px;height:30px;">Convert To Image</button>
+                    } &nbsp;&nbsp;
+                    <input type="button" class="btn btn-primary" style=" width: 100px;height:30px;" value="Back"
+                           onclick="BackPage(@Model.IncidentID)" />
+                </div>
+            </div>
+            <br /><br />
+
+
+        </div>
+    </body>
+</html>
+
+
+
+
+}
+<script>
+    $("#convert").click(function (event) {
+        $('#ButtonValue').val(1);
+        var temp = $("#ButtonValue").val();
+        console.log(temp);
+    })
+</script>
+<script type="text/javascript">
+
+    function BackPage(IncidentID) {
+        window.location.href = '../Incident/EditIncident?incidentID=' + IncidentID;
+    }
+
+</script>
+@if (ViewBag.FishMessage != null)
+{
+    <script type="text/javascript">
+    alert("@ViewBag.FishMessage");
+        window.location.href = "../Incident/FishBoneDiagram?IncidentID="+@Model.IncidentID;
+
+    </script>
+}

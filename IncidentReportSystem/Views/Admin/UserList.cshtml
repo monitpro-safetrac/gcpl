@@ -1,0 +1,131 @@
+﻿@model MonitPro.Models.Profile
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">User List</h1>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td class="text-center" style="font-weight:bold" align="center">
+                        First Name
+                        @Html.TextBoxFor(m => m.Search, new { maxlength = "50", @class = "form-control input-sm", @style = "width:300px" }) &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        @Html.DropDownListFor(m => m.Designation, new SelectList(Model.DesignationList, "DesigID", "DesigName"), "-- Select Designation --", new { @class = "form-control input-sm", @style = "width:300px" })
+                        &nbsp;&nbsp;&nbsp;
+                        @Html.DropDownListFor(m => m.Department, new SelectList(Model.DepartmentList, "DeptID", "DeptName"), "-- Select Department --", new { @class = "form-control input-sm", @style = "width:300px" })
+                        &nbsp;&nbsp;&nbsp;
+                        @Html.DropDownListFor(m => m.Role, new SelectList(Model.RoleList, "RoleID", "RoleName"), "-- Select Role --", new { @class = "form-control input-sm", @style = "width:300px" })
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;
+                        <input type="image" src="@Url.Content("~/Images/searchIcon.png")" alt="Search" title="Search" onclick="SearchUserName()" style="width:30px;height:30px; border:none;">
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;
+                        @if (Model.UserProfile.Count > 0)
+                        {
+
+                            @Html.ActionLink("Export User List", "ExportUserList", new { @class = "btn btn-primary" })
+
+                        }
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+        @if (Model.UserProfile.Count > 0)
+        {
+            <div id="container" class="table-responsive">
+                <table id="UserList" class="table-bordered table-responsive" cellpadding="2" cellspacing="2">
+                    <thead>
+                        <tr>
+                            <th>SNO</th>
+                            <th>
+                                Action
+                            </th>
+                            <th>User</th>
+                            <th>Employee ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>User Name</th>
+                            <th>Email Address</th>
+                            @*<th>Designation</th>*@
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>IsActive</th>
+                            <th>IIR</th>
+                            <th>MOC</th>
+                        </tr>
+                    </thead>
+                    @for (var i = 0; i < Model.UserProfile.Count; i++)
+                    {
+                        <tr>
+                            <td width="2%">@(i + 1)</td>
+                            <td>@Html.ActionLink("Edit", "UpdateUserProfile", new { id = Model.UserProfile[i].UserID })</td>
+                            <td>
+                                @if (Model.UserProfile[i].UserImage != "")
+                                {
+                                    <img class="img-rounded" src="../Users/@Model.UserProfile[i].UserImage" height="30px" width="30px">
+                                }
+                                else
+                                {
+                                    <img class="img-rounded" src="../Users/DefaultPerson_Icon.jpg" height="30px" width="30px">
+                                }
+                            </td>
+                            <td>@Model.UserProfile[i].EmployeeID</td>
+                            <td>@Model.UserProfile[i].FirstName</td>
+                            <td>@Model.UserProfile[i].LastName</td>
+                            <td>@Model.UserProfile[i].UserName</td>
+                            <td>@Model.UserProfile[i].EmailAddress</td>
+                            @*<td>@Model.UserProfile[i].Designation</td>*@
+                            <td>@Model.UserProfile[i].RoleName</td>
+                            <td>@Model.UserProfile[i].DeptName</td>
+                            <td>@Model.UserProfile[i].Designation</td>
+                            <td>@Model.UserProfile[i].IsActiveSelect</td>
+                            <td>@Model.UserProfile[i].IsInvestigateSelect</td>
+                            <td>@Model.UserProfile[i].IsRestrictedSelect</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        else
+        {
+            <p style="text-align:center ">No Records Found</p>
+        }
+    </div>
+
+
+}
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#UserList").tableHeadFixer({ "left": 0 });
+        document.getElementById('container').style.height = window.innerHeight - 120 + "px";
+        document.getElementById('container').style.width = window.innerWidth - 10 + "px";
+    });
+
+    function SearchUserName() {
+        window.location.href = '../Admin/UserList';
+    }
+
+    function ClearSearch() {
+        $("#Search").val('');
+
+    }
+</script>

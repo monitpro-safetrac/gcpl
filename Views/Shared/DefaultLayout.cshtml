@@ -1,0 +1,422 @@
+﻿@model MonitPro.Models.BaseEntity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/NavLayoutStyleDefaultLayout.css" rel="stylesheet" />
+    <title>MonitPro Solutions</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @*<script>
+
+        var dt = '@Session["time"].ToString()';
+        var dateAr = dt.split('-');
+        var newDate = dateAr[1] + '/' + dateAr[0] + '/' + dateAr[2];
+
+        var end = new Date(dateAr[1] + '/' + dateAr[0] + '/' + dateAr[2]);
+
+        var _second = 1000;
+        var _minute = _second * 60;
+        var _hour = _minute * 60;
+        var _day = _hour * 24;
+        var timer;
+
+        function showRemaining() {
+            var now = new Date();
+            var distance = end - now;
+            if (distance < 0) {
+                clearInterval(timer);
+                document.getElementById('timecountdown').innerHTML = 'Count Down Ends!';
+
+
+                return;
+            }
+            var days = Math.floor(distance / _day);
+            var _hours = Math.floor((distance % _day) / _hour);
+            var _minutes = Math.floor((distance % _hour) / _minute);
+            var _seconds = Math.floor((distance % _minute) / _second);
+
+            document.getElementById('timecountdown').innerHTML = 'Logout :-';     //' Hrs: ' + _hours;
+            document.getElementById('timecountdown').innerHTML += ' Mins: ' + _minutes;
+            document.getElementById('timecountdown').innerHTML += ' Secs: ' + _seconds;
+
+            if (_minutes == 2 && _seconds == 0) {
+                alert("Your session will expire now!. Please save the form immediately");
+            }
+            }
+
+        timer = setInterval(showRemaining, 1000);
+        </script>*@
+    <style>
+        .logo {
+            padding-top: -47px;
+            height: 38px;
+        }
+
+        .topnav {
+            width: 100%;
+        }
+
+        .navbar-fixed-top, .navbar-fixed-bottom {
+            position: fixed;
+            right: 0;
+            left: 0;
+            border-width: 0 0 1px;
+        }
+
+        .btn-danger {
+            background-color: red;
+        }
+
+        .mov {
+            padding-top: 6px;
+        }
+
+        body {
+            margin: 0;
+            font-family: /*"Helvetica Neue"*/, /*Helvetica*/, /*Arial,*/ sans-serif;
+            width: 100%;
+        }
+
+
+        .lp {
+            position: relative;
+            top: -4px;
+        }
+
+        .up {
+            position: relative;
+            top: -2px;
+        }
+
+        .up1 {
+            position: relative;
+            top: 2px;
+        }
+
+        .ld {
+            padding-top: 4px;
+        }
+
+
+
+        .mov1 {
+            padding-top: 4px;
+        }
+
+        .topnav {
+            overflow: visible;
+            /*background-color: #428bca;*/ /*layout bg color*/
+            background-color: white; /*layout bg color*/
+            width: 100%;
+        }
+
+            .topnav a {
+                float: left;
+                display: block;
+                /* font-weight: bold;*/
+                text-align: center;
+                padding: -6px 10px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+
+        .active {
+            background-color: white;
+            color: cornflowerblue;
+        }
+
+        .topnav .icon {
+            display: none;
+        }
+
+        .dropdown {
+            float: left;
+            overflow: visible;
+            visibility: visible;
+            z-index: 1;
+        }
+
+            .dropdown .dropbtn {
+                font-size: 16px;
+                text-align: center;
+                border: none;
+                outline: none;
+                color: white; /*layout text color*/
+                /*font-weight: bold;*/
+                padding: 4px 10px;
+                background-color: #428bca;
+                font-family: inherit;
+                margin: 3px;
+                border-radius: 5px;
+            }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                float: none;
+                color: black; /* dropd text color*/
+                font-family: sans-serif;
+                padding: 8px 18px;
+                font-size: 14px;
+                text-decoration: none;
+                display: block;
+                text-align: left;
+                background-color: white; /* dropd bg color*/
+            }
+
+        .topnav a:hover, .dropdown:hover .dropbtn {
+            /*background-color: #1f77b4;*/
+            color: white;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #428bca;
+            color: white;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .caret {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 2px;
+            vertical-align: middle;
+            border-top: 4px solid #fff;
+            border-right: 4px solid transparent;
+            border-bottom: 0 dotted;
+            border-left: 4px solid transparent;
+            content: "";
+        }
+    </style>
+
+
+
+</head>
+<body style="overflow-x:hidden;overflow-y:hidden">
+
+    <div @*id="MainBody"*@ class="table-responsive">
+        <div class="container-fluid">
+            <div class="topnav ld navbar-fixed-top" role="navigation" id="myTopnav" style="width:100%">
+                <div class="nav-header mov">
+                    <div class="nav-logo">
+                        <a>
+                            <img class="logo" src="~/Images/Trial version.png" style="width:100px" alt="logo">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        Dashboard
+                        <i class="caret"></i>
+                    </button>
+                    <div class="dropdown-content">
+
+                        <a href="~/Home/Chart">IIR Dashboard </a>
+                        <a href="~/Home/Capachart">CAPA Dashboard </a>
+                        <a href="~/Chart/Newchartwps">WPS Dashboard</a>
+                        <a href="~/MOC/MOCDashboard">MOC Dashboard</a>
+                        <a href="~/PSSR/PSSRChart">PSSR Dashboard</a>
+                    </div>
+                </div>
+
+
+                @if (Model != null && Model.Roles != null && Model.Roles.Find(a => a.RoleName == "Administrator") != null)
+                {
+                    <div class="dropdown">
+                        <button class="dropbtn">
+                            Admin
+                            <i class="caret"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="~/Admin/Register">New User</a>
+                            <a href="~/Admin/UserList">Manage Users</a>
+                            <a href="~/Admin/LoginHistory">Login History</a>
+                        </div>
+                    </div>
+                }
+
+                @if (Model != null && Model.Roles != null && (Model.Roles.Find(a => a.RoleName == "HSE Manager" || a.RoleName == "Functional Manager" || a.RoleName == "General Manager") != null))
+                {
+                    <div class="dropdown">
+                        <button class="dropbtn">
+                            Equipment
+                            <i class="caret"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="~/WorkPermit/AddEquipment">Add Equipment</a>
+                            <a href="~/WorkPermit/EquipmentList">Equipment List</a>
+                        </div>
+                    </div>
+                }
+
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        Permits
+                        <i class="caret"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="~/WorkPermit/CreatePermit">New Permit</a>
+                        <a href="~/WorkPermit/NewPermitList"> Permit List</a>
+                        <a href="~/WorkPermit/ApprovedPermitList">Approved Permits</a>
+                        <a href="~/WorkPermit/ClosedPermitList">History</a>
+                        @if (Model != null && Model.Roles != null && (Model.Roles.Find(a => a.RoleName == "HSE Manager") != null))
+                        {
+                            <a href="~/WorkPermit/AssignTypeofWorkForApprover">Assign Approvers</a>
+                        }
+
+                        <a href="~/WorkPermit/WorkPermitBlankPDF">Blank WorkPermit</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        Contractor
+                        <i class="caret"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="~/WorkPermit/CreateContract">Contractor Assesment Form</a>
+                        <a href="~/WorkPermit/ContractList">Contractor List</a>
+                        <a href="~/WorkPermit/ContractAnnualRating">Contractor Rating</a>
+                        <a href="~/WorkPermit/CreateContractorEmployee">Contractor Employee Form</a>
+                        <a href="~/WorkPermit/ContractorEmployeeList">Contractor EmployeeList</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <a href="@Url.Action("HomePage","Incident")" style="color: white"> Home</a>
+                    </button>
+                </div>
+
+                <div class="btn-group pull-right mov">
+                    @*<div class="btn-group">
+                        <a>
+                            <img src="~/Images/wall-clock.png" title="login time out" height="25" width="25" />
+                        </a>  &nbsp;<label class="up1" height="22px" width="20px" title="login time out" id="timecountdown"></label>
+                        &nbsp;&nbsp;
+
+                    </div>*@
+                    <div class="btn-group">
+                        <a href="~/Account/Myprofile"><img class="" src="~/Users/@Model.ProfileImage" title="@Model.UserFullName" height="22" width="24" /></a>&nbsp;&nbsp;
+                    </div>
+                    <div class="btn-group">
+                        <a> <span class="label label-success up">@Model.UserFullName</span>&nbsp; </a>
+
+                    </div>
+                    <div class="btn-group">
+                        <a class=" btn-danger" style="height:22px;width:25px" title="Logout" href="~/Account/Logout"><i class="glyphicon glyphicon-off"></i></a>
+                    </div>
+                    <div class="btn-group lp">
+                        <a> <img height="30" width="140" src="~/Images/monitpro-logo.png"></a>
+                    </div>
+
+                </div>
+                <div class="fa-toggle-right" style="padding-right:30px">
+                    <a href="javascript:void(0);" style="font-size:25px;" class="icon" onclick="myFunction()">&#9776;</a>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+    <div @*style="padding-top:70px*@>
+        <div>
+            <br /><br />
+            @RenderBody()
+        </div>
+
+    </div>
+   
+    @RenderSection("scripts", required: false)
+
+   
+    
+</body>
+</html>
+<script type="text/javascript">
+    function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+
+        $(document).ready(function () {
+
+            var dt = '@Session["time"].ToString()';
+
+        var dateAr = dt.split('-');
+        var newDate = dateAr[1] + '/' + dateAr[0] + '/' + dateAr[2];
+
+        var end = new Date(dateAr[1] + '/' + dateAr[0] + '/' + dateAr[2]);
+
+        var _second = 1000;
+        var _minute = _second * 60;
+        var _hour = _minute * 60;
+        var _day = _hour * 24;
+        var timer;
+
+        function showRemaining() {
+            var now = new Date();
+            var distance = end - now;
+
+            var days = Math.floor(distance / _day);
+            var _hours = Math.floor((distance % _day) / _hour);
+            var _minutes = Math.floor((distance % _hour) / _minute);
+            var _seconds = Math.floor((distance % _minute) / _second);
+
+            document.getElementById('timecountdown').innerHTML = ' ';     //' Hrs: ' + _hours;
+
+            document.getElementById('timecountdown').innerHTML = ' '; //' + _seconds;
+            document.getElementById('timecountdown').innerHTML += _minutes +':Mins ';
+
+            if (_minutes == 0) {
+                window.location.href = "../Account/Login";
+            }
+            else if (_minutes == 2 && _seconds==59) {
+                var x;
+                if (confirm(" Your Session will be Expired. Are you Continue this Session ?") == true) {
+                    x = "Yes";
+                    var SaveURL = '../Account/SessionTimeout';
+
+                    $.ajax({
+                        method: "POST",
+                        url: SaveURL,
+
+
+                    })
+                    event.preventDefault();
+
+                } else {
+                    x = "No";
+                    event.preventDefault();
+                }
+            }
+            }
+
+            timer = setInterval(showRemaining, 1000);
+
+
+        })
+</script>

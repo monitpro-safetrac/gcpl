@@ -1,0 +1,28 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    Layout = null;
+}
+ 
+<table id="fixTable" class="table table-responsive ">
+    <tr>
+        <td>
+
+            @*<h5><b>Personal Perspective Equipment</b></h5>*@
+            @for (var i = 0; i < Model.PPE.Count; i++)
+            {
+                <div class="col-md-3 col-sm-3 col-xs-3">
+
+                    @Html.HiddenFor(m => m.PPE[i].PPEID)@Html.HiddenFor(m => m.PPE[i].PPEName)
+                    @Html.CheckBoxFor(m => m.PPE[i].PPEcheck, htmlAttributes: new { @class = "big-checkbox", @disabled = "true" })
+                    @Model.PPE[i].PPEName
+                </div>
+
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>Others / L.C. No (Max 100) :@Html.TextAreaFor(m => m.PPEOthers, new { maxlength = "100", @class = "form-control input-sm", @style = "width:100%", @cols = "500" ,@disabled="true"})</td>
+
+    </tr>
+</table>
+   

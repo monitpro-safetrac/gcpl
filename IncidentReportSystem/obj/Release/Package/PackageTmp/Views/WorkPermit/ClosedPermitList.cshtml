@@ -1,0 +1,189 @@
+﻿@model MonitPro.Models.WorkPermitList
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+@using PagedList.Mvc;
+@using MonitPro.Common.Library;
+@Styles.Render("~/bundles/jqueryuicssnewone")
+@Scripts.Render("~/bundles/jqueryuinewone")
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}
+
+<style>
+    .pre-scrollable {
+        max-height: 450px;
+        overflow: scroll;
+    }
+
+    .table-hover tbody tr:hover td {
+        background-color: #B4CFEC;
+    }
+
+    .table > thead > tr > th {
+        background-color: #428BCA;
+        color: white;
+    }
+    #WorkPermitList thead th {
+        position: sticky;
+        top: 0;
+    }
+</style>
+@using (Html.BeginForm())
+{
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit - Closed Permit List</h1>
+        </div><br />
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 text-center">
+
+                From Date @Html.TextBoxFor(m => m.FromDate, new { style = "width: 150px;", @class = "form-control input-sm", @autocomplete = "off" })
+                To Date  @Html.TextBoxFor(m => m.Todate, new { style = "width: 150px;", @class = "form-control input-sm", @autocomplete = "off" })
+                Plant/Area @Html.DropDownListFor(m => m.PlantID, new SelectList(Model.PlantList, "DivisionID", "DivisionName"), "--Select Plant--", new { style = "width: 300px;", @class = "form-control input-sm" })
+
+                Equipment @Html.DropDownListFor(m => m.EquipmentID, new SelectList(Model.EquipmentList, "EquipmentID", "EquipmentName"), "--Select Equipment--", new { style = "width: 300px;", @class = "form-control input-sm", @id = "EquipmentList" })
+
+                <input type="submit" value="Search" class="btn btn-primary" onclick="return Validate();" />&nbsp;
+                @if (Model.WorkPermits.Count > 0)
+                {
+                    @Html.ActionLink("Export Closed List", "ExportClosedPermitList", new { currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentEquipmentID = ViewBag.EquipmentID, @class = "btn btn-primary" })
+
+                }
+            </div>
+        </div>
+        <br />
+        <div class="container-fluid">
+
+            <div id="container" class="table-responsive pre-scrollable">
+                @if (Model.WorkPermits.Count > 0)
+                {
+                    <table id="WorkPermitList" class="table table-bordered table-hover table-responsive" width="100%">
+                        <thead>
+                            <tr>
+                               
+                                <th>Work Permit#</th>
+                                <th style="width:250px">Work Type</th>
+                                <th>Plant/Area</th>
+                                <th>Equipment/Area</th>
+
+                                <th style="width:350px">Description</th>
+                                <th>Department</th>
+                                <th>Permit Issuer</th>
+                                <th>Approver</th>
+                                <th style="width:100px">Closed Comment</th>
+                                <th>Valid From</th>
+                                <th>Closed On</th>
+                                <th>Status</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.WorkPermits.Count; i++)
+                            {
+                                <tr>
+                                   
+                                    <td>@Model.WorkPermits[i].PermitNumber</td>
+                                    <td style="word-break:break-all;">@Model.WorkPermits[i].WorkTypeName</td>
+                                    <td>@Model.WorkPermits[i].PlantName</td>
+                                    <td>@Model.WorkPermits[i].EquipmentName</td>
+
+                                    <td style="word-break:break-all;">@Model.WorkPermits[i].WorkDescription</td>
+                                    <td style="word-break:break-all;">@Model.WorkPermits[i].DepartmentName</td>
+                                    <td>@Model.WorkPermits[i].PermitIssuerName</td>
+                                    <td>@Model.WorkPermits[i].ApproverName</td>
+                                    <td style="word-break:break-all;">@Model.WorkPermits[i].ClosureComment</td>
+                                    <td>@Model.WorkPermits[i].ValidityFrom</td>
+                                    <td>@Model.WorkPermits[i].ClosedOn</td>
+                                    <td>@Model.WorkPermits[i].Status</td>
+                                    <td>
+                                        <a href="../WorkPermit/WorkPermitPDF/@Model.WorkPermits[i].WorkPermitID" target="_blank" title="Pdf"><img src="~/Images/pdficon.jpg" style="height:30px;width:30px;" /></a>
+
+                                        @if (Model.WorkPermits[i].WholeAttachment != "")
+                                        {
+                                            <a href="~/ClosedPermitAttachment/@Model.WorkPermits[i].WholeAttachment" download>
+                                                <img border="0" src="~/images/download.png" alt="download" width="25" height="25">
+                                            </a>
+                                        }
+                                    </td>
+
+                                    @*<td>@Html.ActionLink("View", "PrintPermit", new { id = Model.WorkPermit[i].WorkPermitID })</td>*@
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="pagination-lg">
+                                <td colspan="13">@Html.PagedListPager(Model.WorkPermits, page => Url.Action("ClosedPermitList", new { page, currentFromDate = ViewBag.fromdate, currentEndDate = ViewBag.Todate, currentEquipmentID = ViewBag.EquipmentID }))</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                }
+                @if (ViewBag.IsRecordFound == false)
+                {
+                    <center><span class="label label-danger">No record found for the given search criteria.</span></center>
+                }
+            </div>
+
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Styles.Render("~/Content/select2.css")
+    @Styles.Render("~/Content/select2.min.css")
+
+}
+
+<script>
+    $(function () {
+        $("#EquipmentList").select2();
+
+    });
+    
+</script>
+<script>
+
+    jQuery('#FromDate').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30
+    });
+    jQuery('#Todate').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30
+    });
+</script>
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "../Account/Login";
+        };
+
+    </script>
+}

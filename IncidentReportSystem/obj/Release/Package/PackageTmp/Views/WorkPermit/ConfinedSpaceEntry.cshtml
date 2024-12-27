@@ -1,0 +1,70 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    Layout = null;
+}
+    <table id="fixTable" class="table table-responsive table-bordered">
+
+    <tr>
+        <td width="25%">@Html.CheckBoxFor(m => m.HazardInformation.ChemicalExposures) ChemicalExposures</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.HazardInformation.FlammableVaporsGases) FlammableVaporsGases</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.HazardInformation.SolventsCleaners) SolventsCleaners </td>
+        <td width="25%">@Html.CheckBoxFor(m => m.HazardInformation.Noise) Noise </td>
+        
+    </tr>
+    <tr>
+
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.SlipsTripsFalls) Slips,Trips,Falls</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Engulfment) Engulfment</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Electrical) Electrical</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Mechanical) Mechanical</td>
+    </tr>
+        
+
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Pnuematic) Pneumatic</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Hydraulic) Hydraulic</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.HotWork)Hot Work (Metal Cutting,
+        Welding, Sanding, Grinding)
+            </td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.CompressedGases) CompressedGases</td>
+       
+    </tr>
+        <tr><td>@Html.TextBoxFor(m => m.HazardInformation.Others) Others </td></tr>
+        <tr><td>Hazard Control Methods</td></tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.PreEntryRescueBriefing) PreEntryRescueBriefing</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.VentilationAirChanges) VentilationAirChanges</td>      
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FlushPurgeDrainClean) FlushPurgeDrainClean</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.CommunicationVerbal) CommunicationVerbal </td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.HotWorkProceduresInitiated) HotWorkProceduresInitiated</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.GroundFaultCircuitInterrupter) GroundFaultCircuitInterrupter</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePiping) IsolatePiping </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LineBreakingProceduresInitiated) LineBreakingProceduresInitiated</td>
+        
+      
+    </tr>
+    <tr>
+      
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExternalBarricades) ExternalBarricades</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.NonSparkingTools) NonSparkingTools</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExplosionProofLighting) ExplosionProofLighting</td>
+        
+    </tr>
+    <tr>
+    
+    <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDisconnect) IsolatePipingDisconnect</td>
+    <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDoubleBlock) IsolatePipingDoubleBlock</td>
+    <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingBlankBlindPipe) IsolatePipingBlankBlindPipe</td>
+    <td>@Html.CheckBoxFor(m => m.HazardControlMethod.MSDSChemicalInfoAvailable) MSDSChemicalInfoAvailable</td>
+        </tr>
+        <tr>
+    
+    <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FireExtinguisher) FireExtinguisher</td>
+    <td>@Html.TextBoxFor(m => m.HazardControlMethod.Others) Others</td>
+    
+        </tr>
+    </table>
+    
+

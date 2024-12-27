@@ -1,0 +1,332 @@
+﻿@model MonitPro.Models.WorkPermit
+@{
+    ViewBag.Title = "CreatePermit";
+    Layout = "~/Views/Shared/DefaultLayout.cshtml";
+}
+<script src="~/Scripts/tableHeadFixer.js"></script>
+<link rel="stylesheet" type="text/css" href="~/datetimepicker/jquery.datetimepicker.css" />
+<script src="~/datetimepicker/jquery.js"></script>
+<script src="~/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<link href="~/Scripts/JQueryUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/Scripts/JQueryUI/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Scripts/JQueryUI/jquery-ui.js"></script>
+<script src="~/Scripts/tableHeadFixer.js"></script>
+
+<style>
+    .epad {
+        padding-right: 30px;
+        padding-left: 20px;
+    }
+
+    .wpad {
+        padding-right: 30px;
+        padding-left: 20px;
+    }
+
+    .ecol1 {
+        padding-left: 10px;
+    }
+
+    .ecol2 {
+        padding-left: 70px;
+    }
+</style>
+
+@using (Html.BeginForm("ClosePermit", "WorkPermit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(Model => Model.Identity)
+    <!DOCTYPE html>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">Work Permit -Close/Cancel Permit_#@Html.DisplayFor(m => m.PermitNumber)</h1>
+        </div><br />
+        <div id="container">
+
+            <div id="fixTable" class=" container-fluid table-responsive" width="100%">
+                @Html.Partial("PermitTemplateReadOnly", Model)
+
+
+                <div id="extable" class="container-fluid table-responsive" width="100%">
+                    <div class="div-border">
+                        <h1 class="div-h1"><span class="div-h1-span"> &nbsp; Extension of Work Permit &nbsp;&nbsp;</span></h1>
+                        <div class="epad">
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2 ecol1">Extension From : </div>
+                                <div class="col-lg-2 col-sm-2">
+                                    @Html.TextBoxFor(m => m.ExtensionFrom, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(m => m.ExtensionFrom, null, new { @class = "label label-danger" })
+                                </div>
+                                <div class="col-lg-2 col-sm-2 ecol2">Extension To : </div>
+                                <div class="col-lg-2 col-sm-2">
+                                    @Html.TextBoxFor(m => m.ExtensionTo, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(m => m.ExtensionTo, null, new { @class = "label label-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2 ecol1">Permit Reciever</div>
+                                <div class="col-lg-2 col-sm-2">
+                                    @Html.TextBoxFor(m => m.ExtensionPermitHolder, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                    @Html.ValidationMessageFor(m => m.ExtensionPermitHolder, null, new { @class = "label label-danger" })
+                                </div>
+                                <div class="col-lg-2 col-sm-2 ecol2">Approver : </div>
+                                <div class="col-lg-2 col-sm-2">
+                                    @Html.DropDownListFor(m => m.ExtensionApproverID, new SelectList(Model.ExtensionPermitApproverList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                    @Html.ValidationMessageFor(m => m.ExtensionApproverID, null, new { @class = "label label-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2 ecol1">Permit Issuer : </div>
+                                <div class="col-lg-2 col-sm-2">
+                                    @Model.ExtensionIssuerName @Html.HiddenFor(m => m.ExtensionPermitIssuerID)
+                                    @Html.ValidationMessageFor(m => m.ExtensionIssuerName, null, new { @class = "label label-danger" })
+                                </div>
+                                <div class="col-lg-2 col-sm-2 ecol2">Area Owner : </div>
+                                <div class="col-lg-2 col-sm-2">
+                                    @Html.DropDownListFor(m => m.ExtensionAreaOwnerID, new SelectList(Model.ExtensionAreaOwnerList, "UserID", "DisplayUserName"), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                    @Html.ValidationMessageFor(m => m.ExtensionAreaOwnerID, null, new { @class = "label label-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+
+                <div id="closetable" table class="table-bordered container-fluid table-responsive">
+                    <div class="div-border">
+                        <h1 class="div-h1"><span class="div-h1-span"> &nbsp; Work Permit Closure &nbsp;&nbsp;</span></h1>
+                        <div class="wpad">
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2">Permit Receiver : </div>
+                                <div class="col-lg-3 col-sm-2">
+                                    @Html.TextAreaFor(m => m.ClosurePermitHolderName, new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                    @*@Html.TextBoxFor(m => m.ClosurePermitHolderSignedOn, new { @class = "form-control input-sm", @style = "width:135px" })  @Html.ValidationMessageFor(m => m.ClosurePermitHolderSignedOn, null, new { @class = "label label-danger" })*@
+                                </div>
+                                <div class="col-lg-2 col-sm-2">Job taken over / Area Owner : </div>
+                                <div class="col-lg-3 col-sm-2">
+                                    @Html.DropDownListFor(m => m.ClosureAreaOwnerID, new SelectList(Model.UserList, "UserID", "DisplayUserName", Model.ClosureAreaOwnerID), "-- Select --", new { @class = "form-control input-sm", @maxlength = "100", @style = "width: 300px;  max-width: 100%;" })
+                                    @Html.ValidationMessageFor(m => m.ClosureAreaOwnerID, null, new { @class = "label label-danger" })
+                                    @Html.TextBoxFor(m => m.ClosureAreaOwnerSignedOn, new { @class = "form-control input-sm", @style = "width:120px" })
+                                    @Html.ValidationMessageFor(m => m.ClosureAreaOwnerSignedOn, null, new { @class = "label label-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2">Contractor Rating</div>
+                                <div class="col-lg-3 col-sm-2">
+                                    @Html.RadioButtonFor(m => m.ContractorRating, "R", new { @onclick = "Modify(this)" }) Red
+                                    @Html.RadioButtonFor(m => m.ContractorRating, "Y", new { @onclick = "Modify(this)" }) Yellow
+                                    @Html.RadioButtonFor(m => m.ContractorRating, "G", new { @onclick = "Modify(this)" }) Green
+                                    @Html.ValidationMessageFor(m => m.ContractorRating, null, new { @class = "label label-danger" })
+                                </div>
+
+                                <div class="col-lg-2 col-sm-2">
+                                    Contractor Rating Remarks <br /> (if Red/Yellow- Required field)(Max 100)
+                                </div>
+                                <div class="col-lg-3 col-sm-2">
+                                    @Html.TextAreaFor(m => m.ContractorComment, new { maxlength = 100, @style = "width:400px;   max-width: 100%;", @class = "form-control input-sm" })
+                                    @Html.ValidationMessageFor(m => m.ContractorComment, null, new { @class = "label label-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2">Permit Closure comments: (Max 100)</div>
+                                <div class="col-lg-4 col-sm-2">
+                                    @Html.TextAreaFor(m => m.ClosureComment, new { maxlength = 100, @style = "width:350px;   max-width: 100%;", @class = "form-control input-sm" }) @Html.ValidationMessageFor(m => m.ClosureComment, null, new { @class = "label label-danger" })
+                                </div>
+                                <div class="col-lg-3 col-sm-2">
+                                    @if (Model.checkvalidapprover != 1)
+                                    {
+
+                                        <h4><span class="label label-danger">Only approver (assigned type of work) can close the work permit.</span></h4>
+                                        <h4><span class="label label-danger">Permit issuer cannot close the permit though he/she is an approver for that particular type of permit.</span></h4>
+
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="text-center">
+
+                        @if (Model.checkvalidapprover == 1)
+                        {
+
+                            <input type="submit" class="btn btn-primary" value="Close Permit" id="ClosePermit" style="width:200px" />
+
+                            <input type="submit" class="btn btn-primary" value="Cancel Permit" id="Cancel" style="width:200px" />
+                            <input type="submit" class="btn btn-primary" value="Extend Permit" id="Extend" style="width:200px" />
+                        }
+                        else
+                        {
+                            <input type="submit" class="btn btn-primary" value="Close Permit" id="ClosePermit" style="width:200px" disabled="disabled" />
+
+                            <input type="submit" class="btn btn-primary" value="Cancel Permit" id="Cancel" style="width:200px" disabled="disabled" />
+                            <input type="submit" class="btn btn-primary" value="Extend Permit" id="Extend" style="width:200px" disabled="disabled" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @Html.HiddenFor(m => m.Status);
+    @Html.HiddenFor(m => m.WorkPermitID);
+    @Html.HiddenFor(m => m.ContractorID);
+    @Html.HiddenFor(m => m.PermitIssuerID)
+    @Html.HiddenFor(m => m.WorkTypeID)
+    @Html.Hidden("status", Model.Status)
+    @Html.HiddenFor(m => m.PermitNumber)
+
+
+}
+
+@section Scripts
+{
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+
+    $("#ClosePermit").click(function (event) {
+
+        $('#Status').val("C");
+        $('#ContractorRating').attr('required', true);
+        $('#ClosureAreaOwnerID').attr('required', true);
+        $('#ClosureComment').attr('required', true);
+        $("#extable *").attr('disabled', 'disabled');
+        $("#extable *").attr('required', false);
+        $("#closetable *").attr('disabled', false);
+
+    });
+    function Modify(select) {
+        if (select.value == "G") {
+            $('#ContractorComment').attr('required', false);
+            $('#ContractorComment').attr('disabled', true);
+
+        } else {
+            $('#ContractorComment').attr('required', true);
+            $('#ContractorComment').attr('disabled', false);
+        }
+    }
+    $("#Cancel").click(function (event) {
+        $('#ContractorRating').attr('required', false);
+        $('#ClosureAreaOwnerID').attr('required', false);
+        $('#ClosureComment').attr('required', true);
+        $("#extable *").attr('disabled', 'disabled');
+        $("#extable *").attr('required', false);
+        $('#Status').val("T");
+        $("#closetable *").attr('disabled', false);
+    });
+
+    $("#Extend").click(function (event) {
+        $('#ContractorRating').attr('required', false);
+        $('#ClosureAreaOwnerID').attr('required', false);
+        $('#ClosureComment').attr('required', false);
+        $("#extable *").attr('disabled', false);
+        $("#extable *").attr('required', true);
+        $("#closetable *").attr('disabled', 'disabled');
+        $("#closetable *").attr('required', false);
+        $('#Status').val("E");
+        $('#ContractorRating').val("");
+    });
+    $(document).ready(function () {
+
+        if (document.getElementById('status').value == "E") {
+
+            $("#extable *").attr('disabled', false);
+        } else { $("#extable *").attr('disabled', true); }
+
+        $("#fixTable").tableHeadFixer({ "left": 0 });
+    });
+
+    $("#Reset").click(function (event) {
+        $(".field-validation-error").empty();
+        $(':text').val(""); // Clear values from all the text boxes
+    }
+    );
+</script>
+<script>
+    var ExtendFromDate = '@Model.ExtensionFrom';
+    var minDateValue = ExtendFromDate ? new Date(ExtendFromDate) : null;
+    jQuery('#ExtensionFrom').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30
+
+
+    });
+
+    jQuery('#ClosureAreaOwnerSignedOn').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30
+
+
+    });
+    jQuery('#ExtensionTo').datetimepicker({
+        format: 'd/m/Y H:i',
+        lang: 'ru',
+        step: 30,
+        minDate: minDateValue
+
+    });
+</script>
+<script type="text/javascript">
+    @*$(document).ready(function () {
+        var mech = @Model.MechInchName;
+        var mechremarks = @Model.MechInchRemarks;
+        alert(mech)
+        alert(mechremarks)-->
+        if ((mech == @Model.UserFullName) && (mechremarks == "")) {
+            alert("fadasf")
+            $("#MechApprove").attr("disabled", false);
+            $("#MechInchRemarks").attr("disabled",false);
+        }
+        else {
+            alert("test")
+            $("#MechApprove").attr("disabled", true);
+            $("#MechInchRemarks").attr("disabled",true);
+        }
+    })*@
+
+    $("#MechApprove").click(function () {
+         $("#Identity").val("1");
+    });
+    $("#ElecApprove").click(function () {
+        $("#Identity").val("2");
+    });
+    $("#InstruApprove").click(function () {
+        $("#Identity").val("3");
+    });
+    $("#SafeOffApprove").click(function () {
+        $("#Identity").val("4");
+    });
+    $("#ProMgrApprove").click(function () {
+        $("#Identity").val("5");
+    });
+    $("#GMOpApprove").click(function () {
+        $("#Identity").val("6");
+    });
+</script>
+@if (ViewBag.SessMessage != null)
+{
+    <script type="text/javascript">
+        {
+            alert("Newer session exists in another browser/system...Logout");
+            window.location.href = "/Account/Login";
+        };
+
+    </script>
+}

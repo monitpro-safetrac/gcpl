@@ -1,0 +1,57 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+
+<table id="fixTable" class="table table-responsive table-bordered">
+
+    <tr>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Hotwork) Hot Work</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.CSEntry) Confined Space Entry</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Lotoelectrical)  Electrical</td>
+        <td width="25%">@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.LoadingUnloading) Unloading Chemical</td>
+    </tr>
+    <tr>
+
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Lotononelectrical) Non-Electical</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Mechanical) Mechanical Work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Hvac) HVAC</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Excavation) Excavation Work</td>
+    </tr>
+
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.HeightFragileroof) Working at Height or Fragile Roof</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Civilwork) Civil Work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Paintingwork) Painting Work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Firehydrant) Work on Fire Hydrant</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Plumbingwork) Plumbing Work</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.Shitingmaterial) Shifting of material</td>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.LineBreaking) Line Breaking</td>
+       
+
+        </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.TypeofWorkforCreatepermit.LotoTagout) Loto/Tagout</td>
+        <td>Others :@Html.TextAreaFor(m => m.TypeofWorkforCreatepermit.others, new { maxlength = "1000", @class = "form-control input-sm", @style = "width:100%", @cols = "500" })</td>
+        @if (ViewBag.IsValidationFailed == true)
+        {
+        
+            <td colspan="3" class="text-danger text-center">
+                <strong>@Html.ValidationMessage("TypeofWorkValidation")</strong>
+            </td>
+        
+        }
+
+
+    </tr>
+
+    
+</table>
+
+<script>
+
+</script>
+
+   

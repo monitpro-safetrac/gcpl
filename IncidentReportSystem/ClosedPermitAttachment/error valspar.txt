@@ -1,0 +1,23 @@
+1. attachment required field in (closed permit )
+2. edit option there is no required feild for type of work and PPE.(Update permit)
+3.Lockout/Tagout (database)
+4. closed permit Excel sheet not downloaded in correct format as dispaly in the apllication.
+5.pdf change typeofwork
+6.newpermitlist change typeofwork
+7.approvepermitlist change typeofwork
+
+
+Ok
+---
+6
+5
+4
+3
+
+
+AttachmentValidation
+[Required]
+    [DataType(DataType.Upload)]
+    [Display(Name = "Choose File")]
+
+http://ec2-35-160-105-146.us-west-2.compute.amazonaws.com/ValsparDev2.0/

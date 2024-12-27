@@ -1,0 +1,71 @@
+﻿@model ValsparApp.Models.WorkPermit
+@{
+    Layout = null;
+}
+<table class="table table-responsive table-bordered">
+    <thead><h3>Confined Space Entry Permit Check List</h3></thead>
+    <tr><td style="font-weight:bold">Hazard Information</td></tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.ChemicalExposures, new { @disabled = "true" }) Chemical Exposures</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Noise, new { @disabled = "true" }) Noise</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Electrical, new { @disabled = "true" }) Electrical</td>
+        <td>
+            @Html.CheckBoxFor(m => m.HazardInformation.HotWork, new { @disabled = "true" }) Hot Work (Metal Cutting,
+            Welding, Sanding, Grinding)
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.FlammableVaporsGases, new { @disabled = "true" }) Flammable Vapors/Gases</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.SlipsTripsFalls, new { @disabled = "true" }) Slips,Trips,Falls</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Mechanical, new { @disabled = "true" }) Mechanical</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.CompressedGases, new { @disabled = "true" }) Compressed Gases</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.SolventsCleaners, new { @disabled = "true" }) Solvents/ Cleaners</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Engulfment, new { @disabled = "true" }) Engulfment</td>
+        <td>@Html.CheckBoxFor(m => m.HazardInformation.Pnuematic, new { @disabled = "true" }) Pnuematic</td>
+        <td>@Html.TextAreaFor(m => m.HazardInformation.Others, new { @disabled = "true" })</td>
+    </tr>
+</table>
+<table class="table table-responsive table-bordered">
+    <tr><td style="font-weight:bold">Hazard Control Method</td></tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.PreEntryRescueBriefing, new { @disabled = "true" }) Pre-Entry & Rescue Briefing</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.VentilationAirChanges, new { @disabled = "true" }) Ventilation Air Changes/Hr</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FlushPurgeDrainClean, new { @disabled = "true" }) Flush/Purge/Drain/Clean</td>
+	<td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePiping, new { @disabled = "true" }) Isolate Piping (specify)</td>
+        
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.GroundFaultCircuitInterrupter, new { @disabled = "true" }) Ground Fault Circuit 
+Interrupter</td>
+        <td>
+            @Html.CheckBoxFor(m => m.HazardControlMethod.CommunicationVerbal, new { @disabled = "true" }) Communication Verbal
+        </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LockoutProceduresInitiated, new { @disabled = "true" }) Lockout Procedures 
+Initiated</td>
+       
+<td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDoubleBlock, new { @disabled = "true" }) Double Block/Bleed Pipe</td>
+    </tr>
+    <tr>
+         <td>@Html.CheckBoxFor(m => m.HazardControlMethod.NonSparkingTools, new { @disabled = "true" }) Non Sparking Tools</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.LineBreakingProceduresInitiated, new { @disabled = "true" }) Line Breaking Procedures 
+Initiated</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExplosionProofLighting, new { @disabled = "true" }) Explosion Proof Lighting </td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingBlankBlindPipe, new { @disabled = "true" }) Blank/Blind Pipe</td>
+    </tr>
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.HotWorkProceduresInitiated, new { @disabled = "true" }) Hot Work Procedures Initiated 
+</td>
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.MSDSChemicalInfoAvailable, new { @disabled = "true" }) MSDS/Chemical Info 
+Available</td>
+       
+        <td>@Html.CheckBoxFor(m => m.HazardControlMethod.ExternalBarricades, new { @disabled = "true" })External Barricades/Barrier Tape</td>
+ <td>@Html.CheckBoxFor(m => m.HazardControlMethod.IsolatePipingDisconnect, new { @disabled = "true" }) Disconnect</td>
+    </tr>
+     <tr>
+         <td>@Html.CheckBoxFor(m => m.HazardControlMethod.FireExtinguisher, new { @disabled = "true" }) Fire Extinguisher </td>
+        <td>Others</td>
+        <td colspan="2">@Html.TextAreaFor(m => m.HazardControlMethod.Others,new { @disabled = "true" })</td>
+    </tr>
+</table>

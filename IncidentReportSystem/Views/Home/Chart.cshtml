@@ -1,0 +1,950 @@
+﻿
+@model IncidentReportSystem.Models.IncidentListViewModel
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MOC Chart</title>
+    <link href="~/Content/legalchartcss.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="~/Scripts/c3.min.js"></script>
+    <script src="~/Scripts/d3.min.js"></script>
+    <link href="~/Content/c3.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/c3-title/c3-title.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        .pgfit {
+            height: 230px;
+            width: 300px;
+            text-align: center;
+            display: inline-block;
+            max-height: 500px;
+            max-width: 500px;
+        }
+
+        .c3-legend {
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            font-size: 24px;
+            color: #555;
+        }
+    </style>
+    <style>
+        .form-inline-custom {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+            .form-inline-custom label {
+                margin-right: 10px;
+            }
+
+            .form-inline-custom input[type="date"] {
+                margin-right: 10px;
+                padding: 5px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+
+            .form-inline-custom button, .form-inline-custom a {
+                margin-right: 10px;
+                padding: 5px 15px;
+                border-radius: 5px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .form-inline-custom a {
+                background-color: blueviolet;
+            }
+
+                .form-inline-custom button:hover, .form-inline-custom a:hover {
+                    background-color: #0056b3;
+                }
+
+        .col-chart {
+            padding: 5px; /* Adjust padding as needed */
+            margin: 0; /* Remove margin */
+        }
+
+        .pgfit {
+            height: 250px; /* Adjust height to fit charts efficiently */
+            width: 100%; /* Make charts take full width of container */
+        }
+    </style>
+
+</head>
+<body>
+        <div class="row">
+            <center>
+                <div class="form-inline-custom">
+                    <label for="startDate">From Date:</label>
+                    <input type="date" id="startDate" />
+                    <label for="endDate">To Date:</label>
+                    <input type="date" id="endDate" />
+                    <button id="loadDataButton">Generate Chart</button>
+                    <button id="captureButton">PDF</button>
+                    @*<button id="Exceldatacapture">Export Excel</button>*@
+                </div>
+            </center>
+        </div>
+        <div id="contentToCapture">
+            <div id="Last">
+                <table width="95%" align="center" cellpadding="2">
+                    <tr>
+                        <td>
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                                <h4><b>Incident Summary</b></h4>
+                                <div class="pgfit" id="IncidentSummaryChart"></div>
+                            </div>
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                                <h4><b>Incident Category</b></h4>
+                                <div class="pgfit" id="incidentCategoryChart"></div>
+                            </div>
+
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                                <h4><b>Incident Classification</b></h4>
+                                <div class="pgfit" id="incidentClassificationChart"></div>
+                            </div>
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                                <h4><b>Incident Recommendation</b></h4>
+                                <div class="pgfit" id="recommendationChart"></div>
+                            </div>
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                                <h4><b>Incident Status</b></h4>
+                                <div class="pgfit" id="incidentStatusChart"></div>
+                            </div>
+                            <div class="col-xl-4 col-md-4 col-sm-4 col-lg-4" style="text-align:center">
+                                <h4><b>Root Cause</b></h4>
+                                <div class="pgfit" id="rootCauseChart"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+</body>
+
+</html>
+<script>
+    $(document).ready(function () {
+        function formatDate(date) {
+            var d = new Date(date);
+            var month = '' + (d.getMonth() + 1);
+            var day = '' + d.getDate();
+            var year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        function setDefaultDates() {
+            var currentDate = new Date();
+            var currentYear = currentDate.getFullYear();
+            var startDate;
+            currentDate.setDate(currentDate.getDate());
+            // If the current month is before April, set start date to April 1st of the previous year
+            if (currentDate.getMonth() < 3) {
+                startDate = new Date(currentYear - 1, 3, 1); // April 1st of previous year
+            } else {
+                // Otherwise, set start date to April 1st of the current year
+                startDate = new Date(currentYear, 3, 1); // April 1st of current year
+            }
+
+            $('#startDate').val(formatDate(startDate));
+            $('#endDate').val(formatDate(currentDate));
+        }
+
+        function loadData(startDate, endDate) {
+            $('#loading').show();
+
+            function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error: ', textStatus, errorThrown);
+                alert('Error loading data. Please try again later.');
+            }
+
+            var ajaxCalls = [
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentCategoryChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generatePieChart(response.IncidentCategoryModel, "#incidentCategoryChart", "Incident Categories");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Categories data.');
+                    }
+                }),
+                //
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentSummaryChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateBarChart(response.IncidentSummaryModel, "#IncidentSummaryChart", "Incident Summary Chart");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Categories data.');
+                    }
+                }),
+
+                // Load incident classification chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentClassificationChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateBarChart(response.IncidentClassificationModel, "#incidentClassificationChart", "Incident Classifications");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Classifications data.');
+                    }
+                }),
+
+                // Load incident status chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentStatusChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generatePieChart(response.IncidentStatusModel, "#incidentStatusChart", "Incident Statuses");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Statuses data.');
+                    }
+                }),
+
+                // Load root cause chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/RootCauseChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateDonetChart(response.RootCauseModel, "#rootCauseChart", "Root Causes");
+                    },
+                    error: function () {
+                        alert('Error fetching Root Causes data.');
+                    }
+                }),
+
+                // Load recommendation chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/RecommendationChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateBarChart(response.RecommendationModel, "#recommendationChart", "Recommendations");
+                    },
+                    error: function () {
+                        alert('Error fetching Recommendations data.');
+                    }
+                }),
+            ];
+
+            $.when.apply($, ajaxCalls).always(function () {
+                $('#loading').hide();
+            });
+        }
+
+        setDefaultDates();
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+        loadData(startDate, endDate);
+
+        $('#loadDataButton').click(function () {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            loadData(startDate, endDate);
+        });
+    });
+
+    function generateBarChart(count, elementId, chartTitle) {
+        if (!count) {
+            console.error('Data is null or undefined:', count);
+            return;
+        }
+
+        if (Array.isArray(count)) {
+            console.log('Data is an array:');
+            console.log(count);
+        }
+
+        var categories = [];
+        var values = [];
+
+        // Process data if it's an array
+        count.forEach(function (entry) {
+            // Check if entry has CategoryName and TotalCount properties
+            if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                categories.push(entry.CategoryName);
+                values.push(entry.TotalCount);
+
+            } else {
+                console.warn('Skipping invalid entry:', entry);
+            }
+
+        });
+        console.log(categories);
+        console.log(values);
+        // Generate the bar chart using C3.js
+        c3.generate({
+            bindto: elementId,
+            title: {
+                text: chartTitle
+            },
+            data: {
+                x: 'x',
+                columns: [
+                    ['x'].concat(categories),
+                    ['count'].concat(values)
+                ],
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'category'
+                }
+            },
+            zoom: {
+                enabled: true
+            },
+            color: {
+                pattern: ['#538DFF']
+            },
+            legend: {
+                show: false
+            },
+            bar: {
+                width: {
+                    ratio: 0.8
+                }
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+
+        });
+    }
+
+    // Function to generate pie chart using C3.js
+    function generatePieChart(data, elementId, chartTitle) {
+        if (!data) {
+            console.error('Data is null or undefined:', data);
+            return;
+        }
+
+        if (Array.isArray(data)) {
+            console.log('Data is an array:');
+            console.log(data);
+        }
+
+        var chartData = [];
+        var categories = [];
+        var values = [];
+
+        // Process each entry in the array
+        data.forEach(function (entry) {
+            // Ensure entry has necessary properties
+            if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                chartData.push([entry.CategoryName, entry.TotalCount]);
+
+            } else {
+                console.warn('Skipping invalid entry:', entry);
+            }
+
+        });
+        console.log(categories);
+        console.log(values);
+        c3.generate({
+            bindto: elementId,
+            title: {
+                text: chartTitle
+            },
+            data: {
+                columns: chartData,
+                type: 'pie',
+                colors: {
+                    pattern: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                }
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+
+        });
+    }
+    function generateDonetChart(data, elementId, chartTitle) {
+        if (!data) {
+            console.error('Data is null or undefined:', data);
+            return;
+        }
+
+        if (Array.isArray(data)) {
+            console.log('Data is an array:');
+            console.log(data);
+        }
+
+        var chartData = [];
+        var categories = [];
+        var values = [];
+
+        // Process each entry in the array
+        data.forEach(function (entry) {
+            // Ensure entry has necessary properties
+            if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                chartData.push([entry.CategoryName, entry.TotalCount]);
+
+            } else {
+                console.warn('Skipping invalid entry:', entry);
+            }
+
+        });
+        console.log(categories);
+        console.log(values);
+        c3.generate({
+            bindto: elementId,
+            data: {
+                columns: chartData,
+                title: {
+                    text: chartTitle
+                },
+                type: 'donut',
+                colors: {
+                    pattern: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                }
+            },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+        });
+    }
+
+    document.getElementById('captureButton').addEventListener('click', function () {
+        const startDatef = document.getElementById('startDate').value;
+        const endDatef = document.getElementById('endDate').value;
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const day = String(date.getDate()).padStart(2, '0'); // Pad single digit days
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Pad single digit months
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`; // Return in DD-MM-YYYY format
+        }
+
+        const startDate = formatDate(startDatef);
+        const endDate = formatDate(endDatef);
+
+        html2canvas(document.querySelector("#contentToCapture")).then(canvas => {
+            // Get the image data from the canvas
+            const imgData = canvas.toDataURL('image/png');
+            console.log(imgData);
+            // Create jsPDF instance
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // Add the header (From Date, To Date, Name) at the top
+            pdf.setFontSize(12);
+            pdf.text(`From Date: ${startDate} -- To Date: ${endDate}`, 10, 16); // x=10, y=20
+            pdf.text(`Incident Dashboaed`, 10, 10);          // x=10, y=10
+
+            // Calculate dimensions to fit image into the A4 landscape page
+            const pageWidth = 297; // A4 width in landscape (in mm)
+            const pageHeight = 210; // A4 height in landscape (in mm)
+            const imgWidth = pageWidth - 20; // Margins of 10mm on both sides
+            const imgHeight = (canvas.height * imgWidth) / canvas.width; // Scale the image
+
+            // Add the image (below the header) starting at y=40 to leave space for the header
+            pdf.addImage(imgData, 'PNG', 10, 40, imgWidth, imgHeight);
+
+            // Save the PDF
+            pdf.save("Incident Chart.pdf");
+        });
+    });
+</script>
+<script>
+    window.onload = function () {
+        const button = document.querySelector('#Exceldatacapture');
+        if (button) {
+            button.addEventListener('click', function () {
+                //console.log("Button clicked!");
+
+                const startDatef = document.getElementById('startDate').value;
+                const endDatef = document.getElementById('endDate').value;
+
+                //console.log("Start Date:", startDatef, "End Date:", endDatef);
+
+                // Check if the element #list exists
+                const listElement = document.querySelector("#contentToCapture");
+                if (!listElement) {
+                    console.error("Element with id 'contentToCapture' not found.");
+                    return;
+                }
+
+                // Capture chart as image
+                html2canvas(listElement).then(function (canvas) {
+                    //console.log("html2canvas completed successfully");
+
+                    // Log canvas dimensions
+                    //console.log("Canvas size:", canvas.width, canvas.height);
+
+                    const context = canvas.getContext("2d");
+
+                    // Set font and text style
+                    context.font = "30px Arial";
+                    context.fillStyle = "black";
+                    context.textBaseline = "top";
+
+                    // Add text at specified positions
+                    context.fillText("From: " + startDatef, 20, 20);
+                    context.fillText("To: " + endDatef, 20, 60);
+
+                    // Log canvas to check if the text was added
+                    //console.log("Canvas after adding text:", canvas);
+
+                    // Convert canvas to image
+                    const chart1DataUrl = canvas.toDataURL('image/png');
+                    //console.log("Image URL generated:", chart1DataUrl);
+
+                    // Create Excel file using ExcelJS
+                    const workbook = new ExcelJS.Workbook();
+                    const worksheet = workbook.addWorksheet('IIR Dashboard');
+                    console.log("ExcelJS Workbook created");
+
+                    // Add the modified chart image to the Excel sheet
+                    const chart1Image = workbook.addImage({
+                        base64: chart1DataUrl,
+                        extension: 'png',
+                    });
+                    worksheet.addImage(chart1Image, {
+                        tl: { col: 1, row: 5 },
+                        ext: { width: 1700, height: 800 },
+                    });
+
+                    workbook.xlsx.writeBuffer().then(function (buffer) {
+                        console.log("Excel file is ready for download");
+                        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'IIR_Dashboard.xlsx';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }).catch(function (error) {
+                        console.error("Error creating Excel file:", error);
+                    });
+                }).catch(function (error) {
+                    console.error("Error capturing chart as image:", error);
+                });
+            });
+        }
+    };
+</script>
+@*<script>
+    document.getElementById('captureButton').addEventListener('click', function () {
+        // Select the element you want to capture
+        console.log("vada vannai");
+        html2canvas(document.getElementById('contentToCapture')).then(function (canvas) {
+            // Convert the canvas to a Data URL
+            var imgData = canvas.toDataURL('image/png');
+
+            // Create a new jsPDF instance
+            var pdf = new jsPDF();
+            var imgWidth = 210; // Width of the PDF (A4)
+            var pageHeight = 295; // Height of the PDF (A4)
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            var heightLeft = imgHeight;
+
+            var position = 0;
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            // Add new pages if needed
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Save the PDF
+            pdf.save('captured_view.pdf');
+
+        });
+    });
+</script>*@
+
+
+@*<script>
+        $(document).ready(function () {
+            // Form submission handler
+            $('#dateSelectionForm').submit(function (event) {
+                event.preventDefault();
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+
+                if (validateDates(startDate, endDate)) {
+                    loadData(startDate, endDate);
+                } else {
+                    alert('End date should be greater than start date.');
+                }
+            });
+
+            // Function to validate dates
+            function validateDates(startDate, endDate) {
+                return startDate <= endDate;
+            }
+
+            // Function to load data for specified date range via AJAX
+            function loadData(startDate, endDate) {
+                // Load incident category chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentCategoryChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generatePieChart(response.IncidentCategoryModel, "#incidentCategoryChart", "Incident Categories");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Categories data.');
+                    }
+                });
+                //
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentSummaryChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateBarChart(response.IncidentSummaryModel, "#IncidentSummaryChart", "Incident Summary Chart");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Categories data.');
+                    }
+                });
+
+                // Load incident classification chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentClassificationChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateBarChart(response.IncidentClassificationModel, "#incidentClassificationChart", "Incident Classifications");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Classifications data.');
+                    }
+                });
+
+                // Load incident status chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/IncidentStatusChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generatePieChart(response.IncidentStatusModel, "#incidentStatusChart", "Incident Statuses");
+                    },
+                    error: function () {
+                        alert('Error fetching Incident Statuses data.');
+                    }
+                });
+
+                // Load root cause chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/RootCauseChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateDonetChart(response.RootCauseModel, "#rootCauseChart", "Root Causes");
+                    },
+                    error: function () {
+                        alert('Error fetching Root Causes data.');
+                    }
+                });
+
+                // Load recommendation chart
+                $.ajax({
+                    type: "GET",
+                    url: "../Dashboard/RecommendationChart",
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        generateBarChart(response.RecommendationModel, "#recommendationChart", "Recommendations");
+                    },
+                    error: function () {
+                        alert('Error fetching Recommendations data.');
+                    }
+                });
+            }
+
+            // Function to generate bar chart using C3.js
+            function generateBarChart(count, elementId, chartTitle) {
+                if (!count) {
+                    console.error('Data is null or undefined:', count);
+                    return;
+                }
+
+                if (Array.isArray(count)) {
+                    console.log('Data is an array:');
+                    console.log(count);
+                }
+
+                var categories = [];
+                var values = [];
+
+                // Process data if it's an array
+                count.forEach(function (entry) {
+                    // Check if entry has CategoryName and TotalCount properties
+                    if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                        categories.push(entry.CategoryName);
+                        values.push(entry.TotalCount);
+
+                    } else {
+                        console.warn('Skipping invalid entry:', entry);
+                    }
+
+                });
+                console.log(categories);
+                console.log(values);
+                // Generate the bar chart using C3.js
+                c3.generate({
+                    bindto: elementId,
+                    data: {
+                        x: 'x',
+                        columns: [
+                            ['x'].concat(categories),
+                            ['count'].concat(values)
+                        ],
+                        type: 'bar'
+                    },
+                    axis: {
+                        x: {
+                            type: 'category'
+                        }
+                    },
+                    zoom: {
+                        enabled: true
+                    },
+                    color: {
+                        pattern: ['#538DFF']
+                    },
+                    legend: {
+                        show: false
+                    },
+                    bar: {
+                        width: {
+                            ratio: 0.8
+                        }
+                    },
+                    tooltip: {
+                        format: {
+                            value: function (value, ratio, id) {
+                                return value;
+                            }
+                        }
+                    },
+
+                });
+            }
+
+            // Function to generate pie chart using C3.js
+            function generatePieChart(data, elementId, chartTitle) {
+                if (!data) {
+                    console.error('Data is null or undefined:', data);
+                    return;
+                }
+
+                if (Array.isArray(data)) {
+                    console.log('Data is an array:');
+                    console.log(data);
+                }
+
+                var chartData = [];
+                var categories = [];
+                var values = [];
+
+                // Process each entry in the array
+                data.forEach(function (entry) {
+                    // Ensure entry has necessary properties
+                    if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                        chartData.push([entry.CategoryName, entry.TotalCount]);
+
+                    } else {
+                        console.warn('Skipping invalid entry:', entry);
+                    }
+
+                });
+                console.log(categories);
+                console.log(values);
+                c3.generate({
+                    bindto: elementId,
+                    data: {
+                        columns: chartData,
+                        type: 'pie',
+                        colors: {
+                            pattern: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                        }
+                    },
+                    tooltip: {
+                        format: {
+                            value: function (value, ratio, id) {
+                                return value;
+                            }
+                        }
+                    },
+
+                });
+            }
+            function generateDonetChart(data, elementId, chartTitle) {
+                if (!data) {
+                    console.error('Data is null or undefined:', data);
+                    return;
+                }
+
+                if (Array.isArray(data)) {
+                    console.log('Data is an array:');
+                    console.log(data);
+                }
+
+                var chartData = [];
+                var categories = [];
+                var values = [];
+
+                // Process each entry in the array
+                data.forEach(function (entry) {
+                    // Ensure entry has necessary properties
+                    if (entry && entry.CategoryName && entry.TotalCount !== undefined) {
+                        chartData.push([entry.CategoryName, entry.TotalCount]);
+
+                    } else {
+                        console.warn('Skipping invalid entry:', entry);
+                    }
+
+                });
+                console.log(categories);
+                console.log(values);
+                c3.generate({
+                    bindto: elementId,
+                    data: {
+                        columns: chartData,
+                        type: 'donut',
+                        colors: {
+                            pattern: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                        }
+                    },
+                    tooltip: {
+                        format: {
+                            value: function (value, ratio, id) {
+                                return value;
+                            }
+                        }
+                    },
+                    legend: {
+                        show: false
+                    },
+                });
+            }
+        });
+    </script>*@
+
+
+
